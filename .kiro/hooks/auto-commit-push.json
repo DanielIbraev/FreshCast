@@ -4,6 +4,7 @@
     {
       "name": "Auto Commit and Push on Save",
       "trigger": "PostFileSave",
+      "disabled": true,
       "description": "Automatically commits and pushes all changes to GitHub whenever a file is saved in the workspace",
       "action": {
         "type": "command",
