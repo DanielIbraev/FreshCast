@@ -12,8 +12,18 @@
 - 70% of US restaurants are independent single-unit operators
 - Prediction accuracy: R² of 0.817 using software-only features (arxiv.org/abs/2609.08078)
 
+## Personal Hook (authentic — do not fabricate)
+Growing up in Springfield, MA — one of the highest poverty rate cities in Massachusetts — you know what tight margins mean firsthand. You've seen restaurants in your community running on nothing, and food going in the trash represents real money they can't afford to lose. That's who FreshCast is built for. Not chains with enterprise budgets — the independent owner who's been completely ignored by every tool on the market.
+
 ## Target User
 Marco. 60-seat independent Italian restaurant, Boston. One location. Uses Square POS. No data team. Can't afford Winnow's hardware. Throws away ~$1,800/month in food and has no idea.
+
+## How the Model Gets Smarter Over Time
+- Week 1 (cold start): industry baseline multipliers from published research. Already useful.
+- Weeks 2-4: compares predictions vs actual logged waste. Adjusts personal multipliers per ingredient.
+- Month 2+: knows this restaurant specifically — portion patterns, slow days, which dishes over-prep.
+- The recency factor (last week same day actual waste) is the strongest short-term signal.
+- Pitch line: "FreshCast starts accurate on day one. After two weeks, it knows Marco's kitchen better than Marco does."
 
 ## Competitor Differentiation
 Winnow, Leanpath, Orbisk, Kitro all require:
