@@ -7,8 +7,8 @@
 - Charts: Recharts
 - Database: Supabase (Postgres + Realtime)
 - Auth: Supabase Auth
-- AI layer: OpenAI GPT-4o (explanation only, not core logic)
 - Weather: Open-Meteo API (free, no API key required)
+- Events: Ticketmaster API (free tier) for nearby event detection
 - Deployment: Vercel
 
 ## Architecture Principles
