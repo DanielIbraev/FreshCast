@@ -1,0 +1,14 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Auto Commit and Push on Save",
+      "trigger": "PostFileSave",
+      "description": "Automatically commits and pushes all changes to GitHub whenever a file is saved in the workspace",
+      "action": {
+        "type": "command",
+        "command": "cd /Users/chyngyzoskonbaev/Hackachusetts && git add -A && git diff --cached --quiet || git commit -m \"auto: save $(date '+%H:%M:%S')\" && git push origin main 2>&1 || true"
+      }
+    }
+  ]
+}
