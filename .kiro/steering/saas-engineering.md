@@ -47,15 +47,34 @@ The prediction engine lives in `/lib/prediction.ts` and runs pure TypeScript mat
 
 ```typescript
 // Waste prediction formula (based on arxiv.org/abs/2609.08078)
-predictedWaste(kg) =
+// All multipliers are applied sequentially against the baseline prep amount
+
+predictedWaste(ingredient, kg) =
   baselinePrepAmount
-  × demandAdjustment(covers / avgCovers)
-  × weatherMultiplier(conditions)  // rain = +0.15, heat = -0.10
-  × dayOfWeekFactor[dayOfWeek]     // Mon/Tue = 1.22, Fri/Sat = 0.85
-  × historicalCorrection(pastLogs) // improves after 2 weeks of data
+  × demandFactor(expectedCovers / avgCovers)       // more covers = less waste per ingredient
+  × weatherMultiplier(forecast)                     // rain +0.15, heat -0.10, normal 1.0
+  × dayOfWeekFactor[dayOfWeek]                      // Mon 1.22, Tue 1.18, Wed 1.05, Thu 1.0, Fri 0.88, Sat 0.82, Sun 0.90
+  × seasonalFactor[month]                           // Jan 1.15, Apr 1.0, Jul 0.92, Oct 1.05
+  × eventFactor(hasNearbyEvent)                     // game day/concert 0.75 (more customers), holiday 1.20
+  × recencyFactor(lastWeekSameDayActual)            // 0.6 × (lastActual/lastPredicted) + 0.4 × 1.0
+  × personalCalibration(restaurantId, ingredient)   // learned ratio after 2+ weeks of logs
+
+// Recency factor is the strongest short-term signal:
+// recencyFactor = 0.6 × (lastWeekActual / lastWeekPredicted) + 0.4 × 1.0
+// Converges to restaurant's real patterns within 2-3 weeks
+
+// Sell-through tracking (secondary signal):
+// If a dish is consistently 86'd → under-prepping flag (not waste issue)
+// If a dish has 5+ portions left every service → over-prep flag for those ingredients
 ```
 
-This math runs in your code. OpenAI is only called to generate a plain-English explanation of WHY the prediction is what it is — it receives the numbers as context and writes a sentence. This is what makes it NOT a wrapper.
+Weather multipliers by condition:
+- Rainy/stormy: +0.15 (fewer walk-ins, lighter dishes ordered less)
+- Hot (85°F+): -0.10 (lighter dishes, higher traffic for cold items)
+- Cold (below 30°F): +0.08 (comfort food orders increase)
+- Normal: 1.0
+
+This math runs entirely in your code. No AI needed for the core prediction. AI explanation layer is optional and dropped to save time/cost.
 
 ## Database Schema
 ```sql
