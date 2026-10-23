@@ -43,38 +43,64 @@
 ```
 
 ## Prediction Engine (Core Logic — NOT an AI wrapper)
-The prediction engine lives in `/lib/prediction.ts` and runs pure TypeScript math:
+The prediction engine lives in `/lib/prediction.ts` and runs pure TypeScript math.
+
+### Design Principle: Zero daily input from owner after 5-minute setup
+Every signal is either automatic, pulled from an API, or learned from history.
+The only manual input ever: waste logging (2 taps, done by staff during service).
 
 ```typescript
 // Waste prediction formula (based on arxiv.org/abs/2609.08078)
-// All multipliers are applied sequentially against the baseline prep amount
-
 predictedWaste(ingredient, kg) =
-  baselinePrepAmount
-  × demandFactor(expectedCovers / avgCovers)       // more covers = less waste per ingredient
-  × weatherMultiplier(forecast)                     // rain +0.15, heat -0.10, normal 1.0
-  × dayOfWeekFactor[dayOfWeek]                      // Mon 1.22, Tue 1.18, Wed 1.05, Thu 1.0, Fri 0.88, Sat 0.82, Sun 0.90
-  × seasonalFactor[month]                           // Jan 1.15, Apr 1.0, Jul 0.92, Oct 1.05
-  × eventFactor(hasNearbyEvent)                     // game day/concert 0.75 (more customers), holiday 1.20
-  × recencyFactor(lastWeekSameDayActual)            // 0.6 × (lastActual/lastPredicted) + 0.4 × 1.0
-  × personalCalibration(restaurantId, ingredient)   // learned ratio after 2+ weeks of logs
-
-// Recency factor is the strongest short-term signal:
-// recencyFactor = 0.6 × (lastWeekActual / lastWeekPredicted) + 0.4 × 1.0
-// Converges to restaurant's real patterns within 2-3 weeks
-
-// Sell-through tracking (secondary signal):
-// If a dish is consistently 86'd → under-prepping flag (not waste issue)
-// If a dish has 5+ portions left every service → over-prep flag for those ingredients
+  baselinePrepAmount                                       // set once at onboarding
+  × demandFactor(expectedCovers / avgCovers)              // AUTO: reservation API or learned history
+  × weatherMultiplier(forecast)                           // AUTO: Open-Meteo using restaurant lat/lng
+  × dayOfWeekFactor[dayOfWeek]                            // AUTO: from date
+  × seasonalFactor[month]                                 // AUTO: from date
+  × holidayFactor(isPublicHoliday, holidayType)           // AUTO: hardcoded holiday calendar
+  × eventFactor(nearbyEvents)                             // AUTO: Ticketmaster API within 1 mile
+  × cuisineFactor[cuisineType]                            // SET ONCE: at onboarding
+  × recencyFactor(lastWeekSameDayActual)                  // AUTO: from waste_logs history
+  × personalCalibration(restaurantId, ingredient)         // AUTO: learned over time
 ```
 
-Weather multipliers by condition:
-- Rainy/stormy: +0.15 (fewer walk-ins, lighter dishes ordered less)
-- Hot (85°F+): -0.10 (lighter dishes, higher traffic for cold items)
-- Cold (below 30°F): +0.08 (comfort food orders increase)
-- Normal: 1.0
+### Signal Multipliers
 
-This math runs entirely in your code. No AI needed for the core prediction. AI explanation layer is optional and dropped to save time/cost.
+**Day of week** (industry research):
+Mon ×1.22, Tue ×1.18, Wed ×1.05, Thu ×1.0, Fri ×0.88, Sat ×0.82, Sun ×0.90
+
+**Weather** (Open-Meteo API, automatic):
+Rain/storm ×1.15 | Hot 85°F+ ×0.90 | Cold <30°F ×1.08 | Normal ×1.0
+
+**Season** (hospitality industry data):
+Jan/Feb ×1.15 | Mar/Apr ×1.0 | May/Jun ×0.95 | Jul/Aug ×0.92 | Sep/Oct ×1.05 | Nov/Dec ×1.20
+
+**Holidays** (hardcoded calendar, automatic):
+Thanksgiving Eve ×0.70 | Christmas Eve ×0.75 | Super Bowl ×0.72 | Day after major holiday ×1.35
+
+**Nearby events** (Ticketmaster API, automatic):
+Major concert/game within 1 mile ×0.78 | Graduation/festival ×0.82 | No events ×1.0
+
+**Cuisine type** (set once at onboarding):
+Italian/French ×1.0 | Sushi/seafood ×1.15 | Burger/fast casual ×0.85 | Fine dining ×1.25
+
+**Recency** (strongest short-term signal, auto from logs):
+`0.6 × (lastWeekSameDayActual / lastWeekSameDayPredicted) + 0.4 × 1.0`
+
+**Personal calibration** (long-term learning, auto):
+`rollingAverage(actual/predicted, last 4 weeks)` per ingredient per restaurant
+
+### Cold Start (Week 1)
+Signals 1-7 only. Still useful from day one. Recency + calibration activate automatically as logs build.
+
+### Owner Input Summary
+| Task | Frequency |
+|------|-----------|
+| Restaurant name + address + cuisine type | Once |
+| Ingredient list + costs | Once |
+| Reservation system connection | Once |
+| Log waste | Daily, 2 taps, done by staff |
+| Everything else | Never — fully automatic |
 
 ## Database Schema
 ```sql
