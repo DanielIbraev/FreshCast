@@ -1,4 +1,4 @@
-# UI Design Standards — WasteWise
+# UI Design Standards — FreshCast
 
 ## Core Philosophy
 Every screen must look like it was designed by a senior product designer at a funded startup. No AI slop. No default Tailwind blue. No Lorem Ipsum. No placeholder UI that "we'll fix later."

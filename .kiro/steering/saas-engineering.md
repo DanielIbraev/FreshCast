@@ -1,4 +1,4 @@
-# SaaS Engineering Standards — WasteWise
+# SaaS Engineering Standards — FreshCast
 
 ## Stack
 - Framework: Next.js 14 App Router (TypeScript)

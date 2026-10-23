@@ -1,4 +1,4 @@
-# Pitch & Demo Standards — WasteWise
+# Pitch & Demo Standards — FreshCast
 
 ## The One-Line Pitch
 "Restaurants throw away $162 billion in food every year. We predict waste before it happens — no hardware, no installation, 5-minute setup."
@@ -22,7 +22,7 @@ Winnow, Leanpath, Orbisk, Kitro all require:
 - Technician installation + ongoing maintenance
 - They measure waste AFTER it happens (reactive)
 
-WasteWise:
+FreshCast:
 - Software only, zero hardware
 - Works on any tablet/phone the restaurant already owns
 - 5-minute setup
@@ -34,11 +34,11 @@ WasteWise:
 
 ## Demo Script (Sophia's movie structure — problem → tension → solution)
 1. "Meet Marco. 60-seat Italian restaurant in Boston. Last month he threw away $1,800 in food. He has no idea why." [show empty state / waste piling up]
-2. "It's Sunday night. Marco checks WasteWise before ordering for the week." [open dashboard]
-3. "He enters tomorrow's 45 covers. WasteWise pulls tomorrow's weather — rainy, 58°F." [watch weather load live]
+2. "It's Sunday night. Marco checks FreshCast before ordering for the week." [open dashboard]
+3. "He enters tomorrow's 45 covers. FreshCast pulls tomorrow's weather — rainy, 58°F." [watch weather load live]
 4. "Instantly — predicted waste by ingredient. $84 at risk. Watch what happens when he applies the recommendations." [click button, watch red→green animation]
 5. "During service, staff log waste in 2 taps. Watch the CO2 counter." [log an item, counter ticks up]
-6. "Two weeks in — Marco saved $340 this week alone. $4,000 annually. WasteWise costs $49/month." [ROI screen]
+6. "Two weeks in — Marco saved $340 this week alone. $4,000 annually. FreshCast costs $49/month." [ROI screen]
 
 Demo should take 4-5 minutes. Let the product speak — don't narrate over animations, let judges watch them.
 
@@ -47,7 +47,7 @@ Demo should take 4-5 minutes. Let the product speak — don't narrate over anima
 2. Evidence — $162B industry stat, profit margin squeeze, visual of waste
 3. Cost of problem — per-restaurant dollar loss, industry total
 4. Why existing solutions fail — hardware barrier, enterprise-only
-5. Solution — WasteWise screenshot + one-liner
+5. Solution — FreshCast screenshot + one-liner
 6. Live demo — 4+ minutes
 7. Before/After — "$1,800 wasted → $340 wasted. $17,000 saved annually."
 8. Market — 500,000 independent US restaurants, $49/month = $29M TAM at 1% penetration
