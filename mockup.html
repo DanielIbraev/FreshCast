@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WasteWise Dashboard</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0F1117; color: #E2E8F0; font-family: 'Inter', -apple-system, sans-serif; min-height: 100vh; padding: 24px; }
+
+  .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; }
+  .logo { font-size: 20px; font-weight: 700; color: #10B981; letter-spacing: -0.5px; }
+  .logo span { color: #E2E8F0; }
+  .restaurant { font-size: 15px; color: #94A3B8; }
+  .weather { display: flex; align-items: center; gap: 8px; font-size: 14px; color: #64748B; background: #1A1D27; padding: 8px 14px; border-radius: 8px; border: 1px solid #2D3748; }
+  .weather-dot { width: 8px; height: 8px; background: #60A5FA; border-radius: 50%; }
+
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+
+  .card { background: #1A1D27; border: 1px solid #2D3748; border-radius: 12px; padding: 24px; }
+  .card-label { font-size: 12px; color: #64748B; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+  .card-value { font-size: 42px; font-weight: 700; letter-spacing: -2px; line-height: 1; }
+  .card-sub { font-size: 13px; color: #64748B; margin-top: 6px; }
+
+  .red { color: #EF4444; }
+  .green { color: #10B981; }
+  .blue { color: #60A5FA; }
+
+  .hero { background: #1A1D27; border: 1px solid #2D3748; border-radius: 12px; padding: 24px; margin-bottom: 16px; }
+  .hero-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+  .hero-title { font-size: 13px; color: #64748B; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .hero-covers { font-size: 15px; color: #94A3B8; }
+
+  .waste-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+  .waste-label { font-size: 14px; color: #94A3B8; width: 100px; flex-shrink: 0; }
+  .bar-track { flex: 1; background: #0F1117; border-radius: 4px; height: 8px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 4px; transition: width 1s ease; }
+  .bar-red { background: #EF4444; }
+  .bar-green { background: #10B981; }
+  .waste-amount { font-size: 13px; color: #64748B; width: 60px; text-align: right; flex-shrink: 0; }
+  .waste-save { font-size: 13px; color: #10B981; width: 60px; text-align: right; flex-shrink: 0; }
+
+  .btn { background: #10B981; color: #0F1117; font-size: 14px; font-weight: 600; padding: 12px 24px; border-radius: 8px; border: none; cursor: pointer; width: 100%; margin-top: 20px; transition: background 0.2s; }
+  .btn:hover { background: #059669; }
+  .btn-outline { background: transparent; color: #10B981; border: 1px solid #10B981; }
+
+  .stat-card { background: #1A1D27; border: 1px solid #2D3748; border-radius: 12px; padding: 20px; }
+  .stat-icon { font-size: 20px; margin-bottom: 8px; }
+  .stat-value { font-size: 28px; font-weight: 700; letter-spacing: -1px; }
+  .stat-label { font-size: 12px; color: #64748B; margin-top: 4px; }
+
+  .log-section { background: #1A1D27; border: 1px solid #2D3748; border-radius: 12px; padding: 24px; }
+  .log-title { font-size: 13px; color: #64748B; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; }
+  .log-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .log-item { background: #0F1117; border: 1px solid #2D3748; border-radius: 10px; padding: 16px 8px; text-align: center; cursor: pointer; transition: border-color 0.2s; }
+  .log-item:hover { border-color: #10B981; }
+  .log-emoji { font-size: 24px; display: block; margin-bottom: 6px; }
+  .log-name { font-size: 12px; color: #64748B; }
+
+  .divider { border: none; border-top: 1px solid #2D3748; margin: 16px 0; }
+
+  .trend { display: flex; align-items: center; gap: 6px; font-size: 13px; }
+  .trend-up { color: #EF4444; }
+  .trend-down { color: #10B981; }
+
+  .co2-counter { font-size: 48px; font-weight: 700; color: #10B981; letter-spacing: -2px; }
+  .co2-unit { font-size: 16px; color: #64748B; font-weight: 400; }
+
+  .tag { display: inline-block; background: #0F2820; color: #10B981; font-size: 11px; padding: 3px 8px; border-radius: 4px; border: 1px solid #10B981; margin-left: 8px; }
+  .tag-red { background: #2D0F0F; color: #EF4444; border-color: #EF4444; }
+
+  .nav { display: flex; gap: 4px; margin-bottom: 24px; }
+  .nav-item { padding: 8px 16px; border-radius: 8px; font-size: 14px; color: #64748B; cursor: pointer; }
+  .nav-item.active { background: #1A1D27; color: #E2E8F0; border: 1px solid #2D3748; }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="logo">Waste<span>Wise</span></div>
+  <div class="restaurant">Marco's Trattoria · Boston, MA</div>
+  <div class="weather">
+    <div class="weather-dot"></div>
+    Tomorrow · 🌧 58°F · Rainy · 45 covers
+  </div>
+</div>
+
+<div class="nav">
+  <div class="nav-item active">Dashboard</div>
+  <div class="nav-item">Log Waste</div>
+  <div class="nav-item">Smart Order</div>
+  <div class="nav-item">History</div>
+</div>
+
+<!-- Hero Prediction Card -->
+<div class="hero">
+  <div class="hero-top">
+    <div>
+      <div class="hero-title">Tomorrow's Waste Forecast</div>
+      <div class="hero-covers">Based on 45 covers · Rainy weather · Tuesday pattern</div>
+    </div>
+    <div style="text-align:right">
+      <div style="font-size:12px;color:#64748B;margin-bottom:4px">WITHOUT action</div>
+      <div style="font-size:32px;font-weight:700;color:#EF4444;letter-spacing:-1px">$84 <span style="font-size:14px;font-weight:400;color:#64748B">wasted</span></div>
+    </div>
+  </div>
+
+  <div class="waste-row">
+    <div class="waste-label">Arugula</div>
+    <div class="bar-track"><div class="bar-fill bar-red" style="width:85%"></div></div>
+    <div class="waste-amount red">3.8 kg</div>
+    <div class="waste-save">save $14</div>
+  </div>
+  <div class="waste-row">
+    <div class="waste-label">Salmon</div>
+    <div class="bar-track"><div class="bar-fill bar-red" style="width:70%"></div></div>
+    <div class="waste-amount red">2.1 kg</div>
+    <div class="waste-save">save $22</div>
+  </div>
+  <div class="waste-row">
+    <div class="waste-label">Bread rolls</div>
+    <div class="bar-track"><div class="bar-fill bar-red" style="width:50%"></div></div>
+    <div class="waste-amount red">14 pcs</div>
+    <div class="waste-save">save $8</div>
+  </div>
+  <div class="waste-row">
+    <div class="waste-label">Mozzarella</div>
+    <div class="bar-track"><div class="bar-fill bar-red" style="width:40%"></div></div>
+    <div class="waste-amount red">1.1 kg</div>
+    <div class="waste-save">save $18</div>
+  </div>
+  <div class="waste-row">
+    <div class="waste-label">Basil</div>
+    <div class="bar-track"><div class="bar-fill bar-green" style="width:15%"></div></div>
+    <div class="waste-amount" style="color:#64748B">0.2 kg</div>
+    <div class="waste-save" style="color:#64748B">on track</div>
+  </div>
+
+  <button class="btn" onclick="applyRecs(this)">⚡ Apply Recommendations — Save $53 Tomorrow</button>
+</div>
+
+<!-- Stats Row -->
+<div class="grid-3">
+  <div class="stat-card">
+    <div class="stat-icon">💰</div>
+    <div class="stat-value green">$1,240</div>
+    <div class="stat-label">Saved this month</div>
+    <div class="trend trend-down" style="margin-top:8px">↓ 34% less waste vs last month</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon">🌿</div>
+    <div class="co2-counter">48 <span class="co2-unit">kg CO₂</span></div>
+    <div class="stat-label">Prevented this month</div>
+    <div class="trend trend-down" style="margin-top:8px">↓ Equiv. to 2 trees planted</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon">📦</div>
+    <div class="stat-value blue">89%</div>
+    <div class="stat-label">Prediction accuracy</div>
+    <div class="trend" style="margin-top:8px;color:#64748B">↑ Improving weekly with your data</div>
+  </div>
+</div>
+
+<!-- Waste Logger -->
+<div class="log-section">
+  <div class="log-title">Log Waste Now — 2 taps</div>
+  <div class="log-grid">
+    <div class="log-item">
+      <span class="log-emoji">🥗</span>
+      <div class="log-name">Arugula</div>
+    </div>
+    <div class="log-item">
+      <span class="log-emoji">🐟</span>
+      <div class="log-name">Salmon</div>
+    </div>
+    <div class="log-item">
+      <span class="log-emoji">🍞</span>
+      <div class="log-name">Bread</div>
+    </div>
+    <div class="log-item">
+      <span class="log-emoji">🧀</span>
+      <div class="log-name">Mozzarella</div>
+    </div>
+    <div class="log-item">
+      <span class="log-emoji">🍅</span>
+      <div class="log-name">Tomato</div>
+    </div>
+    <div class="log-item">
+      <span class="log-emoji">🥩</span>
+      <div class="log-name">Steak</div>
+    </div>
+    <div class="log-item">
+      <span class="log-emoji">🧅</span>
+      <div class="log-name">Onion</div>
+    </div>
+    <div class="log-item" style="border-style:dashed">
+      <span class="log-emoji">＋</span>
+      <div class="log-name">Custom</div>
+    </div>
+  </div>
+</div>
+
+<script>
+function applyRecs(btn) {
+  // Animate bars from red to green
+  const bars = document.querySelectorAll('.bar-fill.bar-red');
+  bars.forEach(bar => {
+    const currentWidth = parseFloat(bar.style.width);
+    bar.classList.remove('bar-red');
+    bar.classList.add('bar-green');
+    bar.style.width = (currentWidth * 0.35) + '%';
+  });
+
+  // Update amounts to green
+  document.querySelectorAll('.waste-amount.red').forEach(el => {
+    el.classList.remove('red');
+    el.style.color = '#10B981';
+  });
+
+  // Update the hero number
+  const heroNum = document.querySelector('.hero-top div[style*="EF4444"]');
+  if(heroNum) {
+    heroNum.style.color = '#10B981';
+    heroNum.innerHTML = '$31 <span style="font-size:14px;font-weight:400;color:#64748B">projected waste</span>';
+  }
+
+  btn.textContent = '✅ Recommendations Applied — $53 Saved Tomorrow';
+  btn.style.background = '#059669';
+  btn.disabled = true;
+}
+</script>
+
+</body>
+</html>
