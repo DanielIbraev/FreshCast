@@ -27,7 +27,7 @@
   /api
     /predict        → waste prediction endpoint
     /weather        → Open-Meteo proxy
-    /explain        → OpenAI explanation endpoint
+    /events         → nearby events lookup endpoint
 /components
   /ui               → shadcn components
   /charts           → Recharts wrappers
