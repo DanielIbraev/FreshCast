@@ -1,0 +1,52 @@
+# Hackathon Build Mindset
+
+## We are building to WIN, not to be complete
+
+### Priority Order (never deviate from this)
+1. Core demo flow works perfectly end-to-end
+2. UI looks genuinely impressive (not AI slop)
+3. Real data / real APIs in the demo (weather, calculations)
+4. Explanation of technical depth ready for Q&A
+5. Everything else
+
+### What to cut if time is short
+- Onboarding flow → hardcode Marco's restaurant, skip setup
+- Multiple restaurants → one restaurant is fine for the demo
+- Auth/login → can be a simple hardcoded demo login
+- Mobile responsive → desktop only is fine
+- Error states → happy path only, demo data never errors
+- Settings pages → not needed
+
+### What can NEVER be cut
+- The red→green animation when applying recommendations
+- Real weather data pulling from Open-Meteo for the restaurant's location
+- The CO2 counter updating when waste is logged
+- Real dollar calculations (not made-up numbers)
+- The before/after savings comparison
+
+## Speed Rules
+- Use shadcn/ui components, never build UI from scratch
+- Seed all demo data upfront, never wait for real restaurant data
+- If something takes more than 30 minutes, simplify it
+- Working ugly beats perfect broken — polish after the core works
+- Deploy to Vercel early and often (every major feature)
+
+## Code Quality During Hackathon
+- TypeScript types for all data structures (prevents demo-breaking bugs)
+- No console.logs in production (judges sometimes look at DevTools)
+- No hardcoded API keys in client code
+- Comments on the prediction engine math (judges may look at code)
+- Keep components under 200 lines — split if bigger
+
+## The Demo Environment
+- Have demo running on Vercel (not localhost) before presenting
+- Have a backup tab open in case something crashes
+- The weather should show real tomorrow's weather for Boston, MA
+- All numbers should be consistent — same Marco story every time
+- Practice the demo flow at least 3 times before judging
+
+## If Something Breaks During Demo
+- Stay calm, narrate what it's supposed to do
+- Have screenshots as backup
+- "We had a minor bug during the demo, but here's what it does..." is honest and judges respect it
+- Never apologize excessively — move forward
