@@ -85,7 +85,7 @@ The first three are from [Anti-AI-UI](https://github.com/Vanszs/Anti-AI-UI) (MIT
 **Second:** pairing a ban list (anti-AI-slop) with a pattern library (component reference), so Kiro had both what to avoid and what to build. That is why the UI uses flat dark surfaces, one emerald accent, Lucide icons and real numbers instead of the usual gradient-and-emoji defaults.
 
 ## Skills (`.kiro/skills/hallmark/`)
-The [Hallmark](https://github.com/nutlope/hallmark) design skill (MIT) was added as a workspace skill. Its `sloplint` script was run against the live app. It flagged low-contrast muted text, weak focus rings, labels in tracked capitals, and 4 font weights where 2–3 is the target. Those are being fixed. Some of the flagged patterns came from our own `ui-design.md` (uppercase, wide-tracked card labels), so the skill also caught a weak rule in our steering.
+The [Hallmark](https://github.com/nutlope/hallmark) design skill (MIT) was added as a workspace skill. Its `sloplint` script was run against the live app. It flagged low-contrast muted text, weak focus rings, labels in tracked capitals, and 4 font weights where 2–3 is the target. Some of the flagged patterns came from our own `ui-design.md` (uppercase, wide-tracked card labels), so the skill also caught a weak rule in our steering. After the latest round, sloplint was rerun on the new pages (front page, kitchen screen, the updated dashboard and Model page) and reported 0 FAILs.
 
 ## MCP (`.kiro/settings/mcp.json`)
 - **`pptx-mcp`** is the one MCP server configured. It lets Kiro create and edit real PowerPoint files, and Kiro used it to generate an editable backup deck (`_reference/FreshCast-Pitch-Deck.pptx`). The live deck at `/pitch` is the current one; the backup is from an earlier draft.
