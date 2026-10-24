@@ -23,6 +23,7 @@ export default function OrdersPage() {
   const usualSpend = rows.reduce((s, r) => s + r.usual * r.p.ingredient.costPerKg, 0);
   const recSpend = rows.reduce((s, r) => s + r.rec * r.p.ingredient.costPerKg, 0);
   const cutKg = rows.reduce((s, r) => s + (r.usual - r.rec), 0);
+  const maxSaved = Math.max(...rows.map((r) => r.saved), 0.01);
 
   function copyList() {
     const text = [`Prep list for ${day} (${selected!.expectedCovers} covers)`, ...rows.map((r) => `${r.p.ingredient.name}: ${r.rec.toFixed(1)}kg`)].join("\n");
