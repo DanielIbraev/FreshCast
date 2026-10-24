@@ -1,82 +1,53 @@
 # Pitch & Demo Standards — FreshCast
 
-## The One-Line Pitch
-"Restaurants throw away $162 billion in food every year. We predict waste before it happens — no hardware, no installation, 5-minute setup."
+## Judging criteria (Hackachusetts 2026) and where FreshCast answers each
+1. **Potential Value**: real problem, scalable, accessible, user-friendly, meets community needs.
+   - 70% of US restaurants are independent; every competitor needs $3k-8k hardware. FreshCast runs on the tablet they own.
+   - Two-tap logging, one-tap staples, CO₂ filled in automatically. Owner input after setup: ~10 seconds a night.
+2. **Implementation**: effective, thoughtful use of Kiro, AI dev strategies, creative integrations.
+   - Show the Kiro setup on screen for 30 seconds: steering files (`.kiro/steering/`), the auto-push hook (`.kiro/hooks/`), the pptx MCP server that built the deck.
+   - Integrations: Open-Meteo live weather, Supabase (Postgres + row level security), the walk-forward backtest.
+   - Separate prize: **Best use of Kiro**. Submit for it.
+3. **Quality and Design**: originality, intuitive UX, polish.
+   - The model breakdown panel (every signal, its source, the equation) and the what-if slider are the original moments.
 
-## Key Stats (verified, citable)
-- $162B in US restaurant food waste annually (Forbes, March 2026)
-- $1 invested in waste reduction = $7-8 returned (Champions 12.3 / WRI study, 114 restaurants, 12 countries)
-- $20,800/year average loss per restaurant from waste (Alto-Shaam research)
-- 4-10% of all purchased food becomes waste (Galley Solutions)
+## Track fit (Climate Tech) — say this out loud
+The track bullets are resilient communities, cleaner buildings, clean energy, ocean, blue economy. Food waste is not named. Frame it:
+- Food waste is 8-10% of global greenhouse gas emissions (UNFCCC/FAO). Food in landfill makes methane.
+- **Resilient communities**: independent restaurants run on 3-5% margins. Waste is the difference between staying open and closing.
+- Seafood waste (salmon, shrimp) connects to the **ocean / blue economy** bullet: every kg of fish not wasted is a kg not caught.
+
+## Numbers you can say (all come from the app, none are typed in)
+- Benchmark accuracy, same simulated kitchen, 12 weeks, 3 seeds, weeks 3-12:
+  v0 rule of thumb 64.0% → v1 +covers & weekday 74.1% → v2 +weather, season, events 78.4% → v3 +kitchen calibration 86.6% → v4 +weekday/weather/recency learning 87.6%. Ceiling 90% (daily randomness).
+- v4 cuts forecast error 66% vs. guessing.
+- Marco's stored history (84 nightly close-outs): monthly waste $1,307 before the plan → $594 now (55% less), ~$8,560 kept per year, 15x the $588/year price.
+- Do NOT say 20% → 90%. A 20% baseline would be invented. 64% → 88% with a 90% ceiling is the honest version, and the ceiling makes it more credible, not less.
+- Be clear the benchmark kitchen is simulated with a hidden "true" behavior the model never sees. Judges respect this; they catch fake numbers.
+
+## Industry stats (sourced)
+- $162B restaurant food waste per year (Forbes, March 2026)
+- $1 invested in waste reduction returns $7-8 (Champions 12.3 / WRI, 114 sites, 12 countries)
+- 4-10% of purchased food becomes waste (Galley Solutions)
 - 3-5% restaurant profit margins (GoFoodService)
-- 70% of US restaurants are independent single-unit operators
-- Prediction accuracy: R² of 0.817 using software-only features (arxiv.org/abs/2609.08078)
 
-## Personal Hook (authentic — do not fabricate)
-Growing up in Springfield, MA — one of the highest poverty rate cities in Massachusetts — you know what tight margins mean firsthand. You've seen restaurants in your community running on nothing, and food going in the trash represents real money they can't afford to lose. That's who FreshCast is built for. Not chains with enterprise budgets — the independent owner who's been completely ignored by every tool on the market.
+## Personal hook (true)
+Worked at a small cafe, watched prepped food go in the trash every night, the owner never knew what it cost him.
 
-## Target User
-Marco. 60-seat independent Italian restaurant, Boston. One location. Uses Square POS. No data team. Can't afford Winnow's hardware. Throws away ~$1,800/month in food and has no idea.
+## Demo script (problem → tension → solution, ~4 minutes, product on screen for most of it)
+1. (20s) Hook: the cafe story. Ask the room: "Who has worked in a restaurant?" Hands go up.
+2. (20s) Tension: Marco, 60 seats, North End. Guesses his prep every morning. $1,300 a month in the bin. Hardware tools cost more than his margin.
+3. (60s) Forecast screen: real Boston weather for the week. Click Monday. Click Atlantic Salmon. Walk the 9 signals and the equation: "This is arithmetic, not a chatbot."
+4. (30s) Drag the covers slider down; flip weather to Rain. Bars and dollars move live. Hit **Apply prep plan**: red to green.
+5. (40s) Log waste: two taps. **Close out today**: saves to Supabase, tomorrow's forecast changes on screen.
+6. (40s) Model accuracy: the v0 → v4 ladder. "Every version scored the same way. We stop at 88% because 10% of waste is random."
+7. (20s) Before/after: $1,307 → $594 a month. Kept per year. 15x return.
+8. (10s) Kiro: "Built solo in 12 hours with Kiro steering, hooks, and MCP."
 
-## How the Model Gets Smarter Over Time
-- Week 1 (cold start): industry baseline multipliers from published research. Already useful.
-- Weeks 2-4: compares predictions vs actual logged waste. Adjusts personal multipliers per ingredient.
-- Month 2+: knows this restaurant specifically — portion patterns, slow days, which dishes over-prep.
-- The recency factor (last week same day actual waste) is the strongest short-term signal.
-- Pitch line: "FreshCast starts accurate on day one. After two weeks, it knows Marco's kitchen better than Marco does."
-
-## Competitor Differentiation
-Winnow, Leanpath, Orbisk, Kitro all require:
-- Physical hardware (camera + scale over trash bin) = $3,000-8,000 upfront
-- Multi-site contracts (single restaurants often can't qualify)
-- Technician installation + ongoing maintenance
-- They measure waste AFTER it happens (reactive)
-
-FreshCast:
-- Software only, zero hardware
-- Works on any tablet/phone the restaurant already owns
-- 5-minute setup
-- PREVENTS waste before it happens (proactive)
-- Built specifically for the 500,000 independent restaurants everyone else ignores
-
-## The Hardware Question (when judges ask)
-"Hardware competitors need cameras and scales because they're measuring waste reactively — after it's already in the trash. We don't measure waste, we prevent it. Our prediction engine runs on data the restaurant already has: reservation count, menu, and day-of-week patterns. This approach is validated by published ML research showing R² of 0.817 on purely operational features. No hardware needed because we intervene upstream, before prep begins."
-
-## Demo Script (Sophia's movie structure — problem → tension → solution)
-1. "Meet Marco. 60-seat Italian restaurant in Boston. Last month he threw away $1,800 in food. He has no idea why." [show empty state / waste piling up]
-2. "It's Sunday night. Marco checks FreshCast before ordering for the week." [open dashboard]
-3. "He enters tomorrow's 45 covers. FreshCast pulls tomorrow's weather — rainy, 58°F." [watch weather load live]
-4. "Instantly — predicted waste by ingredient. $84 at risk. Watch what happens when he applies the recommendations." [click button, watch red→green animation]
-5. "During service, staff log waste in 2 taps. Watch the CO2 counter." [log an item, counter ticks up]
-6. "Two weeks in — Marco saved $340 this week alone. $4,000 annually. FreshCast costs $49/month." [ROI screen]
-
-Demo should take 4-5 minutes. Let the product speak — don't narrate over animations, let judges watch them.
-
-## Pitch Deck Slide Order (from hackathon video research)
-1. Problem — "Marco throws away $1,800/month and doesn't know it"
-2. Evidence — $162B industry stat, profit margin squeeze, visual of waste
-3. Cost of problem — per-restaurant dollar loss, industry total
-4. Why existing solutions fail — hardware barrier, enterprise-only
-5. Solution — FreshCast screenshot + one-liner
-6. Live demo — 4+ minutes
-7. Before/After — "$1,800 wasted → $340 wasted. $17,000 saved annually."
-8. Market — 500,000 independent US restaurants, $49/month = $29M TAM at 1% penetration
-9. How it works (technical) — prediction engine, no hardware, 5-min setup
-10. Team — your story, why you built this (personal connection to cost of living)
-
-## Q&A Preparation
-- "How accurate is it?" → R² 0.817 from published research, improves weekly with restaurant's own data
-- "How is this different from just asking ChatGPT?" → Core is a structured prediction engine with real math. AI only writes the explanation. The numbers come from your code.
-- "What about chains?" → 70% of restaurants are independent. Chains have enterprise solutions. We own the market nobody else serves.
-- "How do you make money?" → $49/month SaaS. At $20,800/year waste loss, the ROI is 35x. Sells itself.
-- "Can restaurants fake the data?" → They enter their own inventory. If they lie, they get worse predictions. Incentive is to be accurate.
-
-## Functionality Level for Hackathon
-The demo needs to work end-to-end for ONE flow:
-1. Log in as Marco's Trattoria (pre-seeded)
-2. See tomorrow's prediction dashboard with real weather
-3. Click "Apply Recommendations" and watch animation
-4. Log one waste item and watch dashboard update
-5. See the Smart Order recommendation screen
-
-Everything else (onboarding, multiple restaurants, billing) can be UI-only or mocked. Judges care about the core loop working live.
+## Q&A
+- "How accurate?" → 87.6% on the benchmark, 86% on Marco's stored logs; ceiling 90%.
+- "Is the data real?" → Weather is live. Marco and the benchmark kitchen are simulated; the model is scored against hidden truth it can't see. Next step: pilot with a real restaurant.
+- "Why not hardware?" → Hardware measures waste after it's binned. We change the prep amount before it's cooked. The kitchen's own logs replace the camera.
+- "ChatGPT wrapper?" → No LLM in the numbers. Open the model breakdown.
+- "What if they don't log?" → Priors alone are 78%, still better than guessing (64%).
+- Don't claim features that aren't built. Reservations integration, auth, and multi-location are next steps.
