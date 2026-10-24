@@ -56,14 +56,14 @@ export default function ModelPage() {
           Each plan replayed on 5 simulated kitchens for 12 weeks. Logging everything with quick-tap estimates takes about {rec.minutes.toFixed(1)} minutes a night
           and lifts accuracy from {pct(none.accuracy)} to {pct(rec.accuracy)}. Weighing every item on a scale triples the time for less than half a point.
         </p>
-        <EffortChart rows={bench.effort} recommended="all-pos" ceiling={bench.ceiling} />
+        <div className="overflow-x-auto"><div className="min-w-[640px]"><EffortChart rows={bench.effort} recommended="all-pos" ceiling={bench.ceiling} /></div></div>
       </Card>
 
       <Card>
         <h2 className="font-display text-lg font-600 text-text-primary">Every version, same kitchens, same 12 weeks</h2>
         <p className="mt-0.5 text-sm text-text-secondary">Each step adds signals on top of the last. Scored on weeks 3-12, averaged across 5 simulated kitchens.</p>
         <div className="mt-6">
-          <VersionLadder versions={bench.versions} ceiling={bench.ceiling} />
+          <div className="overflow-x-auto"><div className="min-w-[640px]"><VersionLadder versions={bench.versions} ceiling={bench.ceiling} /></div></div>
         </div>
       </Card>
 

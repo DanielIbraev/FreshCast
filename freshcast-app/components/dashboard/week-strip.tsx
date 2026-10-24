@@ -11,14 +11,14 @@ const DAY_SHORT = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 export function WeekStrip() {
   const { week, selected, setScenario } = useStore();
   if (week.length === 0) {
-    return <div className="grid h-[118px] grid-cols-7 gap-2">{Array.from({ length: 7 }, (_, i) => <div key={i} className="animate-pulse rounded-lg bg-surface" />)}</div>;
+    return <div className="flex h-[118px] gap-2 md:grid md:grid-cols-7">{Array.from({ length: 7 }, (_, i) => <div key={i} className="min-w-[110px] animate-pulse rounded-lg bg-surface md:min-w-0" />)}</div>;
   }
 
   const max = Math.max(...week.map((d) => d.totalWasteCost));
   const min = Math.min(...week.map((d) => d.totalWasteCost));
 
   return (
-    <div className="grid grid-cols-7 gap-2">
+    <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 md:mx-0 md:grid md:grid-cols-7 md:overflow-visible md:px-0 md:pb-0">
       {week.map((day) => {
         const date = parseLocalDate(day.date);
         const isSel = selected?.date === day.date;
@@ -30,7 +30,7 @@ export function WeekStrip() {
             key={day.date}
             onClick={() => setScenario({ selectedDate: day.date, coversOverride: null, weatherOverride: "live", event: "none" })}
             className={cn(
-              "group flex flex-col rounded-lg border px-3 py-3 text-left transition-colors duration-150",
+              "group flex min-w-[112px] flex-col rounded-lg border px-3 py-3 text-left transition-colors duration-150 md:min-w-0",
               isSel ? "border-good bg-surface-hover" : "border-border bg-surface hover:border-text-muted"
             )}
           >

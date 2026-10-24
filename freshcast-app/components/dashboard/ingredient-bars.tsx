@@ -27,7 +27,7 @@ export function IngredientBars({ items, applied, selectedId, onSelect }: Props) 
             <button
               onClick={() => onSelect(item.ingredient.id)}
               className={cn(
-                "grid w-full grid-cols-[180px_1fr_88px] items-center gap-4 rounded-md px-2 py-1.5 text-left transition-colors duration-150",
+                "grid w-full grid-cols-[120px_1fr_70px] items-center gap-3 sm:grid-cols-[180px_1fr_88px] sm:gap-4 rounded-md px-2 py-1.5 text-left transition-colors duration-150",
                 isSel ? "bg-surface-hover" : "hover:bg-surface-hover/60"
               )}
             >

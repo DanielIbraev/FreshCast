@@ -52,7 +52,7 @@ export function IngredientForm({ initial, onSave, onClose }: Props) {
         transition={{ duration: 0.2, ease: "easeOut" }}
         onClick={(e) => e.stopPropagation()}
         onSubmit={submit}
-        className="flex h-full w-[420px] flex-col border-l border-border bg-surface"
+        className="flex h-full w-full max-w-[420px] flex-col border-l border-border bg-surface"
         aria-label={initial ? "Edit ingredient" : "Add ingredient"}
       >
         <div className="flex items-center justify-between border-b border-border px-6 py-4">

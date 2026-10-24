@@ -47,7 +47,7 @@ export default function KitchenPage() {
 
   return (
     <div className="space-y-5">
-      <header className="flex items-end justify-between">
+      <header className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <p className="text-sm text-text-muted">Set up once. FreshCast forecasts every item here.</p>
           <h1 className="font-display text-[28px] font-700 leading-tight text-text-primary">Kitchen</h1>
@@ -125,8 +125,8 @@ export default function KitchenPage() {
       )}
 
       <Card className="p-4">
-        <div className="mb-3 flex items-center gap-3">
-          <label className="relative flex-1">
+        <div className="mb-3 flex flex-wrap items-center gap-3">
+          <label className="relative min-w-[200px] flex-1">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
             <input
               value={query}
@@ -136,7 +136,7 @@ export default function KitchenPage() {
               className="w-full rounded-md border border-border bg-canvas py-2 pl-9 pr-3 text-sm text-text-primary focus:border-good focus:outline-none"
             />
           </label>
-          <div className="flex gap-1">
+          <div className="flex flex-wrap gap-1">
             {(["all", ...CATEGORY_ORDER] as const).map((c) => (
               <button
                 key={c}

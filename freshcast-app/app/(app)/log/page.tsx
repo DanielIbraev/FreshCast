@@ -47,7 +47,7 @@ export default function LogWastePage() {
         <h1 className="font-display text-[28px] font-700 leading-tight text-text-primary">Log waste</h1>
       </header>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <Card>
           <CardLabel>Thrown out today</CardLabel>
           <p className="mt-2 font-display text-[44px] font-800 leading-none tabular-nums text-waste">
@@ -71,14 +71,14 @@ export default function LogWastePage() {
       </div>
 
       <Card>
-        <div className="mb-4 flex items-baseline justify-between">
+        <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2">
           <h2 className="font-display text-lg font-600 text-text-primary">
             <span className="mr-2 text-sm font-500 text-text-muted">1</span>What went in the bin?
           </h2>
           <span className="text-xs text-text-muted">Tiles show what&apos;s been logged today</span>
         </div>
 
-        <div className="grid grid-cols-4 gap-2">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
           {ingredients.map((i) => {
             const kgToday = todays.filter((l) => l.ingredientId === i.id).reduce((s, l) => s + l.quantityKg, 0);
             return (
@@ -86,7 +86,7 @@ export default function LogWastePage() {
               key={i.id}
               onClick={() => setPicked(picked === i.id ? null : i.id)}
               className={cn(
-                "flex h-[72px] flex-col justify-between rounded-md border px-3 py-2.5 text-left transition-colors duration-150",
+                "flex h-[76px] flex-col justify-between rounded-md border px-3 py-2.5 text-left transition-colors duration-150 active:scale-[0.98]",
                 picked === i.id ? "border-good bg-surface-hover" : "border-border bg-canvas hover:border-text-muted"
               )}
             >
@@ -110,7 +110,7 @@ export default function LogWastePage() {
                 <p className="mb-2 text-sm font-600 text-text-primary">
                   <span className="mr-2 text-sm font-500 text-text-muted">2</span>How much {find(picked)?.name}?
                 </p>
-              <div className="flex items-center gap-2">
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
                 {AMOUNTS.map((a) => (
                   <button key={a.kg} onClick={() => log(a.kg)} className="flex-1 rounded-md border border-border bg-canvas px-2 py-3 transition-colors duration-150 hover:border-waste">
                     <span className="block font-display text-base font-700 text-text-primary">{a.label}</span>
@@ -120,7 +120,7 @@ export default function LogWastePage() {
                   </button>
                 ))}
               </div>
-                <div className="mt-3 flex items-center gap-1.5" role="radiogroup" aria-label="Reason">
+                <div className="mt-3 flex flex-wrap items-center gap-1.5" role="radiogroup" aria-label="Reason">
                   <span className="mr-1 text-xs text-text-muted">Why (optional):</span>
                   {(Object.keys(WASTE_REASONS) as WasteReason[]).map((r) => (
                     <button

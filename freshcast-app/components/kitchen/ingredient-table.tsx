@@ -18,8 +18,8 @@ export function IngredientTable({ items, onEdit, onDelete, daysOf }: Props) {
   }
 
   return (
-    <div className="overflow-hidden rounded-md border border-border">
-      <table className="w-full text-sm">
+    <div className="overflow-x-auto rounded-md border border-border">
+      <table className="w-full min-w-[720px] text-sm">
         <thead>
           <tr className="whitespace-nowrap border-b border-border bg-canvas text-left text-[11px] uppercase tracking-wider text-text-muted">
             <th className="px-4 py-2.5 font-500">Ingredient</th>

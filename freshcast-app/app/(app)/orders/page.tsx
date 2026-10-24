@@ -34,7 +34,7 @@ export default function OrdersPage() {
 
   return (
     <div className="space-y-5">
-      <header className="flex items-end justify-between">
+      <header className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <p className="text-sm text-text-muted">
             {day} · {selected.expectedCovers} guests · {selected.weather.description}
@@ -47,7 +47,7 @@ export default function OrdersPage() {
         </button>
       </header>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <Card>
           <CardLabel>Spend if you prep as usual</CardLabel>
           <p className="mt-2 font-display text-[40px] font-800 leading-none tabular-nums text-text-secondary line-through decoration-2">{formatCurrency(usualSpend)}</p>
@@ -64,7 +64,8 @@ export default function OrdersPage() {
         </Card>
       </div>
 
-      <Card>
+      <Card className="overflow-x-auto">
+        <div className="min-w-[760px]">
         <div className="mb-3 grid grid-cols-[220px_1fr_90px_90px_220px] gap-4 px-2 text-[11px] uppercase tracking-wider text-text-muted">
           <span>Ingredient</span>
           <span>Money kept by prepping less</span>
@@ -93,6 +94,7 @@ export default function OrdersPage() {
             </li>
           ))}
         </ul>
+        </div>
       </Card>
     </div>
   );

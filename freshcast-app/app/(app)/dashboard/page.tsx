@@ -35,7 +35,7 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-5">
-      <header className="flex items-end justify-between">
+      <header className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <p className="text-sm text-text-muted">Prep forecast</p>
           <h1 className="font-display text-[28px] font-700 leading-tight text-text-primary">{dateLabel || "Loading forecast"}</h1>
@@ -54,7 +54,7 @@ export default function DashboardPage() {
 
       {selected && focus && (
         <>
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <Card>
               <CardLabel>Waste at risk</CardLabel>
               <p className={cn("mt-2 font-display text-[44px] font-800 leading-none tracking-tight tabular-nums", applied ? "text-good" : "text-waste")}>
@@ -84,7 +84,7 @@ export default function DashboardPage() {
 
           <div className="grid grid-cols-1 gap-4 xl:grid-cols-[1.45fr_1fr]">
             <Card>
-              <div className="mb-4 flex items-start justify-between gap-4">
+              <div className="mb-4 flex flex-wrap items-start justify-between gap-4">
                 <div>
                   <h2 className="font-display text-lg font-600 text-text-primary">Waste forecast by ingredient</h2>
                   <p className="mt-0.5 text-sm text-text-secondary">
