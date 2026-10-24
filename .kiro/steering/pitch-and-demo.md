@@ -36,22 +36,24 @@ Food waste isn't named in the track bullets. Frame it:
 ## Numbers you can say
 All come from code (`lib/benchmarks.json`, or each restaurant's simulated history via `lib/history.ts`). None are typed into the UI.
 
-**Benchmark** (1 simulated kitchen per restaurant × 5 seeds: 7, 11, 23, 31, 42; 12 weeks, walk-forward, scored after 2 weeks; accuracy = 1 − WAPE by kg):
+**Benchmark** (1 simulated kitchen per restaurant × 5 seeds: 7, 11, 23, 31, 42; 12 weeks, walk-forward, scored after 2 weeks; accuracy = 1 − WAPE by kg; each night replayed on Boston's real recorded weather from `lib/history-weather.json`, simulated weather outside that 92-day window):
 
 | | Marco's | Golden Crumb | Kendall |
 |---|---|---|---|
-| v0 Rule of thumb (8% of usual prep) | 66.5% | 57.7% | 62.4% |
-| v1 + Weather, season, holidays | 69.0% | 58.6% | 64.6% |
-| v2 + Shelf life | 75.9% | 67.6% | 70.8% |
-| v3 + Kitchen calibration | 85.4% | 82.4% | 83.5% |
-| v4 + Weekday, weather, recency learning | 85.9% | 84.4% | 86.4% |
-| Owner's best guess (exact memory of last 4 same weekdays) | 80.1% | 77.1% | 82.8% |
-| Oracle (knows hidden habits, not tonight's guests or noise) | 86.8% | 85.8% | 87.3% |
-| Nights inside the 80% range | 80.7% | 79.6% | 82.0% |
-| Fewer misses than the owner (misses = 1 − accuracy) | 29% | 32% | 21% |
+| v0 Rule of thumb (8% of usual prep) | 66.7% | 58.3% | 62.9% |
+| v1 + Weather, season, holidays | 68.6% | 59.0% | 64.5% |
+| v2 + Shelf life | 75.4% | 68.0% | 70.7% |
+| v3 + Kitchen calibration | 84.6% | 82.9% | 83.2% |
+| v4 + Weekday, weather, recency learning | 85.4% | 84.1% | 86.0% |
+| Owner's best guess (exact memory of last 4 same weekdays) | 79.6% | 78.0% | 83.3% |
+| Oracle (knows hidden habits, not tonight's guests or noise) | 86.3% | 85.3% | 87.0% |
+| Nights inside the 80% range | 79.1% | 77.5% | 79.9% |
+| Fewer misses than the owner (misses = 1 − accuracy) | 29% | 28% | 16% |
+| Fewer misses than the rule of thumb (v4 vs. v0) | 56% | 62% | 62% |
 
 - Say: "The simulator shares the model's structure, so this shows the learning recovers a kitchen's habits. Real accuracy needs a real kitchen." Judges respect this.
-- Effort (Marco's): quick-tap every item + guests served ≈ 1.2 min a night → 85.4%. Weighing everything ≈ 3.5 min → 85.9%.
+- Say: "The weather in the benchmark is the weather Boston actually had." Guests, habits and waste are still simulated.
+- Effort (Marco's): quick-tap every item + guests served ≈ 1.2 min a night → 84.7%. Weighing everything ≈ 3.5 min → 85.4%.
 - Don't say "20% → 90%". There is no honest 20% baseline.
 
 **Impact** (simulated history: seed 7, plan starts night 15; savings only on provable nights; yearly = last 30 days × 365/30; monthly bin totals not season-adjusted; computed Oct 24, 2026, moves slightly with the date):
