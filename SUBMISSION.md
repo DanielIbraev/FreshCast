@@ -32,7 +32,7 @@ If food waste were a country, it would be the third-largest greenhouse-gas emitt
 
 ## How to test
 1. Open **https://freshcast-taupe.vercel.app**. No account. You're in a sandbox: changes stay in your browser and can't affect the shared demo.
-2. **Switch restaurants** in the sidebar (or add `?r=kendall-bowls`, `?r=golden-crumb`, `?r=marcos-trattoria`). Kendall shows Sunday as closed and a weekday-heavy lunch week. Golden Crumb's croissants (1-day shelf life) carry the most waste.
+2. **Switch restaurants** in the sidebar (or add `?r=kendall-bowls`, `?r=golden-crumb`, `?r=marcos-trattoria`). Kendall shows Sunday as closed and a weekday-heavy lunch week. Golden Crumb's croissants have a 1-day shelf life, so the shelf-life signal pushes their forecast up.
 3. **Forecast:** on Marco's, click a day, then **Atlantic Salmon** to see the 9 signals, their sources, the equation and the 80% range. Drag the guests slider, set weather to rain, then click **Apply prep plan**.
 4. **Log waste:** switch to **Español**, tap an item, then a portion. Click **Close out today** and watch tomorrow's forecast change.
 5. **Model accuracy:** the restaurant's own track record, then the benchmark (each model version, the owner baseline, effort vs. accuracy).
