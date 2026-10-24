@@ -28,6 +28,13 @@ const config: Config = {
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],
         display: ["var(--font-sora)", "system-ui", "sans-serif"],
       },
+      fontWeight: {
+        "400": "400",
+        "500": "500",
+        "600": "600",
+        "700": "700",
+        "800": "800",
+      },
       borderRadius: {
         card: "0.75rem",
       },
