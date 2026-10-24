@@ -45,7 +45,7 @@ export const DEMO_PROFILES: Profile[] = [
     coversByDay: [48, 38, 45, 50, 56, 68, 72],
     coversSource: "default",
     isDemo: true,
-    tagline: "60-seat dinner spot · busiest on weekends",
+    tagline: "60-seat dinner spot, busiest on weekends",
   },
   {
     id: "golden-crumb",
@@ -63,7 +63,7 @@ export const DEMO_PROFILES: Profile[] = [
     coversByDay: [190, 120, 125, 130, 135, 150, 205],
     coversSource: "default",
     isDemo: true,
-    tagline: "28-seat counter café · bakes daily, sells out by 2pm",
+    tagline: "28-seat counter café that bakes daily and sells out by 2pm",
   },
   {
     id: "kendall-bowls",
@@ -81,7 +81,7 @@ export const DEMO_PROFILES: Profile[] = [
     coversByDay: [0, 330, 360, 365, 350, 290, 120],
     coversSource: "default",
     isDemo: true,
-    tagline: "Office-lunch rush · 350 bowls a weekday, quiet weekends",
+    tagline: "Office-lunch rush: 350 bowls a weekday, quiet weekends",
   },
 ];
 

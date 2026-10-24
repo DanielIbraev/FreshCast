@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 export function MobileTopBar() {
   const { dbStatus } = useStore();
   return (
-    <div className="sticky top-0 z-20 flex items-center gap-3 border-b border-border bg-surface/95 px-4 py-3 backdrop-blur md:hidden">
+    <div className="sticky top-0 z-20 flex items-center gap-3 border-b border-border bg-surface/95 px-4 py-3 backdrop-blur md:hidden print:hidden">
       <Mark size={28} />
       <div className="min-w-0 flex-1">
         <RestaurantSwitcher compact />
@@ -27,11 +27,11 @@ export function MobileTabBar() {
   const pathname = usePathname();
   const { start } = useNavTransition();
   return (
-    <nav aria-label="Main" className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t border-border bg-surface pb-[env(safe-area-inset-bottom)] md:hidden">
+    <nav aria-label="Main" className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t border-border bg-surface pb-[env(safe-area-inset-bottom)] md:hidden print:hidden">
       {NAV.map(({ href, short, icon: Icon }) => {
         const active = pathname === href;
         return (
-          <Link key={href} href={href} onClick={() => start(href)} className={cn("flex flex-col items-center gap-1 py-2.5 text-[11px]", active ? "text-good" : "text-text-muted")}>
+          <Link key={href} href={href} onClick={() => start(href)} className={cn("flex flex-col items-center gap-1 py-2.5 text-xs", active ? "text-good" : "text-text-muted")}>
             <Icon className="h-5 w-5" strokeWidth={2} />
             {short}
           </Link>

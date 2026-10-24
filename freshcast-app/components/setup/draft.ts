@@ -167,7 +167,7 @@ export function buildProfile(d: Draft): Profile {
     coversByDay: byDay,
     coversSource: d.imported ? "pos-import" : "default",
     isDemo: false,
-    tagline: `${seats} seats · ${SERVICE_LABELS[d.service].toLowerCase()}`,
+    tagline: `${seats} seats, ${SERVICE_LABELS[d.service].toLowerCase()}`,
     osmId: d.osmId,
     phone: d.phone,
     website: d.website,

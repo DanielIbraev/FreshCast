@@ -21,9 +21,9 @@ export const NAV = [
 // What each data mode means, in plain words. Public visitors are sandboxed:
 // Postgres rejects their writes, so the demo can't be vandalized.
 export const STATUS: Record<DbStatus, { dot: string; text: string; title: string }> = {
-  connected: { dot: "bg-good", text: "Owner · synced to Supabase", title: "Writes verified by Postgres row-level security" },
-  sandbox: { dot: "bg-data", text: "Demo sandbox · edits stay on this device", title: "Public visitors can read the demo; only the owner can change it" },
-  local: { dot: "bg-caution", text: "Offline · saved on this device", title: "Database unreachable" },
+  connected: { dot: "bg-good", text: "Owner, synced to Supabase", title: "Writes verified by Postgres row-level security" },
+  sandbox: { dot: "bg-data", text: "Demo sandbox: edits stay on this device", title: "Public visitors can read the demo; only the owner can change it" },
+  local: { dot: "bg-caution", text: "Offline, saved on this device", title: "Database unreachable" },
   loading: { dot: "bg-text-muted", text: "Connecting", title: "" },
 };
 
@@ -36,7 +36,7 @@ export function Sidebar() {
   const st = STATUS[dbStatus];
 
   return (
-    <aside className="hidden h-screen w-60 shrink-0 flex-col border-r border-border bg-surface md:flex">
+    <aside className="hidden h-screen w-60 shrink-0 flex-col border-r border-border bg-surface md:flex print:hidden">
       <div className="flex items-center gap-2.5 px-5 py-5">
         <Mark size={32} />
         <span className="font-display text-lg font-700 text-text-primary">FreshCast</span>
@@ -52,7 +52,7 @@ export function Sidebar() {
               onClick={(e) => plain(e) && start(href)}
               className={cn(
                 "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors duration-150",
-                active ? "bg-surface-hover font-500 text-text-primary" : "text-text-secondary hover:bg-surface-hover hover:text-text-primary"
+                active ? "bg-surface-hover font-600 text-text-primary" : "text-text-secondary hover:bg-surface-hover hover:text-text-primary"
               )}
             >
               <Icon className={cn("h-[18px] w-[18px]", active && "text-good")} strokeWidth={2} />
@@ -64,13 +64,17 @@ export function Sidebar() {
 
       <div className="mt-auto border-t border-border px-4 py-4">
         <RestaurantSwitcher />
-        <p className="mt-1.5 truncate px-1 text-[11px] text-text-muted">{profile.place}{profile.isDemo ? " · fictional demo" : ""}</p>
-        <p className="mt-2 flex items-center gap-1.5 px-1 text-xs text-text-muted" title={st.title}>
-          <span className={cn("h-1.5 w-1.5 shrink-0 rounded-full", st.dot)} />
+        <p className="mt-2 px-1 text-xs leading-snug text-text-muted">
+          {profile.place}
+          <span className="block">{profile.seats} seats{profile.isDemo ? ", fictional demo" : ""}</span>
+        </p>
+        <p className="mt-2 flex items-start gap-1.5 px-1 text-xs leading-snug text-text-muted" title={st.title}>
+          <span className={cn("mt-[5px] h-1.5 w-1.5 shrink-0 rounded-full", st.dot)} />
           {st.text}
         </p>
-        <div className="mt-3 flex flex-col gap-1.5 px-1">
-          <button onClick={resetDemo} className="flex items-center gap-1.5 text-xs text-text-muted transition-colors duration-150 hover:text-text-primary">
+        <div className="mt-1.5 flex flex-col">
+          {/* py-2 gives the text button a 32px hit area without changing how it looks. */}
+          <button onClick={resetDemo} className="flex items-center gap-1.5 self-start rounded-md px-1 py-2 text-xs text-text-muted transition-colors duration-150 hover:text-text-primary">
             <RotateCcw className="h-3 w-3" /> {profile.isDemo ? "Reset demo data" : "Clear my logs"}
           </button>
         </div>

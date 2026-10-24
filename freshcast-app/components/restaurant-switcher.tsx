@@ -40,13 +40,16 @@ export function RestaurantSwitcher({ compact = false }: { compact?: boolean }) {
 
   return (
     <div ref={root} className="relative">
+      {/* Hallmark 39b: this control is 56 to 74px tall on purpose. It is the
+          restaurant's identity card (icon, name, cuisine), not a toolbar button,
+          and it opens the restaurant menu; a 40px button would truncate the name. */}
       <button
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="menu"
         aria-expanded={open}
         className={cn(
           "flex w-full items-center gap-2.5 rounded-md border border-border bg-canvas text-left transition-colors duration-150 hover:border-text-muted",
-          compact ? "px-2 py-1.5" : "px-3 py-2.5"
+          compact ? "px-2.5 py-1.5" : "px-3 py-2.5"
         )}
       >
         <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-surface-hover">
@@ -54,8 +57,8 @@ export function RestaurantSwitcher({ compact = false }: { compact?: boolean }) {
         </span>
         <span className="min-w-0 flex-1">
           <span className="block text-sm font-600 leading-tight text-text-primary">{profile.name}</span>
-          <span className="block truncate text-[11px] text-text-muted">
-            {hydrated ? `${profile.cuisineLabel ?? profile.place} · ${profile.seats} seats` : "Loading kitchen"}
+          <span className="mt-0.5 block text-xs leading-snug text-text-muted">
+            {hydrated ? profile.cuisineLabel ?? profile.place : "Loading kitchen"}
           </span>
         </span>
         <ChevronsUpDown className="h-4 w-4 shrink-0 text-text-muted" />
@@ -70,11 +73,11 @@ export function RestaurantSwitcher({ compact = false }: { compact?: boolean }) {
             compact ? "right-0 top-full mt-2" : "bottom-full left-0 mb-2"
           )}
         >
-          <p className="px-2.5 pb-1 pt-1.5 text-[11px] text-text-muted">Demo kitchens · fictional, simulated history</p>
+          <p className="px-2.5 pb-1 pt-1.5 text-xs text-text-muted">Fictional demo kitchens with simulated history</p>
           {demos.map((r) => (
             <Row key={r.id} r={r} active={r.id === profile.id} onPick={() => (switchRestaurant(r.id), setOpen(false))} />
           ))}
-          {own.length > 0 && <p className="mt-1 border-t border-border px-2.5 pb-1 pt-2 text-[11px] text-text-muted">Your restaurants · saved on this device</p>}
+          {own.length > 0 && <p className="mt-1 border-t border-border px-2.5 pb-1 pt-2 text-xs text-text-muted">Your restaurants, saved on this device</p>}
           {own.map((r) => (
             <Row key={r.id} r={r} active={r.id === profile.id} onPick={() => (switchRestaurant(r.id), setOpen(false))} />
           ))}
@@ -103,8 +106,8 @@ function Row({ r, active, onPick }: { r: Profile; active: boolean; onPick: () =>
     >
       <Icon className={cn("mt-0.5 h-4 w-4 shrink-0", active ? "text-good" : "text-text-muted")} />
       <span className="min-w-0 flex-1">
-        <span className="block truncate text-sm font-500 text-text-primary">{r.name}</span>
-        <span className="block text-[11px] leading-snug text-text-muted">{r.tagline ?? `${r.place} · ${r.seats} seats`}</span>
+        <span className="block truncate text-sm font-600 text-text-primary">{r.name}</span>
+        <span className="mt-0.5 block text-xs leading-snug text-text-muted">{r.tagline ?? `${r.seats} seats in ${r.place}`}</span>
       </span>
       {active && <Check className="mt-0.5 h-4 w-4 shrink-0 text-good" />}
     </button>

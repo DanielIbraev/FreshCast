@@ -2,12 +2,18 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Check, Copy, Tv } from "lucide-react";
+import { Check, Copy, Download, Printer, Tv } from "lucide-react";
 import { Card, CardLabel } from "@/components/ui/card";
 import { useStore } from "@/lib/store";
 import { CATEGORIES } from "@/lib/categories";
 import { parseLocalDate } from "@/lib/demo-data";
 import { formatCurrency } from "@/lib/utils";
+import { downloadPrepCsv } from "@/lib/prep-csv";
+import { PrintSheet } from "@/components/orders/print-sheet";
+
+// Secondary header action. Short label on phones so the row fits.
+const secondary =
+  "flex items-center gap-2 rounded-md border border-border px-3 py-2 text-sm font-600 text-text-secondary transition-colors duration-150 hover:border-text-secondary hover:text-text-primary sm:px-4";
 
 export default function OrdersPage() {
   const { selected, profile } = useStore();
@@ -35,26 +41,37 @@ export default function OrdersPage() {
 
   return (
     <div className="space-y-5">
-      <header className="flex flex-wrap items-end justify-between gap-3">
+      <header className="flex flex-wrap items-end justify-between gap-3 print:hidden">
         <div>
           <p className="text-sm text-text-muted">
-            {day} · {selected.expectedCovers} guests · {selected.weather.description}
+            {day}, {selected.expectedCovers} guests, {selected.weather.description}
           </p>
           <h1 className="font-display text-[28px] font-700 leading-tight text-text-primary">Prep & order list</h1>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-        <Link href={`/screen?r=${profile.id}`} className="flex items-center gap-2 rounded-md border border-border px-4 py-2 text-sm font-600 text-text-secondary transition-colors duration-150 hover:border-text-secondary hover:text-text-primary">
-          <Tv className="h-4 w-4" />
-          Kitchen screen
-        </Link>
-        <button onClick={copyList} className="flex items-center gap-2 rounded-md border border-good px-4 py-2 text-sm font-600 text-good transition-colors duration-150 hover:bg-good hover:text-canvas">
-          {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-          {copied ? "Copied for your supplier" : "Copy list for supplier"}
-        </button>
+          <Link href={`/screen?r=${profile.id}`} className={secondary}>
+            <Tv className="h-4 w-4" />
+            <span className="sm:hidden">Screen</span>
+            <span className="hidden sm:inline">Kitchen screen</span>
+          </Link>
+          <button type="button" onClick={() => window.print()} className={secondary}>
+            <Printer className="h-4 w-4" />
+            Print
+          </button>
+          <button type="button" onClick={() => downloadPrepCsv(selected, profile.id)} className={secondary}>
+            <Download className="h-4 w-4" />
+            <span className="sm:hidden">CSV</span>
+            <span className="hidden sm:inline">Download CSV</span>
+          </button>
+          <button type="button" onClick={copyList} className="flex items-center gap-2 rounded-md border border-good px-3 py-2 text-sm font-600 text-good transition-colors duration-150 hover:bg-good hover:text-canvas sm:px-4">
+            {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+            <span className="sm:hidden">{copied ? "Copied" : "Copy"}</span>
+            <span className="hidden sm:inline">{copied ? "Copied for your supplier" : "Copy list for supplier"}</span>
+          </button>
         </div>
       </header>
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 print:hidden">
         <Card>
           <CardLabel>Spend if you prep as usual</CardLabel>
           <p className="mt-2 font-display text-[40px] font-700 leading-none tabular-nums text-text-secondary line-through decoration-2">{formatCurrency(usualSpend)}</p>
@@ -71,7 +88,7 @@ export default function OrdersPage() {
         </Card>
       </div>
 
-      <Card className="overflow-x-auto">
+      <Card className="overflow-x-auto print:hidden">
         <div className="min-w-[760px]">
         <div className="mb-3 grid grid-cols-[220px_1fr_90px_90px_220px] gap-4 px-2 text-[11px] text-text-muted">
           <span>Ingredient</span>
@@ -103,6 +120,8 @@ export default function OrdersPage() {
         </ul>
         </div>
       </Card>
+
+      <PrintSheet day={selected} profile={profile} />
     </div>
   );
 }

@@ -75,7 +75,7 @@ export function NavOverlay() {
     <AnimatePresence>
       {(pending || loading) && (
         <motion.div
-          className="absolute inset-0 z-30 flex items-center justify-center bg-canvas"
+          className="absolute inset-0 z-30 flex items-center justify-center bg-canvas print:hidden"
           initial={loading ? false : { opacity: 0 }}
           animate={{ opacity: 1, transition: { duration: ENTER_S, ease: "easeOut" } }}
           exit={{ opacity: 0, transition: { duration: EXIT_S, ease: "easeIn" } }}
