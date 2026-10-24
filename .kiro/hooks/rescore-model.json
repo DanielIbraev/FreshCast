@@ -1,0 +1,16 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Re-score the model when the engine changes",
+      "trigger": "PostFileSave",
+      "description": "Regenerates lib/benchmarks.json (accuracy per model version, owner baseline, effort study, range coverage) whenever a forecasting file changes, so the dashboard, Model page and pitch deck always show current numbers.",
+      "matcher": "freshcast-app/lib/(prediction|learning|sim|effort|backtest|uncertainty)\\.ts$",
+      "action": {
+        "type": "command",
+        "command": "cd /Users/chyngyzoskonbaev/Hackachusetts/freshcast-app && npm run --silent bench 2>&1 | tail -2",
+        "timeout": 180
+      }
+    }
+  ]
+}

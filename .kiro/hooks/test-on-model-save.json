@@ -1,0 +1,16 @@
+{
+  "version": "v1",
+  "hooks": [
+    {
+      "name": "Run tests when model code changes",
+      "trigger": "PostFileSave",
+      "description": "Runs the 35 unit and property-based tests whenever a file in lib/ or tests/ is saved, so a model change can't silently break a claim made in the pitch.",
+      "matcher": "freshcast-app/(lib|tests)/.*\\.ts$",
+      "action": {
+        "type": "command",
+        "command": "cd /Users/chyngyzoskonbaev/Hackachusetts/freshcast-app && ./node_modules/.bin/vitest run --reporter=dot 2>&1 | tail -6",
+        "timeout": 120
+      }
+    }
+  ]
+}
