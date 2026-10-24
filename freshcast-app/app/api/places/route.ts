@@ -1,30 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { osmCuisineToType } from "@/lib/staples";
 import { parseOpeningHours } from "@/lib/opening-hours";
-import type { CuisineType, ServiceStyle } from "@/lib/types";
+import type { PlaceResult } from "@/components/setup/draft";
 
 export const dynamic = "force-dynamic";
 
 // Restaurant search for setup, via OpenStreetMap Nominatim. Usage policy:
 // descriptive User-Agent, at most 1 request per second, no autocomplete.
 // https://operations.osmfoundation.org/policies/nominatim/
-
-export interface PlaceResult {
-  osmId: string;
-  name: string;
-  address: string;
-  place: string;
-  lat: number;
-  lng: number;
-  osmType: string; // the amenity: restaurant, cafe, fast_food, bakery...
-  cuisineTag: string | null;
-  cuisineType: CuisineType;
-  openingHours: string | null;
-  openDays: boolean[];
-  service: ServiceStyle | null;
-  phone: string | null;
-  website: string | null;
-}
 
 interface NominatimHit {
   osm_type: string;
