@@ -50,3 +50,49 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Page entrance: each top-level section fades up, 40ms apart (capped at 8).
+   `.fc-stagger` staggers its direct children. `.fc-page` (the route template)
+   reaches through a page's single root div so its sections stagger instead.
+   fill-mode both keeps sections at opacity 0 until their turn (no flash), and
+   ending on `transform: none` leaves no containing block for fixed drawers. */
+@keyframes fc-fade-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes fc-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+:is(.fc-stagger, .fc-page > :only-child) > * {
+  animation: fc-fade-up 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+:is(.fc-stagger, .fc-page > :only-child) > :nth-child(2) { animation-delay: 40ms; }
+:is(.fc-stagger, .fc-page > :only-child) > :nth-child(3) { animation-delay: 80ms; }
+:is(.fc-stagger, .fc-page > :only-child) > :nth-child(4) { animation-delay: 120ms; }
+:is(.fc-stagger, .fc-page > :only-child) > :nth-child(5) { animation-delay: 160ms; }
+:is(.fc-stagger, .fc-page > :only-child) > :nth-child(6) { animation-delay: 200ms; }
+:is(.fc-stagger, .fc-page > :only-child) > :nth-child(7) { animation-delay: 240ms; }
+:is(.fc-stagger, .fc-page > :only-child) > :nth-child(n + 8) { animation-delay: 280ms; }
+/* Held at the first frame while the nav overlay is up; plays as it fades out. */
+.fc-page.fc-hold > :only-child > * {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  :is(.fc-stagger, .fc-page > :only-child) > * {
+    animation-name: fc-fade !important;
+    animation-duration: 120ms !important;
+    animation-delay: 0ms !important;
+    animation-timing-function: ease-out !important;
+  }
+}
