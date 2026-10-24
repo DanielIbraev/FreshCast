@@ -42,7 +42,7 @@
 - Have demo running on Vercel (not localhost) before presenting
 - Have a backup tab open in case something crashes
 - The weather should show real tomorrow's weather for Boston, MA
-- All numbers should be consistent — same Marco story every time
+- All numbers should be consistent: each demo restaurant tells the same story every time (seeded history), and the deck is pinned to Marco's
 - Practice the demo flow at least 3 times before judging
 
 ## If Something Breaks During Demo
