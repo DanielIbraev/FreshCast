@@ -1,0 +1,140 @@
+"use client";
+
+import { useMemo, useState } from "react";
+import { Plus, Search } from "lucide-react";
+import { Card, CardLabel } from "@/components/ui/card";
+import { CategoryDonut } from "@/components/charts/category-donut";
+import { IngredientForm } from "@/components/kitchen/ingredient-form";
+import { IngredientTable } from "@/components/kitchen/ingredient-table";
+import { useStore } from "@/lib/store";
+import { Category, Ingredient } from "@/lib/types";
+import { CATEGORIES, CATEGORY_ORDER } from "@/lib/categories";
+import { cn, formatCurrency } from "@/lib/utils";
+
+// Common staples an Italian kitchen can add in one tap, with typical Boston
+// wholesale prices. The owner can edit any of these afterward.
+const STAPLES: Omit<Ingredient, "id" | "co2PerKg">[] = [
+  { name: "Parmigiano Reggiano", category: "dairy", costPerKg: 24, baselinePrepKg: 2, shelfLifeDays: 14 },
+  { name: "Burrata", category: "dairy", costPerKg: 26, baselinePrepKg: 2.5, shelfLifeDays: 2 },
+  { name: "Gulf Shrimp", category: "seafood", costPerKg: 22, baselinePrepKg: 4, shelfLifeDays: 2 },
+  { name: "Lemons", category: "produce", costPerKg: 4.5, baselinePrepKg: 3, shelfLifeDays: 7 },
+  { name: "Italian Sausage", category: "meat", costPerKg: 13, baselinePrepKg: 4, shelfLifeDays: 3 },
+  { name: "Arborio Rice", category: "dry", costPerKg: 5, baselinePrepKg: 3, shelfLifeDays: 2 },
+];
+
+export default function KitchenPage() {
+  const { ingredients, addIngredient, updateIngredient, removeIngredient } = useStore();
+  const [query, setQuery] = useState("");
+  const [filter, setFilter] = useState<Category | "all">("all");
+  const [editing, setEditing] = useState<Ingredient | null | "new">(null);
+
+  const visible = useMemo(
+    () =>
+      ingredients
+        .filter((i) => (filter === "all" ? true : i.category === filter))
+        .filter((i) => i.name.toLowerCase().includes(query.trim().toLowerCase()))
+        .sort((a, b) => b.costPerKg * b.baselinePrepKg - a.costPerKg * a.baselinePrepKg),
+    [ingredients, filter, query]
+  );
+
+  const prepValue = ingredients.reduce((s, i) => s + i.costPerKg * i.baselinePrepKg, 0);
+  const perishable = ingredients.filter((i) => i.shelfLifeDays <= 2);
+  const learning = ingredients.filter((i) => !i.history).length;
+  const names = new Set(ingredients.map((i) => i.name.toLowerCase()));
+  const staples = STAPLES.filter((s) => !names.has(s.name.toLowerCase()));
+
+  function quickAdd(s: (typeof STAPLES)[number]) {
+    addIngredient({ ...s, id: `${s.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${Date.now().toString(36)}`, co2PerKg: CATEGORIES[s.category].co2PerKg });
+  }
+
+  return (
+    <div className="space-y-5">
+      <header className="flex items-end justify-between">
+        <div>
+          <p className="text-sm text-text-muted">Set up once. FreshCast forecasts every item here.</p>
+          <h1 className="font-display text-[28px] font-700 leading-tight text-text-primary">Kitchen</h1>
+        </div>
+        <button onClick={() => setEditing("new")} className="flex items-center gap-2 rounded-md bg-good px-4 py-2 text-sm font-600 text-canvas transition-colors duration-150 hover:bg-good-dim">
+          <Plus className="h-4 w-4" /> Add ingredient
+        </button>
+      </header>
+
+      <div className="grid grid-cols-[1fr_1fr_1.4fr] gap-4">
+        <Card>
+          <CardLabel>Prepped every morning</CardLabel>
+          <p className="mt-2 font-display text-[40px] font-800 leading-none tabular-nums text-text-primary">{formatCurrency(prepValue)}</p>
+          <p className="mt-2 text-xs text-text-muted">across {ingredients.length} ingredients</p>
+        </Card>
+        <Card>
+          <CardLabel>Use within 2 days</CardLabel>
+          <p className="mt-2 font-display text-[40px] font-800 leading-none tabular-nums text-waste">{perishable.length}</p>
+          <p className="mt-2 truncate text-xs text-text-muted">{perishable.map((p) => p.name).join(", ") || "None"}</p>
+          {learning > 0 && <p className="mt-1 text-xs text-data">{learning} still learning from your logs</p>}
+        </Card>
+        <Card>
+          <CardLabel>Where the prep money goes</CardLabel>
+          <div className="mt-3">
+            <CategoryDonut ingredients={ingredients} />
+          </div>
+        </Card>
+      </div>
+
+      {staples.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-xs text-text-muted">Common for Italian kitchens:</span>
+          {staples.map((s) => (
+            <button
+              key={s.name}
+              onClick={() => quickAdd(s)}
+              className="flex items-center gap-1.5 rounded-md border border-border bg-surface px-2.5 py-1 text-xs text-text-secondary transition-colors duration-150 hover:border-good hover:text-text-primary"
+            >
+              <Plus className="h-3 w-3" /> {s.name}
+            </button>
+          ))}
+        </div>
+      )}
+
+      <Card className="p-4">
+        <div className="mb-3 flex items-center gap-3">
+          <label className="relative flex-1">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-text-muted" />
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search ingredients"
+              aria-label="Search ingredients"
+              className="w-full rounded-md border border-border bg-canvas py-2 pl-9 pr-3 text-sm text-text-primary focus:border-good focus:outline-none"
+            />
+          </label>
+          <div className="flex gap-1">
+            {(["all", ...CATEGORY_ORDER] as const).map((c) => (
+              <button
+                key={c}
+                onClick={() => setFilter(c)}
+                className={cn(
+                  "rounded-md px-2.5 py-1.5 text-xs transition-colors duration-150",
+                  filter === c ? "bg-surface-hover font-600 text-text-primary" : "text-text-muted hover:text-text-secondary"
+                )}
+              >
+                {c === "all" ? "All" : CATEGORIES[c].label}
+              </button>
+            ))}
+          </div>
+        </div>
+        <IngredientTable items={visible} onEdit={setEditing} onDelete={(i) => removeIngredient(i.id)} />
+      </Card>
+
+      {editing && (
+        <IngredientForm
+          initial={editing === "new" ? undefined : editing}
+          onClose={() => setEditing(null)}
+          onSave={(i) => {
+            if (editing === "new") addIngredient(i);
+            else updateIngredient(i);
+            setEditing(null);
+          }}
+        />
+      )}
+    </div>
+  );
+}
