@@ -2,15 +2,34 @@ import type { Config } from "tailwindcss";
 
 const config: Config = {
   content: [
-    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
+        // FreshCast design tokens
+        canvas: "#0F1117",
+        surface: "#1A1D27",
+        "surface-hover": "#222634",
+        border: "#2D3748",
+        "text-primary": "#E2E8F0",
+        "text-secondary": "#94A3B8",
+        "text-muted": "#64748B",
+        // emerald = good/savings, red = waste, amber = medium risk
+        good: "#10B981",
+        "good-dim": "#0E9668",
+        waste: "#EF4444",
+        "waste-dim": "#B91C1C",
+        caution: "#F59E0B",
+        data: "#60A5FA",
+      },
+      fontFamily: {
+        sans: ["var(--font-inter)", "system-ui", "sans-serif"],
+        display: ["var(--font-sora)", "system-ui", "sans-serif"],
+      },
+      borderRadius: {
+        card: "0.75rem",
       },
     },
   },
