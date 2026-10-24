@@ -131,7 +131,7 @@ export function trackRecord(stored: DailyObservation[], ingredients: Ingredient[
       night.actualCost += o.usualKg * ing.costPerKg;
       if (o.censored || !(f > 0) || !(o.usualKg > 0)) continue;
       if (di >= WARMUP) {
-        scored.push({ date, id: ing.id, f, a: o.usualKg, hit: o.usualKg >= rg.low && o.usualKg <= rg.high });
+        scored.push({ date, id: ing.id, f, a: o.usualKg, hit: o.usualKg >= rg.low && o.usualKg <= rg.high, cond: o.condition });
         night.scoredItems++;
       }
       newResid.push({ id: ing.id, r: Math.log(o.usualKg / f) });
