@@ -20,8 +20,8 @@ function Row({ label, value, onEdit }: { label: string; value: React.ReactNode; 
 }
 
 const ROUTINE = [
-  { icon: Hand, text: "Tap each item that went in the bin, then pick a portion: a handful, half a tray, a full tray." },
-  { icon: Users, text: "Confirm how many guests you served. It's pre-filled from the forecast." },
+  { icon: Hand, text: "Tap each item that went in the bin, then pick a portion: a handful, a bowl, half a pan, a full pan." },
+  { icon: Users, text: "Confirm how many guests you served." },
   { icon: Scale, text: "No scale and no typing. FreshCast turns portions into kilos, dollars and CO₂." },
   { icon: Languages, text: "Staff can do it in English or Spanish." },
 ];
