@@ -8,21 +8,21 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // FreshCast design tokens
-        canvas: "#0F1117",
-        surface: "#1A1D27",
-        "surface-hover": "#222634",
-        border: "#2D3748",
-        "text-primary": "#E2E8F0",
-        "text-secondary": "#94A3B8",
-        "text-muted": "#8291A7", // 5.2:1 on surface (Hallmark contrast floor)
-        // emerald = good/savings, red = waste, amber = medium risk
-        good: "#10B981",
-        "good-dim": "#0E9668",
-        waste: "#EF4444",
-        "waste-dim": "#B91C1C",
-        caution: "#F59E0B",
-        data: "#60A5FA",
+        // FreshCast design tokens are declared in app/globals.css.
+        canvas: "var(--color-canvas)",
+        surface: "var(--color-surface)",
+        "surface-hover": "var(--color-surface-hover)",
+        border: "var(--color-border)",
+        "text-primary": "var(--color-text-primary)",
+        "text-secondary": "var(--color-text-secondary)",
+        "text-muted": "var(--color-text-muted)",
+        // Emerald = good/savings, red = waste, amber = medium risk.
+        good: "var(--color-good)",
+        "good-dim": "var(--color-good-dim)",
+        waste: "var(--color-waste)",
+        "waste-dim": "var(--color-waste-dim)",
+        caution: "var(--color-caution)",
+        data: "var(--color-data)",
       },
       fontFamily: {
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],
