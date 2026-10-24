@@ -1,129 +1,143 @@
 # SaaS Engineering Standards — FreshCast
 
 ## Stack
-- Framework: Next.js 14 App Router (TypeScript)
-- Styling: Tailwind CSS + shadcn/ui
-- Animations: Framer Motion
+- Framework: Next.js 15 App Router (TypeScript), React 19
+- Styling: Tailwind CSS, own components in `components/ui/`
+- Animations: Framer Motion (respect `prefers-reduced-motion`)
 - Charts: Recharts
-- Database: Supabase (Postgres + Realtime)
-- Auth: Supabase Auth
-- Weather: Open-Meteo API (free, no API key required)
-- Events: Ticketmaster API (free tier) for nearby event detection
-- Deployment: Vercel
+- Icons: Lucide
+- Database: Supabase (Postgres + row-level security). No user accounts: the public reads the demo; the owner writes with an `x-admin-token` checked by a `SECURITY DEFINER` function (`supabase/security.sql`).
+- Weather: Open-Meteo API (free, no key), by the restaurant's lat/lng
+- Restaurant search and geocoding: OpenStreetMap Nominatim (follow its usage policy: descriptive User-Agent, ≤1 request/s, no autocomplete)
+- Tests: Vitest + fast-check
+- Deployment: Vercel, via a deploy hook. Git deploys are off (`vercel.json` → `git.deploymentEnabled: false`) because auto-push on every save hit the 100 deploys/day limit.
+- No LLM, no reservation API, no events API.
 
 ## Architecture Principles
-- Server Components by default. Client Components only when interactivity is needed (charts, forms, real-time updates).
-- API routes in `/app/api/` for external API calls (OpenAI, Open-Meteo)
-- Never expose API keys in client components
-- All database calls go through Supabase client, never raw SQL in components
+- Server Components by default. Client Components only when interactivity is needed (charts, forms, the store).
+- API routes in `/app/api/` proxy external calls (Open-Meteo, Nominatim) and validate and clamp their inputs.
+- Never expose secrets in client code. The only keys in the client are the public Supabase URL and anon key.
+- All database access goes through `lib/db.ts` (Supabase client). If Supabase is unreachable, fall back to browser storage.
 
 ## Project Structure
 ```
-/app
-  /dashboard        → main dashboard page
-  /log              → waste logging interface
-  /orders           → smart order recommendations
-  /onboarding       → first-time setup flow
-  /api
-    /predict        → waste prediction endpoint
-    /weather        → Open-Meteo proxy
-    /events         → nearby events lookup endpoint
-/components
-  /ui               → shadcn components
-  /charts           → Recharts wrappers
-  /dashboard        → dashboard-specific components
-/lib
-  /prediction.ts    → core prediction engine (the math, no AI)
-  /carbon.ts        → CO2 calculation logic
-  /supabase.ts      → Supabase client
-  /types.ts         → TypeScript types
-/data
-  /emission-factors.json   → FAO/WRAP carbon data per ingredient
-  /demo-seed.ts            → Marco's Trattoria demo data
+freshcast-app/
+  app/
+    (app)/dashboard   → Forecast: 7-day outlook, per-ingredient forecast, signal breakdown, what-if, Apply prep plan
+    (app)/orders      → Prep & order list
+    (app)/log         → waste logging (English/Español) and close-out
+    (app)/kitchen     → ingredients, staples, sales-CSV import for guests by weekday
+    (app)/model       → Model accuracy: per-restaurant track record + benchmark
+    (app)/setup       → setup wizard (OpenStreetMap search → profile)
+    pitch/            → the pitch deck
+    api/weather       → Open-Meteo proxy (seasonal fallback if offline)
+    api/places        → Nominatim restaurant search (name, address, cuisine, opening hours)
+    api/geocode       → Nominatim address geocoding
+  components/         → ui, charts, dashboard, log, kitchen, model, setup, pitch
+  lib/
+    prediction.ts     → priors and the 9 signals (the math, no AI)
+    learning.ts       → shrunk corrections learned from close-outs; accuracy (1 − WAPE)
+    uncertainty.ts    → 80% ranges from past errors (spec: .kiro/specs/forecast-confidence)
+    forecast.ts       → builds a day's forecast; closed days return no forecast
+    kitchens.ts       → the 3 demo kitchens: menus, CO₂e factors, hidden simulated habits
+    profile.ts        → restaurant profiles (guests by weekday, open days, location)
+    sim.ts            → seeded kitchen simulator (hidden "true world")
+    backtest.ts       → walk-forward benchmark, model versions v0–v4, 80% coverage
+    effort.ts         → staff effort vs. accuracy; owner's-best-guess baseline
+    history.ts        → dashboard money/CO₂e figures from stored close-outs
+    track-record.ts   → per-restaurant Model accuracy (leak-free)
+    benchmarks.json   → output of `npm run bench`
+    db.ts, store.tsx  → data access and app state
+    pos-import.ts, opening-hours.ts, i18n.ts, weather.ts, categories.ts, staples.ts
+  scripts/bench.ts    → regenerates lib/benchmarks.json
+  scripts/reseed-marco.ts → owner-only: wipes and reseeds Marco's in Supabase
+  supabase/           → schema.sql, security.sql
+  tests/              → unit tests + properties.test.ts (P1–P13)
 ```
 
 ## Prediction Engine (Core Logic — NOT an AI wrapper)
-The prediction engine lives in `/lib/prediction.ts` and runs pure TypeScript math.
+Pure TypeScript in `lib/prediction.ts` and `lib/learning.ts`.
 
-### Design Principle: Zero daily input from owner after 5-minute setup
-Every signal is either automatic, pulled from an API, or learned from history.
-The only manual input ever: waste logging (2 taps, done by staff during service).
+### Design principle: almost no daily input after setup
+Signals come from the calendar, the weather API, the restaurant's setup, or are learned from history. The only daily input is a quick waste log at close (tap an item, tap a portion) plus guests served.
+
+**There is no reservation feed.** Each morning the forecast assumes the usual guests for that weekday (`coversByDay`, from setup or an imported sales CSV). The what-if slider changes it. Guests served at close-out are used for learning.
 
 ```typescript
-// Waste prediction formula (based on arxiv.org/abs/2609.08078)
-predictedWaste(ingredient, kg) =
-  baselinePrepAmount                                       // set once at onboarding
-  × demandFactor(expectedCovers / avgCovers)              // AUTO: reservation API or learned history
-  × weatherMultiplier(forecast)                           // AUTO: Open-Meteo using restaurant lat/lng
-  × dayOfWeekFactor[dayOfWeek]                            // AUTO: from date
-  × seasonalFactor[month]                                 // AUTO: from date
-  × holidayFactor(isPublicHoliday, holidayType)           // AUTO: hardcoded holiday calendar
-  × eventFactor(nearbyEvents)                             // AUTO: Ticketmaster API within 1 mile
-  × cuisineFactor[cuisineType]                            // SET ONCE: at onboarding
-  × recencyFactor(lastWeekSameDayActual)                  // AUTO: from waste_logs history
-  × personalCalibration(restaurantId, ingredient)         // AUTO: learned over time
+usualPrep   = baselinePrepKg × usualCovers[weekday] / avgCovers   // weekday prep pars
+baseWaste   = usualPrep × 0.08                                    // BASE_WASTE_FRACTION
+forecast    = min(usualPrep × 0.5,                                // MAX_WASTE_SHARE
+                  baseWaste × Π(9 signals))
+plan cut    = forecast × 0.63                                     // REDUCTION_RATE, the rest is buffer
 ```
 
-### Signal Multipliers
+### The 9 signals
+| # | Signal | Value | Source |
+|---|---|---|---|
+| 1 | Guests | `max(0.3, 1 + (1 − expected/usual) × 0.6)` | Usual weekday guests, what-if, or guests served (close-out) |
+| 2 | Weather | rain/storm ×1.15, hot (≥85°F) ×0.9, cold (≤32°F or snow) ×1.08, else ×1.0; × learned weather correction | **Open-Meteo (the only live feed)**; seasonal fallback offline; manual what-if |
+| 3 | Weekday habits | learned correction beyond guest count (starts 1.0) | Close-out logs |
+| 4 | Season | Jan/Feb ×1.15, Mar/Apr ×1.0, May/Jun ×0.95, Jul/Aug ×0.92, Sep/Oct ×1.05, Nov/Dec ×1.2 | Calendar |
+| 5 | Holiday | Thanksgiving Eve ×0.7, Dec 24–25 ×0.75, July 4 ×0.85, Jan 1 ×1.35 | Holiday calendar |
+| 6 | Nearby events | game/concert ×0.78, festival/graduation ×0.82, none ×1.0 | Manual what-if only |
+| 7 | Shelf life | ≤1 day ×1.2, ≤2 ×1.1, ≤4 ×1.0, ≤7 ×0.9, else ×0.8 | Set per ingredient |
+| 8 | Last week, same day | recency correction (starts 1.0) | Close-out logs |
+| 9 | Kitchen calibration | per-ingredient correction (starts 1.0) | Close-out logs |
 
-**Day of week** (industry research):
-Mon ×1.22, Tue ×1.18, Wed ×1.05, Thu ×1.0, Fri ×0.88, Sat ×0.82, Sun ×0.90
+Removed on purpose: the fixed industry day-of-week prior (double-counted weekday guest counts; backwards for lunch spots) and the cuisine multiplier (unsourced). Don't add them back.
 
-**Weather** (Open-Meteo API, automatic):
-Rain/storm ×1.15 | Hot 85°F+ ×0.90 | Cold <30°F ×1.08 | Normal ×1.0
+### Learning (`lib/learning.ts`)
+Ratio per closed-out night: r = (logged + cut) ÷ prior forecast for the guests actually served. Shrunk mean `c = (Σr + k)/(n + k)`:
+- Calibration: per ingredient, last 28 days, k = 2, clamp 0.4–2.5.
+- Weekday: same weekday, last 56 days, pooled across ingredients (each ratio divided by its ingredient's calibration), k = 4, clamp 0.6–1.6.
+- Weather: same condition, last 56 days, pooled the same way, k = 6, clamp 0.6–1.6.
+- Recency: `0.3 × (last week's ratio ÷ (calibration × weekday × weather)) + 0.7`, clamp 0.75–1.3.
+- Walk-forward only: never uses the day being predicted (property P6).
+- Only `overprep` and `spoiled` logs are learned from. Plate waste and drops are stored, not learned.
 
-**Season** (hospitality industry data):
-Jan/Feb ×1.15 | Mar/Apr ×1.0 | May/Jun ×0.95 | Jul/Aug ×0.92 | Sep/Oct ×1.05 | Nov/Dec ×1.20
+### Censoring (sold-out nights)
+If the plan cut prep and the item logged 0, it probably sold out, so logged + cut is an **upper bound** on true waste. Those nights are flagged `censored`: they still feed learning, but are excluded from accuracy scoring, the 80% ranges (P13) and savings.
 
-**Holidays** (hardcoded calendar, automatic):
-Thanksgiving Eve ×0.70 | Christmas Eve ×0.75 | Super Bowl ×0.72 | Day after major holiday ×1.35
+### Closed days
+A closed weekday (`openDays[dow] === false` or 0 usual guests) has no forecast, no prep cut and no savings (P12). The simulator produces no rows for it.
 
-**Nearby events** (Ticketmaster API, automatic):
-Major concert/game within 1 mile ×0.78 | Graduation/festival ×0.82 | No events ×1.0
+### Cold start
+Week 1 runs on priors only (signals 1, 2, 4–7). Learned corrections start at 1.0 and switch on as close-outs build up.
 
-**Cuisine type** (set once at onboarding):
-Italian/French ×1.0 | Sushi/seafood ×1.15 | Burger/fast casual ×0.85 | Fine dining ×1.25
-
-**Recency** (strongest short-term signal, auto from logs):
-`0.6 × (lastWeekSameDayActual / lastWeekSameDayPredicted) + 0.4 × 1.0`
-
-**Personal calibration** (long-term learning, auto):
-`rollingAverage(actual/predicted, last 4 weeks)` per ingredient per restaurant
-
-### Cold Start (Week 1)
-Signals 1-7 only. Still useful from day one. Recency + calibration activate automatically as logs build.
-
-### Owner Input Summary
+### Owner input summary
 | Task | Frequency |
 |------|-----------|
-| Restaurant name + address + cuisine type | Once |
-| Ingredient list + costs | Once |
-| Reservation system connection | Once |
-| Log waste | Daily, 2 taps, done by staff |
-| Everything else | Never — fully automatic |
+| Restaurant (OpenStreetMap search or by hand), guests by weekday, open days | Once |
+| Ingredient list: cost, usual prep, shelf life | Once |
+| Optional sales-CSV import for guests by weekday | Once |
+| Log waste (tap item, tap portion) and guests served | Nightly, staff, about a minute |
 
-## Database Schema
+## CO₂e and impact
+- Per-kg factors: farm-to-retail emissions, Poore & Nemecek (2018), *Science*, via Our World in Data. Mapping per item is in `lib/kitchens.ts`; category defaults in `lib/categories.ts`.
+- 1 meal = 1.2 lb (Feeding America). ~0.4 kg CO₂ per mile, 4.6 t CO₂ per car per year (EPA).
+- Savings = cut × cost on provable nights only (cut > 0 and logged > 0). Yearly = last 30 days × 365/30. Monthly before/after bin totals are not season-adjusted.
+
+## Database Schema (`supabase/schema.sql`)
 ```sql
-restaurants (id, name, address, lat, lng, created_at)
-ingredients (id, restaurant_id, name, cost_per_kg, unit)
-menu_items (id, restaurant_id, name, ingredients[])
-waste_logs (id, restaurant_id, ingredient_id, quantity_kg, logged_at)
-predictions (id, restaurant_id, date, ingredient_id, predicted_kg, actual_kg)
-covers (id, restaurant_id, date, expected, actual)
+ingredients (id, restaurant_id, name, category, cost_per_kg, baseline_prep_kg, shelf_life_days, co2_per_kg, created_at)
+waste_logs (id, restaurant_id, ingredient_id, quantity_kg, reason, logged_at)
+daily_observations (restaurant_id, date, ingredient_id, prior_kg, cut_kg, logged_kg, weather, covers)
 ```
+RLS (`supabase/security.sql`): anon can read `marcos-trattoria`; writes need `public.is_admin()`.
 
 ## Demo Data Requirements
-- Marco's history is generated by `lib/backtest.ts` (seed 7, plan starts day 15) and written to Supabase on first load. Never hardcode dashboard numbers; derive them from `daily_observations` via `lib/history.ts`.
-- Reset demo data (sidebar) wipes and reseeds Supabase.
+- Three demo restaurants (`lib/profile.ts`, `lib/kitchens.ts`). Marco's history lives in Supabase; Golden Crumb and Kendall are generated in the browser by the same simulator.
+- History = `runBacktest(ingredients, 12, 7, today, 14, shapeOf(profile))`: 12 weeks, seed 7, plan starts on the 15th open night. Never hardcode dashboard numbers; derive them from `daily_observations` via `lib/history.ts`.
+- Reset demo data (sidebar) reseeds. Owner reseed of Supabase: `scripts/reseed-marco.ts`.
+- After any model change: `npm run bench` (the rescore hook does this on save) and commit `lib/benchmarks.json`.
 
 ## Performance Rules
 - Page must load in under 2 seconds for the demo
 - Seed demo data so the dashboard is never empty
-- Prediction endpoint must respond in under 3 seconds
-- If OpenAI is slow, show the numbers first and stream the explanation after
+- Forecasts are computed in the browser; no prediction endpoint
 
 ## Error Handling
 - Never show raw error messages in the UI
-- If weather API fails, use day-of-week baseline (always have a fallback)
-- If OpenAI fails, skip the explanation text — the numbers still work
-- Demo must work even with no internet (seed all demo data locally)
+- If the weather API fails, use the seasonal fallback week (`fallbackWeek()` in `lib/weather.ts`)
+- If Supabase fails, fall back to browser storage
+- Demo must work with no internet (demo history is generated locally)
