@@ -50,3 +50,10 @@
 - Have screenshots as backup
 - "We had a minor bug during the demo, but here's what it does..." is honest and judges respect it
 - Never apologize excessively — move forward
+
+## Keep everything in sync (standing rule)
+Whenever a feature, model change, or number changes, update in the same pass:
+- `.kiro/steering/pitch-and-demo.md` (numbers you can say, demo script, Q&A)
+- `README.md` (accuracy table, what's real vs simulated)
+- The pitch deck at `/pitch` (`components/pitch/*`). Deck numbers read from the store and benchmark, so prefer wiring a number over typing it.
+Run `npx tsx scripts/backtest.ts` after any model change and copy the new accuracy table into all three.

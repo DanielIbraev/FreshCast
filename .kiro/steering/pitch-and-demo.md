@@ -34,6 +34,20 @@ The track bullets are resilient communities, cleaner buildings, clean energy, oc
 ## Personal hook (true)
 Worked at a small cafe, watched prepped food go in the trash every night, the owner never knew what it cost him.
 
+## The deck
+Lives in the app at `/pitch` (11 slides, 1600x900, scales to any screen). Arrow keys or click to advance, `F` for fullscreen, `/pitch?s=7` to jump back after the demo. Numbers on slides 3, 7, 8, 9 are live from Supabase and the benchmark.
+Order: Title → Hook (audience question) → Problem + evidence → Why tools fail → Demo cue → How it works (equations) → Accuracy ladder → Before/after → Scale + climate → Real vs simulated → Built with Kiro.
+Market math: 1% of ~500k independents = 5,000 × $588/yr = $2.94M ARR. (An older draft said $29M; that was wrong by 10x. Never use it.)
+
+## Audience: technical judges
+Expect questions on the method, not the vibe. Have these ready:
+- Shrinkage: c = (Σr + k)/(n + k), k=2 for ingredient, 4 weekday, 6 weather. Stops one bad night swinging tomorrow.
+- Censoring: if the plan cuts more than would've been wasted, the item sells out and the log reads 0. We store cut + logged, so "usual" waste is a lower bound in that case. We keep a 37% buffer (REDUCTION_RATE 0.63) partly for this.
+- Why WAPE not MAPE: MAPE explodes on near-zero items like basil; WAPE weights by kg.
+- Leakage: walk-forward only; the learner never sees the day it's scoring.
+- Ceiling: lognormal noise σ=0.12 in the sim ≈ 10% irreducible error.
+- Weakness to admit first: benchmark is simulated; the real test is a pilot.
+
 ## Demo script (problem → tension → solution, ~4 minutes, product on screen for most of it)
 1. (20s) Hook: the cafe story. Ask the room: "Who has worked in a restaurant?" Hands go up.
 2. (20s) Tension: Marco, 60 seats, North End. Guesses his prep every morning. $1,300 a month in the bin. Hardware tools cost more than his margin.
