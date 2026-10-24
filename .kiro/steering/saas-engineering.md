@@ -29,6 +29,8 @@ freshcast-app/
     (app)/kitchen     → ingredients, staples, sales-CSV import for guests by weekday
     (app)/model       → Model accuracy: per-restaurant track record + benchmark
     (app)/setup       → setup wizard (OpenStreetMap search → profile)
+    page.tsx          → front page: pick a demo kitchen
+    screen/           → kitchen screen: big-type prep list for a wall tablet (English/Español, tap to mark done)
     pitch/            → the pitch deck
     api/weather       → Open-Meteo proxy (seasonal fallback if offline)
     api/places        → Nominatim restaurant search (name, address, cuisine, opening hours)
