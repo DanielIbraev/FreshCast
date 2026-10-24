@@ -28,6 +28,13 @@ export function NavTransitionProvider({ children }: { children: React.ReactNode 
     [pathname]
   );
 
+  // Never leave the overlay up if a navigation is abandoned.
+  useEffect(() => {
+    if (!pending) return;
+    const t = setTimeout(() => setPending(false), 3000);
+    return () => clearTimeout(t);
+  }, [pending]);
+
   useEffect(() => {
     if (!pending || pathname !== target.current) return;
     const wait = Math.max(0, MIN_MS - (performance.now() - startedAt.current));

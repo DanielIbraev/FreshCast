@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChefHat, ClipboardList, Gauge, LayoutDashboard, Leaf, RotateCcw, ShoppingCart } from "lucide-react";
+import { ChefHat, ClipboardList, Gauge, LayoutDashboard, RotateCcw, ShoppingCart } from "lucide-react";
+import { Mark } from "@/components/brand/mark";
+import { useNavTransition } from "@/components/nav-transition";
 import { cn } from "@/lib/utils";
 import { DEMO_RESTAURANT } from "@/lib/demo-data";
 import { useStore } from "@/lib/store";
@@ -18,13 +20,12 @@ const NAV = [
 export function Sidebar() {
   const pathname = usePathname();
   const { resetDemo, dbStatus } = useStore();
+  const { pending, start } = useNavTransition();
 
   return (
     <aside className="flex h-screen w-60 shrink-0 flex-col border-r border-border bg-surface">
       <div className="flex items-center gap-2.5 px-5 py-5">
-        <div className="flex h-8 w-8 items-center justify-center rounded-md bg-good">
-          <Leaf className="h-[18px] w-[18px] text-canvas" strokeWidth={2.5} />
-        </div>
+        <Mark size={32} animating={pending} />
         <span className="font-display text-lg font-700 text-text-primary">FreshCast</span>
       </div>
 
@@ -35,6 +36,7 @@ export function Sidebar() {
             <Link
               key={href}
               href={href}
+              onClick={(e) => !(e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) && start(href)}
               className={cn(
                 "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors duration-150",
                 active ? "bg-surface-hover font-500 text-text-primary" : "text-text-secondary hover:bg-surface-hover hover:text-text-primary"
