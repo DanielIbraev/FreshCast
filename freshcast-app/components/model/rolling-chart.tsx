@@ -52,36 +52,41 @@ export function RollingChart({ rolling, planStart, ceiling }: { rolling: Rolling
   const hi = Math.min(100, Math.ceil((Math.max(...vals) + 3) / 5) * 5);
   const markPlan = planStart && data.some((d) => d.date === planStart);
 
+  const ticks = Array.from({ length: (hi - lo) / 5 + 1 }, (_, i) => lo + i * 5);
+
+  // Fills the row's height (the actions card beside it sets it), never below 240px.
   return (
-    <Card>
+    <Card className="flex flex-col">
       <h2 className="font-display text-lg font-600 text-text-primary">{headlineFor(rolling)}</h2>
       <p className="mt-0.5 text-sm text-text-secondary">Each point scores the 7 nights before it, weighted by kg.</p>
       <Legend ceiling={ceiling} />
-      <div className="mt-3 h-[240px] w-full">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={data} margin={{ top: 22, right: 12, left: -8, bottom: 0 }}>
-            <XAxis dataKey="date" tick={axisTick} tickFormatter={shortDate} interval={Math.max(0, Math.floor(data.length / 6))} axisLine={{ stroke: "#2D3748" }} tickLine={false} minTickGap={16} />
-            <YAxis domain={[lo, hi]} tick={axisTick} tickFormatter={(v: number) => `${v}%`} axisLine={false} tickLine={false} width={52} />
-            <Tooltip contentStyle={tooltipStyle} labelStyle={{ color: "#94A3B8" }} labelFormatter={(d) => `7 nights to ${shortDate(String(d))}`} formatter={(v) => [`${v}%`, "Accuracy"]} />
-            {markPlan && (
-              <ReferenceLine
-                x={planStart!}
-                stroke="#94A3B8"
-                strokeDasharray="4 4"
-                label={{ value: "Started prepping to plan", fill: "#94A3B8", fontSize: 11, position: "insideTopLeft", dy: -18 }}
-              />
-            )}
-            {ceiling && (
-              <ReferenceLine
-                y={+(ceiling * 100).toFixed(1)}
-                stroke="#60A5FA"
-                strokeOpacity={0.7}
-                strokeDasharray="5 4"
-              />
-            )}
-            <Line dataKey="acc" stroke="#10B981" strokeWidth={2.25} dot={false} activeDot={{ r: 4 }} isAnimationActive={!reduce} animationDuration={800} />
-          </LineChart>
-        </ResponsiveContainer>
+      <div className="relative mt-3 min-h-[240px] w-full flex-1">
+        <div className="absolute inset-0">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={data} margin={{ top: 22, right: 12, left: -8, bottom: 0 }}>
+              <XAxis dataKey="date" tick={axisTick} tickFormatter={shortDate} interval={Math.max(0, Math.floor(data.length / 6))} axisLine={{ stroke: "#2D3748" }} tickLine={false} minTickGap={16} />
+              <YAxis domain={[lo, hi]} ticks={ticks} interval={0} tick={axisTick} tickFormatter={(v: number) => `${v}%`} axisLine={false} tickLine={false} width={52} />
+              <Tooltip contentStyle={tooltipStyle} labelStyle={{ color: "#94A3B8" }} labelFormatter={(d) => `7 nights to ${shortDate(String(d))}`} formatter={(v) => [`${v}%`, "Accuracy"]} />
+              {markPlan && (
+                <ReferenceLine
+                  x={planStart!}
+                  stroke="#94A3B8"
+                  strokeDasharray="4 4"
+                  label={{ value: "Started prepping to plan", fill: "#94A3B8", fontSize: 11, position: "insideTopLeft", dy: -18 }}
+                />
+              )}
+              {ceiling && (
+                <ReferenceLine
+                  y={+(ceiling * 100).toFixed(1)}
+                  stroke="#60A5FA"
+                  strokeOpacity={0.7}
+                  strokeDasharray="5 4"
+                />
+              )}
+              <Line dataKey="acc" stroke="#10B981" strokeWidth={2.25} dot={false} activeDot={{ r: 4 }} isAnimationActive={!reduce} animationDuration={800} />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
       </div>
     </Card>
   );

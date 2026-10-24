@@ -120,14 +120,14 @@ export function KitchenScreen() {
         date={date ? dateText(lang, date) : ""}
         condition={show ? day!.weather.condition : null}
         tempF={show ? day!.weather.tempF : null}
-        guests={show && date ? t.guests(day!.usualCovers, date) : null}
+        guests={show ? t.guests(day!.usualCovers) : null}
         clock={now ? clockText(lang, now) : ""}
         lang={lang}
         setLang={setLang}
         t={t}
       />
 
-      <main className="flex-1 px-4 py-4 sm:px-6 lg:min-h-0 lg:overflow-y-auto">
+      <main className="flex-1 px-4 py-3 sm:px-6 lg:min-h-0 lg:overflow-y-auto">
         {show && items.length === 0 ? (
           <p className="pt-10 text-2xl text-text-secondary">{t.nothing}</p>
         ) : (

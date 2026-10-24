@@ -29,4 +29,27 @@ describe("restaurant track record (Model accuracy page)", () => {
     expect(tr.lastFourWeeks!).toBeLessThanOrEqual(1);
     expect(tr.items).toHaveLength(ing.length);
   });
+
+  it("lists at most 5 specific actions, keeps the sales-import step and names the weakest item", () => {
+    const tr = trackRecord(history, ing, kendall);
+    expect(tr.actions.length).toBeGreaterThan(1);
+    expect(tr.actions.length).toBeLessThanOrEqual(5);
+    expect(tr.actions.some((a) => a.kind === "guests")).toBe(true);
+    const weak = tr.actions.find((a) => a.kind === "weakest");
+    const lowest = tr.items.filter((i) => i.accuracy !== null && i.scored >= 5).sort((a, b) => a.accuracy! - b.accuracy!)[0];
+    expect(weak?.itemId).toBe(lowest.id);
+    expect(weak?.text).toContain(`${Math.round(lowest.accuracy! * 100)}%`);
+    const imported = trackRecord(history, ing, { ...kendall, coversSource: "pos-import" });
+    expect(imported.actions.some((a) => a.kind === "guests")).toBe(false);
+  });
+
+  it("reports a weekday pattern only when it is really in the data", () => {
+    // Inflate every Friday's waste by 40%: the weekday check must name Fridays.
+    const fridays = history.map((o) => (new Date(o.date + "T12:00").getDay() === 5 ? { ...o, loggedKg: (o.loggedKg + o.cutKg) * 1.4 - o.cutKg } : o));
+    const day = trackRecord(fridays, ing, kendall).actions.find((a) => a.kind === "weekday");
+    expect(day?.lead).toBe("Fridays");
+    expect(day?.ok).toBeFalsy();
+    const plain = trackRecord(history, ing, kendall).actions.find((a) => a.kind === "weekday" && !a.ok);
+    expect(plain).toBeUndefined();
+  });
 });

@@ -16,7 +16,7 @@ const STRINGS = {
   en: {
     today: "Today's prep",
     closedToday: (day: string, isTomorrow: boolean) => `Closed today. ${isTomorrow ? "Tomorrow" : day}'s prep:`,
-    guests: (n: number, d: Date) => `Usually ${n} guests on ${plural("en", d)}`,
+    guests: (n: number) => `Usually ${n} guests`,
     weather: { rain: "Rain", storm: "Storms", hot: "Hot", cold: "Cold", normal: "Dry" } as Record<WeatherCondition, string>,
     prep: "Prep",
     usual: "usual",
@@ -34,7 +34,7 @@ const STRINGS = {
   es: {
     today: "Preparación de hoy",
     closedToday: (day: string, isTomorrow: boolean) => `Cerrado hoy. Preparación ${isTomorrow ? "de mañana" : `del ${day}`}:`,
-    guests: (n: number, d: Date) => `Suelen venir ${n} clientes ${plural("es", d)}`,
+    guests: (n: number) => `Suelen venir ${n} clientes`,
     weather: { rain: "Lluvia", storm: "Tormentas", hot: "Calor", cold: "Frío", normal: "Seco" } as Record<WeatherCondition, string>,
     prep: "Preparar",
     usual: "de costumbre",
@@ -96,6 +96,6 @@ export function reason(lang: Lang, s: SignalFactor, ctx: { date: Date; condition
         ? `${up ? "More" : "Less"} left over last ${weekday("en", ctx.date)}`
         : `${up ? "Sobró más" : "Sobró menos"} el ${weekday("es", ctx.date)} pasado`;
     case "calibration":
-      return en ? (up ? "This one usually comes back" : "This one usually sells out") : up ? "Esto suele sobrar" : "Esto suele acabarse";
+      return en ? (up ? "Often left over" : "Often runs out") : up ? "Suele sobrar" : "Suele acabarse";
   }
 }

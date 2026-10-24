@@ -28,19 +28,26 @@ export function ModelSkeleton() {
 const MILESTONES = [
   { at: 3, title: "Scoring starts", text: "The first 3 nights set a baseline. From the next close-out, each night is scored against that morning's forecast." },
   { at: 14, title: "First 2-week accuracy", text: "Enough nights to compare the forecast with what went in the bin, item by item." },
-  { at: 28, title: "4-week accuracy and calibrated ranges", text: "A full 4-week window, and 80% ranges sized from this kitchen's own misses." },
+  { at: 28, title: "4-week accuracy, calibrated ranges", text: "A full 4-week window, and 80% ranges sized from this kitchen's own misses." },
 ];
 const GOAL = MILESTONES[MILESTONES.length - 1].at;
 
+function headline(nights: number) {
+  if (nights === 0) return "Close out tonight and this page starts learning your kitchen";
+  const toBaseline = 3 - nights;
+  const lead = `${nights} ${nights === 1 ? "night" : "nights"} in.`;
+  if (toBaseline > 0) return `${lead} ${toBaseline} more ${toBaseline === 1 ? "sets" : "set"} the baseline, then every close-out is scored`;
+  return `${lead} Your next close-out is the first one scored`;
+}
+
 export function ModelEmpty({ nights }: { nights: number }) {
-  const left = Math.max(1, 4 - nights);
   const share = Math.min(1, nights / GOAL);
   return (
     <Card className="p-0">
       <div className="flex flex-col items-start gap-4 px-6 pb-6 pt-8 sm:flex-row sm:items-end sm:justify-between">
         <div className="max-w-xl">
           <h2 className="font-display text-xl font-600 leading-snug text-text-primary">
-            {nights === 0 ? "Close out tonight and this page starts learning your kitchen" : `${nights} ${nights === 1 ? "night" : "nights"} in. ${left} more and the forecast gets its first score`}
+            {headline(nights)}
           </h2>
           <p className="mt-1.5 text-sm text-text-secondary">
             Log waste and guests served at the end of service. It takes about a minute, and every night makes tomorrow&apos;s forecast fit this kitchen better.
@@ -80,8 +87,8 @@ export function ModelEmpty({ nights }: { nights: number }) {
           const done = nights >= m.at;
           return (
             <li key={m.at} className="border-b border-border px-6 py-5 last:border-b-0 md:border-b-0">
-              <p className="flex items-center gap-2 text-sm font-600 text-text-primary">
-                {done ? <CircleCheck className="h-4 w-4 text-good" aria-hidden /> : <Circle className="h-4 w-4 text-text-muted" aria-hidden />}
+              <p className="flex items-start gap-2 text-sm font-600 text-text-primary">
+                {done ? <CircleCheck className="mt-0.5 h-4 w-4 shrink-0 text-good" aria-hidden /> : <Circle className="mt-0.5 h-4 w-4 shrink-0 text-text-muted" aria-hidden />}
                 Night {m.at}: {m.title}
               </p>
               <p className="mt-1 text-[13px] leading-relaxed text-text-secondary">{m.text}</p>
