@@ -1,4 +1,5 @@
 import type { DayPrediction } from "./types";
+import { CATEGORIES } from "./categories";
 
 // One CSV cell. Quotes when needed (RFC 4180) and defuses text that a
 // spreadsheet would run as a formula (=, +, -, @ at the start).
