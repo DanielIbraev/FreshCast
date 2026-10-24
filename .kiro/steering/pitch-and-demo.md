@@ -17,7 +17,14 @@ The track bullets are resilient communities, cleaner buildings, clean energy, oc
 - **Resilient communities**: independent restaurants run on 3-5% margins. Waste is the difference between staying open and closing.
 - Seafood waste (salmon, shrimp) connects to the **ocean / blue economy** bullet: every kg of fish not wasted is a kg not caught.
 
+## Official judging criteria (from the rules) and our answer
+- **Potential Value** (real problem, scalable, accessible, equity): no hardware, any phone, English/Español staff screen, 2-minute setup for any restaurant, $49/mo pays back in ~2 days, 412,498 US independents.
+- **Implementation** (Kiro usage depth): spec → PBT that found 2 bugs → calibrated ranges; 3 hooks; 7 steering docs; pptx MCP. Write-up in KIRO.md. Video must show the Kiro slide.
+- **Quality & Design**: public datasets (Open-Meteo, OSM, FAO/WRAP, USDA, EPA), model shows its math, honest 80% ranges, anti-slop UI.
+- Video < 3:00, must show the app working, no third-party trademarks or copyrighted music.
+
 ## Numbers you can say (all come from the app, none are typed in)
+- Owner's best guess 78.5% vs FreshCast 86.7% → 38% fewer misses. 80% ranges cover 79.6% of real nights. 35 tests, 11 property-based, 2 bugs caught.
 - Benchmark accuracy, same simulated kitchen, 12 weeks, 3 seeds, weeks 3-12:
   v0 rule of thumb 64.0% → v1 +covers & weekday 74.1% → v2 +weather, season, events 78.4% → v3 +kitchen calibration 86.6% → v4 +weekday/weather/recency learning 87.6%. Ceiling 90% (daily randomness).
 - v4 cuts forecast error 66% vs. guessing.
@@ -35,7 +42,7 @@ The track bullets are resilient communities, cleaner buildings, clean energy, oc
 Worked at a small cafe, watched prepped food go in the trash every night, the owner never knew what it cost him.
 
 ## The deck
-Lives in the app at `/pitch` (11 slides, 1600x900, scales to any screen). Arrow keys or click to advance, `F` for fullscreen, `/pitch?s=7` to jump back after the demo. Numbers on slides 3, 7, 8, 9 are live from Supabase and the benchmark.
+Lives in the app at `/pitch` (16 slides; video cut `?cut=video&cam=1` has 15, 1600x900, scales to any screen). Arrow keys or click to advance, `F` for fullscreen, `/pitch?s=7` to jump back after the demo. Numbers on slides 3, 7, 8, 9 are live from Supabase and the benchmark.
 Order: Title → Hook (audience question) → Problem + evidence → Why tools fail → Demo cue → How it works (equations) → Accuracy ladder → Before/after → Scale + climate → Real vs simulated → Built with Kiro.
 Market math: 1% of ~500k independents = 5,000 × $588/yr = $2.94M ARR. (An older draft said $29M; that was wrong by 10x. Never use it.)
 

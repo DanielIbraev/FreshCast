@@ -16,12 +16,15 @@ For one restaurant, the demo kitchen's last 30 days annualize to **~1,940 meals*
 |---|---|
 | Forecast | A 7-day outlook with live local weather (Open-Meteo), plus a climate-impact card (meals, kg, CO₂e, miles). Waste forecast per ingredient, plus a breakdown of every signal and the equation behind each number. What-if controls for guests, weather, and nearby events. |
 | Prep & order | Usual vs. recommended prep per item, and a copy-paste list for the supplier |
-| Log waste | Tap the item, then a portion ("a bowl", "half a pan"). No scale. Close out with tonight's guest count. |
+| Log waste | Tap the item, then a portion ("a bowl", "half a pan"). No scale. **English / Español.** Close out with tonight's guest count. |
 | Kitchen | Add, edit, or remove ingredients. The CO₂ factor fills in from the category. One-tap staples. Upload a Square/Toast sales CSV to learn guests by weekday (parsed in the browser; the file never leaves the device). |
 | Setup (`/setup`) | Any restaurant in about 2 minutes: name, address (geocoded for local weather), cuisine, guests, and starter ingredients. |
 | Pilot (`/pilot`) | Sign-up for pilot restaurants, linked by the QR code on the last slide. |
 | Model accuracy | Every model version scored walk-forward, effort vs. accuracy, and accuracy on the stored logs |
 | `/pitch` | The pitch deck, live-wired to the same data. Press F for full screen. `?cut=video&cam=1` is the recording version with a webcam-safe corner. |
+
+## Confidence ranges (spec-driven)
+Every forecast shows an 80% range learned from the kitchen's own past errors (`lib/uncertainty.ts`). On the benchmark, real nights land inside it 79.6% of the time. Spec: `.kiro/specs/forecast-confidence/`.
 
 ## How the model works
 1. **Priors** (`lib/prediction.ts`): waste = daily prep × 8% × multipliers for guests, weather, weekday, season, holidays, nearby events, and cuisine.
@@ -55,11 +58,14 @@ Weighing every item on a scale instead of eyeballing takes about 3x the time and
 - **No secrets in the repo or bundle.** The admin token lives only in the database and in the owner's browser, and it's stripped from the address bar on first use.
 
 ## Tests
-`npm test` runs 21 tests on the model, learning layer, accuracy metric, benchmark claims, and CSV import. They also run in GitHub Actions on every push.
+`npm test` runs 35 tests, including **11 property-based tests** (fast-check) that check model safety, no data leakage, shrinkage, range bounds, and importer robustness on hundreds of generated inputs each. PBT caught 2 real bugs (see [KIRO.md](KIRO.md)). The tests run in GitHub Actions on every push.
 
 ## Built with Kiro
-- **Steering** (`.kiro/steering/`): rules for the model, UI, pitch, and hackathon scope, plus an anti-AI-slop design filter.
-- **Hooks:** every save commits and pushes, so the git log is a timeline of the build.
+Full write-up: **[KIRO.md](KIRO.md)**. Submission text: [SUBMISSION.md](SUBMISSION.md).
+
+- **Spec** (`.kiro/specs/forecast-confidence/`): requirements → design with correctness properties → tasks.
+- **Steering** (`.kiro/steering/`): rules for the model, UI, pitch, and hackathon scope, plus the [Anti-AI-UI](https://github.com/Vanszs/Anti-AI-UI) design suite (MIT, © Vanszs).
+- **Hooks:** auto-commit-and-push on save, tests on model edits, and an automatic model re-score.
 - **MCP:** `pptx-mcp` generated the backup PowerPoint.
 - **Research:** every stat and the competitor teardown came from Kiro's web search.
 
@@ -71,3 +77,6 @@ npm run dev        # http://localhost:3000
 npm run bench      # re-score the model after changes
 ```
 Database: run `freshcast-app/supabase/schema.sql` in the Supabase SQL Editor, then set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` in `freshcast-app/.env.local`. Without a database, the app saves to the browser.
+
+## Data and credits
+Open-Meteo (weather, CC BY 4.0) · OpenStreetMap Nominatim (geocoding, © OpenStreetMap contributors, ODbL) · FAO / WRAP carbon factors · USDA (1.2 lb per meal) · EPA (CO₂e per mile) · Technomic (restaurant counts). UI steering from Anti-AI-UI (MIT).
