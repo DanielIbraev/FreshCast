@@ -133,6 +133,8 @@ RLS (`supabase/security.sql`): anon can read `marcos-trattoria`; writes need `pu
 ## Demo Data Requirements
 - Three demo restaurants (`lib/profile.ts`, `lib/kitchens.ts`). Marco's history lives in Supabase; Golden Crumb and Kendall are generated in the browser by the same simulator.
 - History = `runBacktest(ingredients, 12, 7, today, 14, shapeOf(profile))`: 12 weeks, seed 7, plan starts on the 15th open night. Never hardcode dashboard numbers; derive them from `daily_observations` via `lib/history.ts`.
+- Simulated histories and the benchmark use Boston's recorded weather from `lib/history-weather.json` for each night it covers, and simulated weather outside that window. Before a demo day: run `scripts/fetch-history-weather.ts`, then `npm run bench`, and reseed Marco's.
+- A restaurant with no close-outs is on day 1: dashboard banner, and Model page milestones at nights 3, 14 and 28 (thresholds in `lib/track-record.ts`).
 - Reset demo data (sidebar) reseeds. Owner reseed of Supabase: `scripts/reseed-marco.ts`.
 - After any model change: `npm run bench` (the rescore hook does this on save) and commit `lib/benchmarks.json`.
 
