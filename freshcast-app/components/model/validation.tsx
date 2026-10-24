@@ -28,6 +28,8 @@ function Notes() {
 export function Validation({ b, own, restaurantName }: { b: Bench; own: boolean; restaurantName: string }) {
   const none = b.effort.find((e) => e.id === "none");
   const rec = b.effort.find((e) => e.id === "all-pos");
+  const weighed = b.effort.find((e) => e.id === "weighed-pos");
+  const w3 = b.weeks.find((w) => w.week === 3);
   const v0 = b.versions[0].accuracy;
   const v4 = v4Of(b);
   const kitchen = own ? `${restaurantName}'s simulated kitchen` : "the Marco's Trattoria test kitchen";
@@ -60,7 +62,9 @@ export function Validation({ b, own, restaurantName }: { b: Bench; own: boolean;
             <h3 className="font-display text-base font-600 text-text-primary">How much staff time is worth it</h3>
             <p className="mb-5 mt-0.5 max-w-3xl text-sm text-text-secondary">
               Logging every item with quick-tap estimates plus guests served takes about {rec.minutes.toFixed(1)} minutes a night and lifts accuracy from{" "}
-              {pct(none.accuracy, 1)} to {pct(rec.accuracy, 1)}. Weighing every item on a scale takes about three times as long for under a point more.
+              {pct(none.accuracy, 1)} to {pct(rec.accuracy, 1)}.
+              {weighed &&
+                ` Weighing every item on a scale takes ${(weighed.minutes / rec.minutes).toFixed(1)}x as long for ${((weighed.accuracy - rec.accuracy) * 100).toFixed(1)} points more.`}
             </p>
             <div className="overflow-x-auto">
               <div className="min-w-[640px]">
@@ -73,7 +77,11 @@ export function Validation({ b, own, restaurantName }: { b: Bench; own: boolean;
         <div className="grid grid-cols-1 gap-8 xl:grid-cols-[1.6fr_1fr]">
           <section>
             <h3 className="font-display text-base font-600 text-text-primary">Accuracy week by week</h3>
-            <p className="mb-4 mt-0.5 text-sm text-text-secondary">Priors stay flat. The learning layer closes most of the gap to best possible within two weeks of logs.</p>
+            <p className="mb-4 mt-0.5 text-sm text-text-secondary">
+              {w3
+                ? `By week 3 the learning model scored ${pct(w3.learned)}, against ${pct(w3.priorOnly)} for priors alone and ${pct(w3.ceiling)} best possible.`
+                : "Priors alone stay flat. The learning model climbs as close-outs build."}
+            </p>
             <LearningCurve weeks={b.weeks} />
           </section>
           <section>
