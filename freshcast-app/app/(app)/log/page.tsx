@@ -1,169 +1,145 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Plus, Leaf, Check } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Undo2 } from "lucide-react";
 import { Card, CardLabel } from "@/components/ui/card";
 import { Counter } from "@/components/ui/counter";
-import { DEMO_INGREDIENTS } from "@/lib/demo-data";
-import { formatCurrency } from "@/lib/utils";
+import { ReasonBreakdown } from "@/components/log/reason-breakdown";
+import { useStore } from "@/lib/store";
+import { WasteReason } from "@/lib/types";
+import { CATEGORIES, WASTE_REASONS } from "@/lib/categories";
+import { cn, formatCurrency } from "@/lib/utils";
 
-interface LoggedItem {
-  id: string;
-  name: string;
-  quantityKg: number;
-  cost: number;
-  co2: number;
-  time: string;
-}
+const AMOUNTS = [0.1, 0.25, 0.5, 1, 2];
 
 export default function LogWastePage() {
-  const [logged, setLogged] = useState<LoggedItem[]>([]);
-  const [selectedId, setSelectedId] = useState(DEMO_INGREDIENTS[0].id);
-  const [qty, setQty] = useState("0.5");
+  const { ingredients, logs, addLog, removeLog, hydrated } = useStore();
+  const [picked, setPicked] = useState<string | null>(null);
+  const [reason, setReason] = useState<WasteReason>("overprep");
 
-  const totalCo2 = logged.reduce((s, l) => s + l.co2, 0);
-  const totalCost = logged.reduce((s, l) => s + l.cost, 0);
+  const today = new Date().toDateString();
+  const todays = logs.filter((l) => new Date(l.loggedAt).toDateString() === today);
+  const find = (id: string) => ingredients.find((i) => i.id === id);
+  const totalCost = todays.reduce((s, l) => s + (find(l.ingredientId)?.costPerKg ?? 0) * l.quantityKg, 0);
+  const totalCo2 = todays.reduce((s, l) => s + (find(l.ingredientId)?.co2PerKg ?? 0) * l.quantityKg, 0);
+  const totalKg = todays.reduce((s, l) => s + l.quantityKg, 0);
 
-  function logWaste() {
-    const ing = DEMO_INGREDIENTS.find((i) => i.id === selectedId)!;
-    const quantityKg = parseFloat(qty) || 0;
-    if (quantityKg <= 0) return;
-    const item: LoggedItem = {
-      id: `${Date.now()}`,
-      name: ing.name,
-      quantityKg,
-      cost: quantityKg * ing.costPerKg,
-      co2: quantityKg * ing.co2PerKg,
-      time: new Date().toLocaleTimeString("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-    };
-    setLogged((prev) => [item, ...prev]);
+  function log(quantityKg: number) {
+    if (!picked) return;
+    addLog({ id: `${Date.now()}`, ingredientId: picked, quantityKg, reason, loggedAt: new Date().toISOString() });
+    setPicked(null);
   }
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="font-display text-2xl font-700 text-text-primary">
-          Log Waste
-        </h1>
-        <p className="mt-1 text-sm text-text-secondary">
-          Two taps during service. This is the only daily input FreshCast needs.
-        </p>
-      </div>
+    <div className="space-y-5">
+      <header>
+        <p className="text-sm text-text-muted">Tap the item, tap the amount. This is the only daily input FreshCast needs.</p>
+        <h1 className="font-display text-[28px] font-700 leading-tight text-text-primary">Log waste</h1>
+      </header>
 
-      {/* Live CO2 counter — the signature live number */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-3 gap-4">
         <Card>
-          <CardLabel>CO₂ logged today</CardLabel>
-          <p className="mt-2 font-display text-5xl font-800 tracking-tight tabular-nums text-waste">
-            <Counter value={totalCo2} suffix="kg" decimals={1} />
-          </p>
-        </Card>
-        <Card>
-          <CardLabel>Cost wasted today</CardLabel>
-          <p className="mt-2 font-display text-5xl font-800 tracking-tight tabular-nums text-waste">
+          <CardLabel>Thrown out today</CardLabel>
+          <p className="mt-2 font-display text-[44px] font-800 leading-none tabular-nums text-waste">
             <Counter value={totalCost} prefix="$" decimals={2} />
           </p>
+          <p className="mt-2 text-xs text-text-muted">{totalKg.toFixed(2)}kg across {todays.length} entries</p>
+        </Card>
+        <Card>
+          <CardLabel>CO₂ from today&apos;s waste</CardLabel>
+          <p className="mt-2 font-display text-[44px] font-800 leading-none tabular-nums text-waste">
+            <Counter value={totalCo2} suffix="kg" decimals={1} />
+          </p>
+          <p className="mt-2 text-xs text-text-muted">about {Math.round(totalCo2 / 0.4)} miles of driving</p>
+        </Card>
+        <Card>
+          <CardLabel>Why it was thrown out</CardLabel>
+          <div className="mt-3">
+            <ReasonBreakdown logs={todays} ingredients={ingredients} />
+          </div>
         </Card>
       </div>
 
-      {/* Log form */}
       <Card>
-        <h2 className="mb-4 font-display text-lg font-600 text-text-primary">
-          Add a waste item
-        </h2>
-        <div className="flex items-end gap-3">
-          <div className="flex-1">
-            <label className="mb-1.5 block text-xs text-text-muted">
-              Ingredient
-            </label>
-            <select
-              value={selectedId}
-              onChange={(e) => setSelectedId(e.target.value)}
-              className="w-full rounded-md border border-border bg-canvas px-3 py-2 text-sm text-text-primary focus:border-good focus:outline-none"
-            >
-              {DEMO_INGREDIENTS.map((i) => (
-                <option key={i.id} value={i.id}>
-                  {i.name}
-                </option>
-              ))}
-            </select>
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="font-display text-lg font-600 text-text-primary">{picked ? `How much ${find(picked)?.name}?` : "What went in the bin?"}</h2>
+          <div className="flex gap-1 rounded-md bg-canvas p-0.5" role="group" aria-label="Reason">
+            {(Object.keys(WASTE_REASONS) as WasteReason[]).map((r) => (
+              <button
+                key={r}
+                onClick={() => setReason(r)}
+                className={cn("rounded px-2.5 py-1 text-xs transition-colors duration-150", reason === r ? "bg-surface-hover font-600 text-text-primary" : "text-text-muted hover:text-text-secondary")}
+              >
+                {WASTE_REASONS[r].label}
+              </button>
+            ))}
           </div>
-          <div className="w-32">
-            <label className="mb-1.5 block text-xs text-text-muted">
-              Amount (kg)
-            </label>
-            <input
-              type="number"
-              step="0.1"
-              min="0"
-              value={qty}
-              onChange={(e) => setQty(e.target.value)}
-              className="w-full rounded-md border border-border bg-canvas px-3 py-2 text-sm text-text-primary focus:border-good focus:outline-none"
-            />
-          </div>
-          <button
-            onClick={logWaste}
-            className="flex items-center gap-2 rounded-md bg-good px-4 py-2 text-sm font-500 text-canvas transition-colors duration-150 hover:bg-good-dim"
-          >
-            <Plus className="h-4 w-4" />
-            Log it
-          </button>
         </div>
+
+        <div className="grid grid-cols-4 gap-2">
+          {ingredients.map((i) => (
+            <button
+              key={i.id}
+              onClick={() => setPicked(picked === i.id ? null : i.id)}
+              className={cn(
+                "flex h-[72px] flex-col justify-between rounded-md border px-3 py-2.5 text-left transition-colors duration-150",
+                picked === i.id ? "border-good bg-surface-hover" : "border-border bg-canvas hover:border-text-muted"
+              )}
+            >
+              <span className="flex items-center gap-2">
+                <span className="h-2 w-2 rounded-full" style={{ background: CATEGORIES[i.category].color }} />
+                <span className="truncate text-sm font-500 text-text-primary">{i.name}</span>
+              </span>
+              <span className="text-[11px] tabular-nums text-text-muted">${i.costPerKg}/kg</span>
+            </button>
+          ))}
+        </div>
+
+        <AnimatePresence>
+          {picked && (
+            <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.2 }} className="overflow-hidden">
+              <div className="mt-4 flex items-center gap-2 border-t border-border pt-4">
+                {AMOUNTS.map((a) => (
+                  <button key={a} onClick={() => log(a)} className="flex-1 rounded-md border border-border bg-canvas py-3 transition-colors duration-150 hover:border-waste">
+                    <span className="block font-display text-lg font-700 tabular-nums text-text-primary">{a}kg</span>
+                    <span className="block text-[11px] tabular-nums text-text-muted">{formatCurrency((find(picked)?.costPerKg ?? 0) * a)}</span>
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </Card>
 
-      {/* Logged list */}
       <Card>
-        <h2 className="mb-4 font-display text-lg font-600 text-text-primary">
-          Today&apos;s log
-        </h2>
-        {logged.length === 0 ? (
-          <div className="flex flex-col items-center gap-2 py-10 text-center">
-            <Leaf className="h-8 w-8 text-text-muted" />
-            <p className="text-sm text-text-muted">
-              Nothing logged yet. Add an item above to see it appear here.
-            </p>
-          </div>
-        ) : (
-          <div className="space-y-2">
-            <AnimatePresence initial={false}>
-              {logged.map((item) => (
-                <motion.div
-                  key={item.id}
-                  initial={{ opacity: 0, y: -8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.25, ease: "easeOut" }}
-                  className="flex items-center justify-between rounded-md border border-border bg-canvas px-4 py-3"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-7 w-7 items-center justify-center rounded-md bg-surface">
-                      <Check className="h-4 w-4 text-good" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-500 text-text-primary">
-                        {item.name}
-                      </p>
-                      <p className="text-xs text-text-muted">
-                        {item.quantityKg}kg · {item.time}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm font-500 tabular-nums text-waste">
-                      {formatCurrency(item.cost)}
-                    </p>
-                    <p className="text-xs text-text-muted tabular-nums">
-                      {item.co2.toFixed(1)}kg CO₂
-                    </p>
-                  </div>
-                </motion.div>
-              ))}
-            </AnimatePresence>
-          </div>
-        )}
+        <h2 className="mb-3 font-display text-lg font-600 text-text-primary">Today&apos;s log</h2>
+        {hydrated && todays.length === 0 && <p className="py-6 text-center text-sm text-text-muted">Nothing logged yet today.</p>}
+        <ul className="divide-y divide-border">
+          <AnimatePresence initial={false}>
+            {todays.map((l) => {
+              const ing = find(l.ingredientId);
+              return (
+                <motion.li key={l.id} initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="flex items-center justify-between py-2.5">
+                  <span className="flex items-center gap-3">
+                    <span className="w-14 text-xs tabular-nums text-text-muted">{new Date(l.loggedAt).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}</span>
+                    <span className="text-sm text-text-primary">{ing?.name ?? "Removed item"}</span>
+                    <span className="rounded px-1.5 py-0.5 text-[10px]" style={{ color: WASTE_REASONS[l.reason].color, background: `${WASTE_REASONS[l.reason].color}1A` }}>
+                      {WASTE_REASONS[l.reason].label}
+                    </span>
+                  </span>
+                  <span className="flex items-center gap-4">
+                    <span className="text-xs tabular-nums text-text-muted">{l.quantityKg}kg</span>
+                    <span className="w-16 text-right text-sm font-600 tabular-nums text-waste">{formatCurrency((ing?.costPerKg ?? 0) * l.quantityKg)}</span>
+                    <button onClick={() => removeLog(l.id)} aria-label="Undo entry" className="text-text-muted hover:text-text-primary">
+                      <Undo2 className="h-3.5 w-3.5" />
+                    </button>
+                  </span>
+                </motion.li>
+              );
+            })}
+          </AnimatePresence>
+        </ul>
       </Card>
     </div>
   );
