@@ -1,8 +1,6 @@
-// Marco's Trattoria — the demo restaurant for FreshCast.
-// Boston, MA. 60-seat independent Italian restaurant.
-// CO2 factors (kg CO2e per kg food wasted) sourced from FAO/WRAP datasets.
+// Marco's Trattoria: the demo restaurant. 60-seat independent Italian, Boston.
 
-import { Restaurant, Ingredient, WasteLog } from "./types";
+import { Restaurant, Ingredient, WasteLog, WasteReason } from "./types";
 
 export const DEMO_RESTAURANT: Restaurant = {
   id: "marcos-trattoria",
@@ -13,30 +11,25 @@ export const DEMO_RESTAURANT: Restaurant = {
   cuisineType: "italian",
 };
 
-// Average covers per day of week, learned from historical data.
 export const AVG_COVERS = 52;
 
+// Expected covers by weekday, as a reservation integration would report them.
+// Index 0 = Sunday.
+export const COVERS_BY_DAY = [48, 38, 45, 50, 56, 68, 72];
+
+// History values are what the model has learned from 3 weeks of Marco's logs.
+// lastWeekRatio > 1 means Marco wasted more than forecast last week.
 export const DEMO_INGREDIENTS: Ingredient[] = [
-  { id: "arugula", name: "Arugula", costPerKg: 12.5, baselinePrepKg: 4.0, co2PerKg: 2.0 },
-  { id: "salmon", name: "Salmon", costPerKg: 28.0, baselinePrepKg: 6.0, co2PerKg: 11.9 },
-  { id: "mozzarella", name: "Fresh Mozzarella", costPerKg: 16.0, baselinePrepKg: 5.0, co2PerKg: 8.6 },
-  { id: "tomatoes", name: "San Marzano Tomatoes", costPerKg: 6.5, baselinePrepKg: 8.0, co2PerKg: 2.1 },
-  { id: "basil", name: "Fresh Basil", costPerKg: 22.0, baselinePrepKg: 1.5, co2PerKg: 2.0 },
-  { id: "pasta-dough", name: "Fresh Pasta Dough", costPerKg: 4.0, baselinePrepKg: 10.0, co2PerKg: 1.4 },
-  { id: "prosciutto", name: "Prosciutto", costPerKg: 42.0, baselinePrepKg: 3.0, co2PerKg: 12.3 },
-  { id: "bread", name: "Focaccia Bread", costPerKg: 3.5, baselinePrepKg: 12.0, co2PerKg: 1.3 },
+  { id: "arugula", name: "Arugula", category: "produce", costPerKg: 12.5, baselinePrepKg: 4, shelfLifeDays: 3, co2PerKg: 2.0, history: { lastWeekRatio: 1.24, calibration: 1.12, weeksOfData: 3 } },
+  { id: "salmon", name: "Atlantic Salmon", category: "seafood", costPerKg: 28, baselinePrepKg: 6, shelfLifeDays: 2, co2PerKg: 11.9, history: { lastWeekRatio: 0.92, calibration: 0.95, weeksOfData: 3 } },
+  { id: "mozzarella", name: "Fresh Mozzarella", category: "dairy", costPerKg: 16, baselinePrepKg: 5, shelfLifeDays: 5, co2PerKg: 8.6, history: { lastWeekRatio: 1.05, calibration: 1.02, weeksOfData: 3 } },
+  { id: "tomatoes", name: "San Marzano Tomatoes", category: "produce", costPerKg: 6.5, baselinePrepKg: 8, shelfLifeDays: 6, co2PerKg: 2.1, history: { lastWeekRatio: 0.88, calibration: 0.91, weeksOfData: 3 } },
+  { id: "basil", name: "Fresh Basil", category: "produce", costPerKg: 22, baselinePrepKg: 1.5, shelfLifeDays: 2, co2PerKg: 2.0, history: { lastWeekRatio: 1.31, calibration: 1.18, weeksOfData: 3 } },
+  { id: "pasta", name: "Fresh Pasta Dough", category: "bakery", costPerKg: 4, baselinePrepKg: 10, shelfLifeDays: 2, co2PerKg: 1.4, history: { lastWeekRatio: 1.1, calibration: 1.06, weeksOfData: 3 } },
+  { id: "prosciutto", name: "Prosciutto di Parma", category: "meat", costPerKg: 42, baselinePrepKg: 3, shelfLifeDays: 7, co2PerKg: 12.3, history: { lastWeekRatio: 0.97, calibration: 0.98, weeksOfData: 3 } },
+  { id: "focaccia", name: "Focaccia", category: "bakery", costPerKg: 3.5, baselinePrepKg: 12, shelfLifeDays: 1, co2PerKg: 1.3, history: { lastWeekRatio: 1.15, calibration: 1.09, weeksOfData: 3 } },
 ];
 
-// Tomorrow's conditions for the demo — a rainy Tuesday, the highest-waste
-// combination (Tuesday 1.22x day factor + rain 1.15x weather).
-export const DEMO_TOMORROW = {
-  expectedCovers: 45,
-  weatherCondition: "rain" as const,
-  tempF: 58,
-  weatherDescription: "Rainy, 58°F",
-};
-
-// Running totals shown on the dashboard (accumulated since FreshCast started).
 export const DEMO_RUNNING_TOTALS = {
   savedThisMonth: 1240,
   co2PreventedKg: 48,
@@ -44,56 +37,41 @@ export const DEMO_RUNNING_TOTALS = {
   wasteAfterMonthly: 340,
 };
 
-// 3 weeks of waste history showing a downward trend after FreshCast adoption.
-// Week 1 = before recommendations, Weeks 2-3 = improving as the model learns.
+// 21 days of waste cost: high before FreshCast, falling after day 7.
 export function generateWasteHistory(): { date: string; wasteCost: number }[] {
-  const history: { date: string; wasteCost: number }[] = [];
+  const trend = [92, 88, 101, 85, 79, 64, 58, 71, 66, 68, 59, 52, 44, 41, 48, 43, 45, 38, 34, 31, 29];
   const today = new Date();
-  // 21 days ago to yesterday
-  const trend = [
-    // Week 1 — before FreshCast, high and erratic
-    92, 88, 101, 85, 79, 64, 58,
-    // Week 2 — recommendations applied, dropping
-    71, 66, 68, 59, 52, 44, 41,
-    // Week 3 — model calibrated, consistently low
-    48, 43, 45, 38, 34, 31, 29,
-  ];
-  for (let i = 0; i < 21; i++) {
+  return trend.map((wasteCost, i) => {
     const d = new Date(today);
     d.setDate(today.getDate() - (21 - i));
-    history.push({
-      date: d.toISOString().split("T")[0],
-      wasteCost: trend[i],
-    });
-  }
-  return history;
+    return { date: localISO(d), wasteCost };
+  });
 }
 
-// Seed waste logs for "last week same day" recency signal.
-export function generateLastWeekLogs(): WasteLog[] {
-  const logs: WasteLog[] = [];
-  const lastWeek = new Date();
-  lastWeek.setDate(lastWeek.getDate() - 6);
-  const iso = lastWeek.toISOString();
-  // Last week, same weekday, Marco wasted these amounts
-  const lastWeekWaste: Record<string, number> = {
-    arugula: 0.9,
-    salmon: 1.1,
-    mozzarella: 0.7,
-    tomatoes: 1.4,
-    basil: 0.3,
-    "pasta-dough": 1.8,
-    prosciutto: 0.4,
-    bread: 2.2,
-  };
-  let idx = 0;
-  for (const [ingredientId, quantityKg] of Object.entries(lastWeekWaste)) {
-    logs.push({
-      id: `lw-${idx++}`,
-      ingredientId,
-      quantityKg,
-      loggedAt: iso,
-    });
-  }
-  return logs;
+// A few logs from earlier today so the log screen and charts aren't empty.
+export function seedTodayLogs(): WasteLog[] {
+  const seed: [string, number, WasteReason, number][] = [
+    ["focaccia", 1.2, "overprep", 9],
+    ["arugula", 0.4, "spoiled", 10],
+    ["salmon", 0.3, "plate", 13],
+    ["basil", 0.15, "spoiled", 14],
+  ];
+  const now = new Date();
+  return seed.map(([ingredientId, quantityKg, reason, hour], i) => {
+    const t = new Date(now);
+    t.setHours(hour, 10 + i * 7, 0, 0);
+    return { id: `seed-${i}`, ingredientId, quantityKg, reason, loggedAt: t.toISOString() };
+  });
+}
+
+export function localISO(d: Date): string {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+export function parseLocalDate(iso: string): Date {
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(y, m - 1, d);
 }
