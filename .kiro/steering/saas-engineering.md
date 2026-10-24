@@ -7,7 +7,7 @@
 - Charts: Recharts
 - Icons: Lucide
 - Database: Supabase (Postgres + row-level security). No user accounts: the public reads the demo; the owner writes with an `x-admin-token` checked by a `SECURITY DEFINER` function (`supabase/security.sql`).
-- Weather: Open-Meteo API (free, no key), by the restaurant's lat/lng
+- Weather: Open-Meteo API (free, no key), by the restaurant's lat/lng. Its recorded daily weather for Boston (`past_days=92`) drives the simulated histories and the benchmark.
 - Restaurant search and geocoding: OpenStreetMap Nominatim (follow its usage policy: descriptive User-Agent, ≤1 request/s, no autocomplete)
 - Tests: Vitest + fast-check
 - Deployment: Vercel, via a deploy hook. Git deploys are off (`vercel.json` → `git.deploymentEnabled: false`) because auto-push on every save hit the 100 deploys/day limit.
