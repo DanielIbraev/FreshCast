@@ -32,7 +32,9 @@ const CUISINE_FACTOR: Record<CuisineType, number> = {
 
 // Share of a normal day's prep that ends up in the bin with no forecasting.
 // Industry range is 4-10% of purchases; per-item prep waste runs higher.
-const BASE_WASTE_FRACTION = 0.12;
+// 8% lands Marco's untreated forecast near $60-80/day, matching his
+// ~$1,800/month waste before FreshCast.
+const BASE_WASTE_FRACTION = 0.08;
 
 // How much of the predicted waste FreshCast's prep adjustment removes.
 const REDUCTION_RATE = 0.63;
@@ -179,7 +181,7 @@ export function predictIngredientWaste(input: PredictionInput): IngredientPredic
     reducedCo2Kg: round(reducedWasteKg * ingredient.co2PerKg),
     recommendedPrepKg: round(Math.max(0, ingredient.baselinePrepKg - cutKg)),
     recommendation: `Prep ${round(cutKg, 1)}kg less. ${primaryDriver.label} (${primaryDriver.detail}) ${verb}.`,
-    riskLevel: predictedWasteCost >= 12 ? "high" : predictedWasteCost >= 5 ? "medium" : "low",
+    riskLevel: predictedWasteCost >= 10 ? "high" : predictedWasteCost >= 4 ? "medium" : "low",
     primaryDriver,
   };
 }
