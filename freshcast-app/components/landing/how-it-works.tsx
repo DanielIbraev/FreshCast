@@ -1,3 +1,4 @@
+import { EquationFlow } from "@/components/landing/equation-flow";
 import { BASE_WASTE_FRACTION, REDUCTION_RATE } from "@/lib/prediction";
 
 const pct = (x: number) => `${Math.round(x * 100)}%`;
