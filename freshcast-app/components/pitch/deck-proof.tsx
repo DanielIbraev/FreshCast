@@ -2,7 +2,9 @@
 import { Car, Leaf, MapPin, Utensils } from "lucide-react";
 import { Line, Source, Broll } from "./deck-story";
 import { VersusBars, Matrix, SavingsBar } from "./visuals";
+import { QRCodeSVG } from "qrcode.react";
 import { Mark } from "@/components/brand/mark";
+import { SITE_URL } from "@/lib/site";
 
 export const S7Proof = ({ owner, us }: { owner: number; us: number }) => (
   <div className="relative flex h-full flex-col justify-between">
@@ -103,21 +105,34 @@ export const S13Team = () => (
         <li>Built FreshCast end to end today: model, app, database.</li>
         <li>Next: in restaurants, talking to owners, selling it myself.</li>
       </ul>
+      <p className="mt-10 flex items-center gap-3 text-[22px] text-text-muted">
+        <span className="rounded-md border border-border px-2.5 py-1 font-display text-lg font-700 text-text-primary">Kiro</span>
+        Built solo in one day: steering rules, auto-push hooks, MCP, and a secured Supabase backend.
+      </p>
     </div>
   </div>
 );
 
 export const S14Ask = () => (
-  <div className="flex h-full flex-col justify-center">
-    <p className="mb-8 text-[30px] text-text-muted">One ask:</p>
-    <h2 className="font-display text-[88px] font-800 leading-[1.02] tracking-tight text-text-primary">
-      Introduce me to one <span className="text-good">restaurant owner.</span>
-    </h2>
-    <p className="mt-10 text-[30px] text-text-secondary">Goal: 3 Boston pilots by December.</p>
-    <div className="mt-16 flex items-center gap-4">
-      <Mark size={48} />
-      <span className="font-display text-3xl font-700 text-text-primary">FreshCast</span>
-      <span className="ml-4 text-2xl text-text-muted">github.com/DanielIbraev/FreshCast</span>
+  <div className="flex h-full items-center justify-between gap-16">
+    <div className="max-w-[820px]">
+      <p className="mb-8 text-[30px] text-text-muted">One ask:</p>
+      <h2 className="font-display text-[84px] font-800 leading-[1.02] tracking-tight text-text-primary">
+        Introduce me to one <span className="text-good">restaurant owner.</span>
+      </h2>
+      <p className="mt-10 text-[30px] text-text-secondary">Goal: 3 Boston pilots by December.</p>
+      <div className="mt-14 flex items-center gap-4">
+        <Mark size={48} />
+        <span className="font-display text-3xl font-700 text-text-primary">FreshCast</span>
+        <span className="ml-4 text-2xl text-text-muted">github.com/DanielIbraev/FreshCast</span>
+      </div>
+    </div>
+    <div className="flex shrink-0 flex-col items-center">
+      <div className="rounded-2xl bg-white p-5">
+        <QRCodeSVG value={`${SITE_URL}/pilot`} size={300} level="M" bgColor="#FFFFFF" fgColor="#0F1117" />
+      </div>
+      <p className="mt-5 text-[26px] font-600 text-text-primary">Scan to sign up a kitchen</p>
+      <p className="mt-1 text-xl text-text-muted">{SITE_URL.replace("https://", "")}/pilot</p>
     </div>
   </div>
 );
