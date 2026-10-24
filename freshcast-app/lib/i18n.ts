@@ -32,7 +32,7 @@ const STRINGS = {
     closeBtn: "Close out today",
     closeAgain: "Close out again",
     saving: "Saving",
-    saved: (n: number) => `${n} close-outs saved. Tomorrow's forecast:`,
+    saved: (n: number) => `${n} items saved for tonight.`,
   },
   es: {
     title: "Registrar desperdicio",
@@ -59,7 +59,7 @@ const STRINGS = {
     closeBtn: "Cerrar hoy",
     closeAgain: "Cerrar de nuevo",
     saving: "Guardando",
-    saved: (n: number) => `${n} cierres guardados. Pronóstico de mañana:`,
+    saved: (n: number) => `${n} productos guardados de esta noche.`,
   },
 };
 
