@@ -23,6 +23,49 @@ export interface BacktestResult {
   days: SimDay[];
 }
 
+// Model versions, each adding signals on top of the last. This is the
+// "iterations" story: same kitchen, same 12 weeks, scored the same way.
+export const VERSIONS = [
+  { id: "v0", name: "Rule of thumb", detail: "Flat 8% of prep, every day", priors: [] as string[], learning: 0 },
+  { id: "v1", name: "+ Covers & weekday", detail: "Reservations and day-of-week priors", priors: ["demand", "dayOfWeek"], learning: 0 },
+  { id: "v2", name: "+ Weather, season, events", detail: "Open-Meteo, calendar, events feed", priors: ["demand", "dayOfWeek", "weather", "season", "holiday", "event", "cuisine"], learning: 0 },
+  { id: "v3", name: "+ Kitchen calibration", detail: "Learns each ingredient from your logs", priors: ["demand", "dayOfWeek", "weather", "season", "holiday", "event", "cuisine"], learning: 1 },
+  { id: "v4", name: "+ Weekday & recency learning", detail: "Learns your busy days and last week", priors: ["demand", "dayOfWeek", "weather", "season", "holiday", "event", "cuisine"], learning: 2 },
+] as const;
+
+export interface VersionResult {
+  id: string;
+  name: string;
+  detail: string;
+  accuracy: number; // over weeks 3-12, after a 2-week warm-up
+}
+
+export function runAblation(ingredients: Ingredient[], seeds = [7, 11, 23], weeks = 12): VersionResult[] {
+  return VERSIONS.map((v) => {
+    const scores = seeds.map((seed) => {
+      const end = new Date();
+      const start = new Date(end.getFullYear(), end.getMonth(), end.getDate() - weeks * 7);
+      const days = simulateDays(ingredients, start, weeks * 7, seed);
+      const obs: Observation[] = [];
+      const pairs: { predicted: number; actual: number }[] = [];
+      days.forEach((day, i) => {
+        for (const ing of ingredients) {
+          const signals = computeSignals({ ingredient: ing, expectedCovers: day.expectedCovers, avgCovers: AVG_COVERS, weather: day.weather, weatherSource: "live", date: day.dateObj, event: day.event, cuisineType: DEMO_RESTAURANT.cuisineType });
+          const raw = ing.baselinePrepKg * BASE_WASTE_FRACTION * signals.filter((s) => (v.priors as readonly string[]).includes(s.key)).reduce((a, s) => a * s.value, 1);
+          const L = v.learning > 0 && obs.length ? learn(obs, ing.id, day.date) : NO_LEARNING;
+          const forecast = raw * L.calibration * (v.learning > 1 ? L.weekday * L.recency : 1);
+          const actual = day.trueUsual[ing.id];
+          if (i >= 14) pairs.push({ predicted: forecast, actual });
+          const cut = forecast * REDUCTION_RATE;
+          obs.push({ date: day.date, ingredientId: ing.id, rawKg: raw, usualKg: Math.max(0, actual - cut) + cut });
+        }
+      });
+      return accuracy(pairs);
+    });
+    return { id: v.id, name: v.name, detail: v.detail, accuracy: scores.reduce((s, x) => s + x, 0) / scores.length };
+  });
+}
+
 export function runBacktest(ingredients: Ingredient[], weeks = 12, seed = 7, end = new Date()): BacktestResult {
   const start = new Date(end.getFullYear(), end.getMonth(), end.getDate() - weeks * 7);
   const days = simulateDays(ingredients, start, weeks * 7, seed);
