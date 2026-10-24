@@ -15,7 +15,7 @@ export interface WeekResult {
   naive: number; // flat rule of thumb: 8% of prep, every day
   priorOnly: number; // FreshCast v1: industry priors, no learning
   learned: number; // FreshCast with learning
-  ceiling: number; // best possible: knows the true average, can't see daily noise
+  ceiling: number; // best possible at prep time: knows the kitchen's true habits, has only reservations
 }
 
 export interface BacktestResult {
@@ -99,7 +99,7 @@ export function runBacktest(ingredients: Ingredient[], weeks = 12, seed = 7, end
       buckets[w].naive.push({ predicted: ing.baselinePrepKg * BASE_WASTE_FRACTION, actual });
       buckets[w].priorOnly.push({ predicted: raw, actual });
       buckets[w].learned.push({ predicted: forecast, actual });
-      buckets[w].ceiling.push({ predicted: day.trueMean[ing.id], actual });
+      buckets[w].ceiling.push({ predicted: day.trueMeanAtPrep[ing.id], actual });
 
       // Tonight: kitchen prepped to plan, then logged what went in the bin.
       // If the plan cut more than would have been wasted, the item sold out;

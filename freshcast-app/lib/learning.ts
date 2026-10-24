@@ -35,11 +35,12 @@ export function learn(obs: Observation[], ingredientId: string, targetDate: stri
   const ratio = (o: Observation) => o.usualKg / o.rawKg;
   const past = obs.filter((o) => o.rawKg > 0 && toDay(o.date) < target);
   const mine = past.filter((o) => o.ingredientId === ingredientId);
-  if (mine.length === 0) return NO_LEARNING;
+  if (past.length === 0) return NO_LEARNING;
 
-  // 1. How this kitchen handles this ingredient (last 28 days)
+  // 1. How this kitchen handles this ingredient (last 28 days). Items nobody
+  //    logs stay at 1.0 here but still get the pooled weekday/weather fixes.
   const recent = mine.filter((o) => target - toDay(o.date) <= 28);
-  const calibration = clamp(shrunkMean(recent.map(ratio), 2), 0.4, 2.5);
+  const calibration = recent.length ? clamp(shrunkMean(recent.map(ratio), 2), 0.4, 2.5) : 1;
 
   // 2. Is this weekday busier or slower than the model's prior thinks? (last 8 weeks)
   const perIngredientCal = new Map<string, number>();

@@ -43,9 +43,11 @@ export interface SimDay {
   dateObj: Date;
   weather: DayWeather;
   expectedCovers: number; // what reservations said
+  actualCovers: number; // who actually showed up (the POS knows this at close)
   event: NearbyEvent;
   trueUsual: Record<string, number>; // waste if prepped as usual (kg), with noise
-  trueMean: Record<string, number>; // same, without noise: the best any model could do
+  trueMean: Record<string, number>; // same, without noise, knowing who actually came
+  trueMeanAtPrep: Record<string, number>; // best possible at 8am: knows the kitchen, only has reservations
 }
 
 function hashBias(id: string): number {
@@ -65,16 +67,19 @@ export function simulateDays(ingredients: Ingredient[], start: Date, numDays: nu
     const condition: WeatherCondition = wet ? (r() < 0.12 ? "storm" : "rain") : tempF >= 85 ? "hot" : tempF <= 32 ? "cold" : "normal";
     const event = !wet && r() < 0.08 ? EVENTS.game : EVENTS.none;
     const expectedCovers = Math.max(10, Math.round(COVERS_BY_DAY[dow] * (1 + 0.12 * gauss(r))));
-    const trueCovers = expectedCovers * (1 + 0.06 * gauss(r));
+    // Walk-ins and no-shows: actual guests drift ~10% from reservations
+    const trueCovers = expectedCovers * (1 + 0.1 * gauss(r));
 
     const trueUsual: Record<string, number> = {};
     const trueMean: Record<string, number> = {};
+    const trueMeanAtPrep: Record<string, number> = {};
     for (const ing of ingredients) {
       const bias = TRUE_WORLD.ingredientBias[ing.id] ?? hashBias(ing.id);
+      const demand = (c: number) => Math.max(0.3, 1 + (1 - c / AVG_COVERS) * TRUE_WORLD.coversSlope);
       const mean =
         ing.baselinePrepKg *
         TRUE_WORLD.baseFraction *
-        Math.max(0.3, 1 + (1 - trueCovers / AVG_COVERS) * TRUE_WORLD.coversSlope) *
+        demand(trueCovers) *
         TRUE_WORLD.weather[condition] *
         TRUE_WORLD.dayOfWeek[dow] *
         TRUE_WORLD.season[d.getMonth()] *
@@ -82,6 +87,7 @@ export function simulateDays(ingredients: Ingredient[], start: Date, numDays: nu
         bias;
       const s = TRUE_WORLD.noiseSigma;
       trueMean[ing.id] = mean;
+      trueMeanAtPrep[ing.id] = (mean / demand(trueCovers)) * demand(expectedCovers);
       trueUsual[ing.id] = mean * Math.exp(s * gauss(r) - (s * s) / 2);
     }
 
@@ -90,9 +96,11 @@ export function simulateDays(ingredients: Ingredient[], start: Date, numDays: nu
       dateObj: d,
       weather: { date: localISO(d), tempF, condition, precipProb: wet ? 75 : 10, description: describe(condition, tempF) },
       expectedCovers,
+      actualCovers: Math.round(trueCovers),
       event,
       trueUsual,
       trueMean,
+      trueMeanAtPrep,
     });
   }
   return days;

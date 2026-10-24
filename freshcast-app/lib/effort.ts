@@ -1,0 +1,89 @@
+// Effort vs accuracy: how much staff input is worth it?
+// Each plan is replayed walk-forward on simulated kitchens and scored on
+// every ingredient, logged or not.
+
+import { Ingredient } from "./types";
+import { AVG_COVERS, DEMO_RESTAURANT } from "./demo-data";
+import { priorWasteKg, REDUCTION_RATE } from "./prediction";
+import { learn, accuracy, Observation, NO_LEARNING } from "./learning";
+import { simulateDays, rng } from "./sim";
+
+export interface EffortPlan {
+  id: string;
+  name: string;
+  nights: number[]; // weekdays logged (0 = Sun)
+  topK: number | null; // only the K highest-value items, null = all
+  weighed: boolean; // scale vs. eyeballed with quick-amount buttons
+  posGuests: boolean; // actual guest count pulled from the register at close
+}
+
+const ALL = [0, 1, 2, 3, 4, 5, 6];
+export const PLANS: EffortPlan[] = [
+  { id: "none", name: "No logging", nights: [], topK: null, weighed: false, posGuests: false },
+  { id: "top3x3", name: "Top 3 items, 3 nights a week", nights: [1, 3, 5], topK: 3, weighed: false, posGuests: false },
+  { id: "top5", name: "Top 5 items, nightly", nights: ALL, topK: 5, weighed: false, posGuests: false },
+  { id: "all", name: "Every item, nightly", nights: ALL, topK: null, weighed: false, posGuests: false },
+  { id: "all-pos", name: "Every item + guest count from POS", nights: ALL, topK: null, weighed: false, posGuests: true },
+  { id: "weighed-pos", name: "Every item weighed + POS", nights: ALL, topK: null, weighed: true, posGuests: true },
+];
+
+// Seconds per logged item: two taps on a quick amount, or scale + typing.
+const SEC_EYEBALL = 8;
+const SEC_WEIGHED = 25;
+const SEC_CLOSEOUT = 10;
+// Eyeballing with quick-amount buttons: ~30% error per entry; a scale: ~5%.
+const NOISE_EYEBALL = 0.3;
+const NOISE_WEIGHED = 0.05;
+
+export function minutesPerDay(plan: EffortPlan, itemCount: number): number {
+  if (!plan.nights.length) return 0;
+  const items = Math.min(plan.topK ?? itemCount, itemCount);
+  const perNight = items * (plan.weighed ? SEC_WEIGHED : SEC_EYEBALL) + SEC_CLOSEOUT;
+  return (perNight * plan.nights.length) / 7 / 60;
+}
+
+export interface EffortResult {
+  plan: EffortPlan;
+  accuracy: number;
+  minutes: number;
+}
+
+export function runEffort(ingredients: Ingredient[], seeds = [7, 11, 23, 31, 42], weeks = 12): EffortResult[] {
+  const byValue = [...ingredients].sort((a, b) => b.costPerKg * b.baselinePrepKg - a.costPerKg * a.baselinePrepKg).map((i) => i.id);
+
+  return PLANS.map((plan) => {
+    const logged = new Set(plan.topK ? byValue.slice(0, plan.topK) : byValue);
+    const noise = plan.weighed ? NOISE_WEIGHED : NOISE_EYEBALL;
+    const scores = seeds.map((seed) => {
+      const r = rng(seed * 101);
+      const g = () => Math.sqrt(-2 * Math.log(Math.max(r(), 1e-9))) * Math.cos(2 * Math.PI * r());
+      const end = new Date();
+      const days = simulateDays(ingredients, new Date(end.getFullYear(), end.getMonth(), end.getDate() - weeks * 7), weeks * 7, seed);
+      const obs: Observation[] = [];
+      const pairs: { predicted: number; actual: number }[] = [];
+
+      days.forEach((day, i) => {
+        const tonight: Observation[] = [];
+        for (const ing of ingredients) {
+          const input = { ingredient: ing, expectedCovers: day.expectedCovers, avgCovers: AVG_COVERS, weather: day.weather, weatherSource: "live" as const, date: day.dateObj, event: day.event, cuisineType: DEMO_RESTAURANT.cuisineType };
+          const raw = priorWasteKg(input);
+          const L = obs.length ? learn(obs, ing.id, day.date, day.weather.condition) : NO_LEARNING;
+          const forecast = raw * L.calibration * L.weekday * L.weather * L.recency;
+          const actual = day.trueUsual[ing.id];
+          if (i >= 14) pairs.push({ predicted: forecast, actual });
+
+          if (!plan.nights.includes(day.dateObj.getDay()) || !logged.has(ing.id)) continue;
+          const cut = forecast * REDUCTION_RATE;
+          const binned = Math.max(0, actual - cut) * Math.exp(noise * g() - (noise * noise) / 2);
+          // With the real guest count, the prior is recomputed for who actually came,
+          // so a busy walk-in night isn't mistaken for a kitchen habit.
+          const priorKg = plan.posGuests ? priorWasteKg({ ...input, expectedCovers: day.actualCovers }) : raw;
+          tonight.push({ date: day.date, ingredientId: ing.id, rawKg: priorKg, usualKg: binned + cut, condition: day.weather.condition });
+        }
+        obs.push(...tonight);
+      });
+      return accuracy(pairs);
+    });
+    return { plan, accuracy: scores.reduce((s, x) => s + x, 0) / scores.length, minutes: minutesPerDay(plan, ingredients.length) };
+  });
+}
