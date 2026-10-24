@@ -28,7 +28,7 @@ If food waste were a country, it would be the third-largest greenhouse-gas emitt
 
 **Who it's for.** Independent restaurants on 3–5% margins, which waste tools built for chains ignore, and the staff who close each night, many of them Spanish-first. It runs on the phone or tablet the kitchen already has.
 
-**Public data used:** Open-Meteo (weather), OpenStreetMap Nominatim (restaurant search), Our World in Data / Poore & Nemecek (CO₂e per kg), Feeding America (lb per meal), EPA (CO₂ per mile and per car), Technomic (restaurant counts).
+**Public data used:** Open-Meteo (live forecast, plus Boston's recorded daily weather for the last 92 days, which the simulated histories and benchmark replay), OpenStreetMap Nominatim (restaurant search), Our World in Data / Poore & Nemecek (CO₂e per kg), Feeding America (lb per meal), EPA (CO₂ per mile and per car), Technomic (restaurant counts).
 
 **Built with Kiro.** Kiro IDE only. A spec (`.kiro/specs/forecast-confidence/`) built the 80% ranges; the first design covered only 73% of nights and was redesigned. 13 fast-check properties found 2 bugs the example tests missed. Three active hooks (auto-commit-push, tests on model edits, automatic re-scoring). 7 steering files, the Hallmark design skill, the pptx MCP server, and parallel subagents, including a model audit that found and fixed five real problems. Full write-up with specifics: [KIRO.md](KIRO.md).
 
