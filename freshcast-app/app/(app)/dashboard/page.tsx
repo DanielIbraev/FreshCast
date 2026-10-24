@@ -9,6 +9,7 @@ import { WeekStrip } from "@/components/dashboard/week-strip";
 import { ScenarioBar } from "@/components/dashboard/scenario-bar";
 import { IngredientBars } from "@/components/dashboard/ingredient-bars";
 import { SignalBreakdown } from "@/components/dashboard/signal-breakdown";
+import { ImpactCard } from "@/components/dashboard/impact-card";
 import { useStore } from "@/lib/store";
 import { parseLocalDate } from "@/lib/demo-data";
 import { dailyTotals, summarize } from "@/lib/history";
@@ -81,6 +82,8 @@ export default function DashboardPage() {
               </p>
             </Card>
           </div>
+
+          <ImpactCard sum={sum} />
 
           <div className="grid grid-cols-1 gap-4 xl:grid-cols-[1.45fr_1fr]">
             <Card>
