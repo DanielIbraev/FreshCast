@@ -141,8 +141,10 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     setWeatherSource(w.days?.length ? w.source : "offline");
   }, []);
 
+  // ?r=<restaurant id> opens a specific kitchen (used by the pitch deck links).
   useEffect(() => {
-    activate(loadProfile());
+    const asked = new URLSearchParams(window.location.search).get("r");
+    activate((asked && getProfile(asked)) || loadProfile());
   }, [activate]);
 
   // Visitors' changes are saved on their device; the owner's go to Supabase.

@@ -32,7 +32,7 @@ export const DEMO_PROFILES: Profile[] = [
   {
     id: "marcos-trattoria",
     name: "Marco's Trattoria",
-    address: "214 Hanover St, Boston, MA 02113",
+    address: "Hanover St, North End, Boston, MA (fictional)",
     place: "North End, Boston",
     lat: 42.3647,
     lng: -71.0542,
@@ -50,7 +50,7 @@ export const DEMO_PROFILES: Profile[] = [
   {
     id: "golden-crumb",
     name: "Golden Crumb Café",
-    address: "406 Highland Ave, Somerville, MA 02144",
+    address: "Highland Ave, Davis Square, Somerville, MA (fictional)",
     place: "Davis Square, Somerville",
     lat: 42.3967,
     lng: -71.1226,
@@ -68,7 +68,7 @@ export const DEMO_PROFILES: Profile[] = [
   {
     id: "kendall-bowls",
     name: "Kendall Bowl Co.",
-    address: "1 Broadway, Cambridge, MA 02142",
+    address: "Broadway, Kendall Square, Cambridge, MA (fictional)",
     place: "Kendall Square, Cambridge",
     lat: 42.3629,
     lng: -71.0839,

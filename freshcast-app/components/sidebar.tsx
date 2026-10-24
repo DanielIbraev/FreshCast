@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChefHat, ClipboardList, Gauge, LayoutDashboard, RotateCcw, ShoppingCart, Store, Undo2 } from "lucide-react";
+import { ChefHat, ClipboardList, Gauge, LayoutDashboard, RotateCcw, ShoppingCart } from "lucide-react";
+import { RestaurantSwitcher } from "@/components/restaurant-switcher";
 import { Mark } from "@/components/brand/mark";
 import { useNavTransition } from "@/components/nav-transition";
 import { cn } from "@/lib/utils";
@@ -30,7 +31,7 @@ const plain = (e: React.MouseEvent) => !(e.metaKey || e.ctrlKey || e.shiftKey ||
 
 export function Sidebar() {
   const pathname = usePathname();
-  const { resetDemo, dbStatus, profile, backToDemo } = useStore();
+  const { resetDemo, dbStatus, profile } = useStore();
   const { pending, start } = useNavTransition();
   const st = STATUS[dbStatus];
 
@@ -61,25 +62,14 @@ export function Sidebar() {
         })}
       </nav>
 
-      <div className="mt-auto border-t border-border px-5 py-4">
-        <p className="truncate text-sm font-500 text-text-primary">{profile.name}</p>
-        <p className="mt-0.5 truncate text-xs text-text-muted">
-          {profile.place} · {profile.seats} seats
-        </p>
-        <p className="mt-2 flex items-center gap-1.5 text-xs text-text-muted" title={st.title}>
+      <div className="mt-auto border-t border-border px-4 py-4">
+        <RestaurantSwitcher />
+        <p className="mt-1.5 truncate px-1 text-[11px] text-text-muted">{profile.place}{profile.isDemo ? " · fictional demo" : ""}</p>
+        <p className="mt-2 flex items-center gap-1.5 px-1 text-xs text-text-muted" title={st.title}>
           <span className={cn("h-1.5 w-1.5 shrink-0 rounded-full", st.dot)} />
           {st.text}
         </p>
-        <div className="mt-3 flex flex-col gap-1.5">
-          {profile.isDemo ? (
-            <Link href="/setup" onClick={(e) => plain(e) && start("/setup")} className="flex items-center gap-1.5 text-xs text-good hover:text-text-primary">
-              <Store className="h-3 w-3" /> Set up your restaurant
-            </Link>
-          ) : (
-            <button onClick={backToDemo} className="flex items-center gap-1.5 text-xs text-good hover:text-text-primary">
-              <Undo2 className="h-3 w-3" /> Back to the demo restaurant
-            </button>
-          )}
+        <div className="mt-3 flex flex-col gap-1.5 px-1">
           <button onClick={resetDemo} className="flex items-center gap-1.5 text-xs text-text-muted transition-colors duration-150 hover:text-text-primary">
             <RotateCcw className="h-3 w-3" /> {profile.isDemo ? "Reset demo data" : "Clear my logs"}
           </button>
