@@ -13,7 +13,7 @@ import { PrintSheet } from "@/components/orders/print-sheet";
 
 // Secondary header action. Short label on phones so the row fits.
 const secondary =
-  "flex items-center gap-2 rounded-md border border-border px-3 py-2 text-sm font-600 text-text-secondary transition-colors duration-150 hover:border-text-secondary hover:text-text-primary sm:px-4";
+  "flex items-center justify-center gap-2 rounded-md border border-border px-3 py-2 text-sm font-600 text-text-secondary transition-colors duration-150 hover:border-text-secondary hover:text-text-primary sm:px-4";
 
 export default function OrdersPage() {
   const { selected, profile } = useStore();
@@ -48,7 +48,7 @@ export default function OrdersPage() {
           </p>
           <h1 className="font-display text-[28px] font-700 leading-tight text-text-primary">Prep & order list</h1>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="grid w-full grid-cols-2 gap-2 sm:flex sm:w-auto sm:flex-wrap sm:items-center">
           <Link href={`/screen?r=${profile.id}`} className={secondary}>
             <Tv className="h-4 w-4" />
             <span className="sm:hidden">Screen</span>
@@ -63,7 +63,7 @@ export default function OrdersPage() {
             <span className="sm:hidden">CSV</span>
             <span className="hidden sm:inline">Download CSV</span>
           </button>
-          <button type="button" onClick={copyList} className="flex items-center gap-2 rounded-md border border-good px-3 py-2 text-sm font-600 text-good transition-colors duration-150 hover:bg-good hover:text-canvas sm:px-4">
+          <button type="button" onClick={copyList} className="flex items-center justify-center gap-2 rounded-md border border-good px-3 py-2 text-sm font-600 text-good transition-colors duration-150 hover:bg-good hover:text-canvas sm:px-4">
             {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
             <span className="sm:hidden">{copied ? "Copied" : "Copy"}</span>
             <span className="hidden sm:inline">{copied ? "Copied for your supplier" : "Copy list for supplier"}</span>
