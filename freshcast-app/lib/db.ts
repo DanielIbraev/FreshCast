@@ -158,7 +158,7 @@ export async function insertSignup(s: PilotSignup): Promise<boolean> {
 }
 
 // One local copy per restaurant, so a visitor's own setup never overwrites the demo.
-const localKey = (profileId: string) => `freshcast:v2:data:${profileId}`; // v2: per-weekday prep model
+const localKey = (profileId: string) => `freshcast:v3:data:${profileId}`; // v2: per-weekday prep model
 export function loadLocal(profileId: string): Snapshot | null {
   try {
     const raw = localStorage.getItem(localKey(profileId));

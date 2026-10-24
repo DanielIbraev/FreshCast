@@ -17,3 +17,5 @@ out
 # secrets
 *.local.sql
 *.secret
+
+.hallmark/
