@@ -84,7 +84,7 @@ Each restaurant gets 1 simulated kitchen × 5 random seeds (7, 11, 23, 31, 42), 
 | v0 Rule of thumb (8% of usual prep) | 66.5% | 57.7% | 62.4% |
 | v1 + Weather, season, holidays | 69.0% | 58.6% | 64.6% |
 | v2 + Shelf life | 75.9% | 67.6% | 70.8% |
-| v3 + Guests and kitchen calibration | 85.4% | 82.4% | 83.5% |
+| v3 + Kitchen calibration (learned with guests served at close) | 85.4% | 82.4% | 83.5% |
 | **v4 + Weekday, weather and recency learning** | **85.9%** | **84.4%** | **86.4%** |
 | Owner's best guess (remembers the last 4 same weekdays exactly) | 80.1% | 77.1% | 82.8% |
 | Oracle (knows the hidden habits, not tonight's guests or noise) | 86.8% | 85.8% | 87.3% |
