@@ -79,9 +79,9 @@ export default function OrdersPage() {
                 <span className="h-2 w-2 rounded-full" style={{ background: CATEGORIES[p.ingredient.category].color }} />
                 <span className="truncate text-sm font-500 text-text-primary">{p.ingredient.name}</span>
               </span>
+              {/* scaled to the biggest saving on the list, so the items worth acting on stand out */}
               <div className="relative h-2.5 rounded-full bg-canvas">
-                <div className="absolute inset-y-0 left-0 rounded-full bg-border" style={{ width: "100%" }} />
-                <div className="absolute inset-y-0 left-0 rounded-full bg-good" style={{ width: `${(rec / usual) * 100}%` }} />
+                <div className="absolute inset-y-0 left-0 rounded-full bg-good" style={{ width: `${Math.max((saved / maxSaved) * 100, 4)}%` }} />
               </div>
               <span className="text-right text-sm tabular-nums">
                 <span className="text-text-muted line-through">{usual}</span> <span className="font-600 text-good">{rec.toFixed(1)}kg</span>
