@@ -119,7 +119,7 @@ export const S14Try = () => (
 export const S7bTrust = ({ coverage }: { coverage: number }) => {
   const tiles: [string, string, string][] = [
     [`${Math.round(coverage * 100)}%`, "of simulated nights land inside the 80% range", "Calibrated uncertainty, not a guess"],
-    ["60", "automated tests, 13 property-based", "Caught 2 real bugs before launch"],
+    ["62", "automated tests, 13 property-based", "Caught 2 real bugs before launch"],
     ["0", "writes allowed from the public", "Postgres row-level security"],
     ["9", "signals per forecast, 1 live feed", "Live weather, usual guests, calendar, your logs"],
   ];
@@ -146,7 +146,7 @@ export const S12bKiro = () => {
   const tiles: [string, string, string][] = [
     ["Plan", "Idea, research, sourced stats", "Web search inside Kiro, 7 steering docs"],
     ["Spec", "Requirements → design → tasks", "Confidence ranges: 73% → 79% coverage"],
-    ["Build", "Every line of code", "Model, app, database, 60 tests"],
+    ["Build", "Every line of code", "Model, app, database, 62 tests"],
     ["Check", "13 property tests, a subagent audit", "Found 2 bugs and 5 model errors"],
     ["Ship", "3 hooks, 200+ auto-pushed commits", "Tests and re-scoring on every save"],
     ["Pitch", "This deck and the video plan", "Design skill checked every slide"],
