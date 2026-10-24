@@ -56,6 +56,6 @@ P12 and P13 were not part of the original design. They were added after a subage
 - Residual computation is O(n²) in observations; at 672 rows it runs in under 200 ms, memoized on the observation array.
 
 ## Testing strategy
-- Property tests (P1–P11) in `tests/properties.test.ts`, 200 runs each.
+- Property tests (P1–P11, plus P12–P13 after the audit) in `tests/properties.test.ts`, 200 runs each.
 - Example tests stay in place for readable documentation of specific cases.
 - A coverage test asserts benchmark coverage is in 70–90% (Req 3.3).
