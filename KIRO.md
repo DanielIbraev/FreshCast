@@ -1,6 +1,6 @@
 # How FreshCast was built with Kiro
 
-FreshCast was built solo during Hackachusetts 2026 in the **Kiro IDE**. Kiro wrote most of the code, tests and docs, ran the research, and diagnosed deploy and CI failures. I made the product decisions, reviewed every screen, and pushed back when a number or claim didn't hold up. Everything below can be checked in this repo: the `.kiro/` folder and the git history (over 200 commits, most of them from the auto-commit hook).
+FreshCast was built solo during Hackachusetts 2026 in the **Kiro IDE**. Kiro wrote most of the code, tests and docs, ran the research, and diagnosed deploy and CI failures. I made the product decisions, reviewed every screen, and pushed back when a number or claim didn't hold up. Everything below can be checked in this repo: the `.kiro/` folder and the git history (over 270 commits, most of them from the auto-commit hook).
 
 ## One tool for everything
 Kiro was the only AI tool used to plan and build FreshCast. No separate chatbot for brainstorming, no other coding assistant, no other writing tool. In Kiro:
