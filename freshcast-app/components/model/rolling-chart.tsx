@@ -15,7 +15,28 @@ function headlineFor(rolling: RollingPoint[]) {
   return `7-night accuracy has held near ${pct(b)} since scoring began`;
 }
 
-export function RollingChart({ rolling, planStart, ceiling, ceilingLabel }: { rolling: RollingPoint[]; planStart: string | null; ceiling: number | null; ceilingLabel: string }) {
+// The oracle line is labelled in the legend above the plot, never on the plot,
+// so it can't collide with the accuracy line wherever that line runs.
+function Legend({ ceiling }: { ceiling: number | null }) {
+  return (
+    <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs text-text-secondary">
+      <span className="inline-flex items-center gap-2">
+        <span className="h-0.5 w-5 rounded bg-good" aria-hidden />
+        7-night accuracy
+      </span>
+      {ceiling !== null && (
+        <span className="inline-flex items-center gap-2">
+          <span className="w-5 border-t-2 border-dashed border-data" aria-hidden />
+          <span>
+            <span className="tabular-nums text-text-primary">Oracle {pct(ceiling)}</span>: a forecaster that knows the simulator&apos;s hidden habits
+          </span>
+        </span>
+      )}
+    </div>
+  );
+}
+
+export function RollingChart({ rolling, planStart, ceiling }: { rolling: RollingPoint[]; planStart: string | null; ceiling: number | null }) {
   const reduce = useReducedMotion();
   if (rolling.length < 2) {
     return (
@@ -34,11 +55,9 @@ export function RollingChart({ rolling, planStart, ceiling, ceilingLabel }: { ro
   return (
     <Card>
       <h2 className="font-display text-lg font-600 text-text-primary">{headlineFor(rolling)}</h2>
-      <p className="mt-0.5 text-sm text-text-secondary">
-        Each point scores the 7 nights before it, weighted by kg.
-        {ceiling ? ` Dashed line: ${ceilingLabel}.` : ""}
-      </p>
-      <div className="mt-5 h-[240px] w-full">
+      <p className="mt-0.5 text-sm text-text-secondary">Each point scores the 7 nights before it, weighted by kg.</p>
+      <Legend ceiling={ceiling} />
+      <div className="mt-3 h-[240px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data} margin={{ top: 22, right: 12, left: -8, bottom: 0 }}>
             <XAxis dataKey="date" tick={axisTick} tickFormatter={shortDate} interval={Math.max(0, Math.floor(data.length / 6))} axisLine={{ stroke: "#2D3748" }} tickLine={false} minTickGap={16} />
@@ -58,7 +77,6 @@ export function RollingChart({ rolling, planStart, ceiling, ceilingLabel }: { ro
                 stroke="#60A5FA"
                 strokeOpacity={0.7}
                 strokeDasharray="5 4"
-                label={{ value: `Best possible ${pct(ceiling)}`, fill: "#60A5FA", fontSize: 11, position: "insideBottomRight" }}
               />
             )}
             <Line dataKey="acc" stroke="#10B981" strokeWidth={2.25} dot={false} activeDot={{ r: 4 }} isAnimationActive={!reduce} animationDuration={800} />

@@ -29,8 +29,8 @@ export default function ModelPage() {
           )}
         </div>
         <p className="mt-1 text-sm text-text-secondary">
-          <span className="text-text-primary">{profile.name}</span>
-          <span className="tabular-nums"> · {tr.openNights} open nights logged</span> · forecast scored against each night&apos;s close-out
+          <span className="text-text-primary">{profile.name}</span>: <span className="tabular-nums">{tr.openNights}</span> open{" "}
+          {tr.openNights === 1 ? "night" : "nights"} logged, each forecast scored against that night&apos;s close-out.
         </p>
       </header>
 
@@ -45,7 +45,6 @@ export default function ModelPage() {
               rolling={tr.rolling}
               planStart={tr.planStart}
               ceiling={own ? b.ceiling : null}
-              ceilingLabel="the best a forecaster that knew this kitchen's hidden habits scored on the benchmark"
             />
             <Actions actions={tr.actions} />
           </div>

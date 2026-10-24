@@ -9,7 +9,7 @@ export function LearningCurve({ weeks }: { weeks: WeekResult[] }) {
     "Rule of thumb": +(w.naive * 100).toFixed(1),
     "Priors only": +(w.priorOnly * 100).toFixed(1),
     "FreshCast (learning)": +(w.learned * 100).toFixed(1),
-    "Best possible": +(w.ceiling * 100).toFixed(1),
+    "Oracle": +(w.ceiling * 100).toFixed(1),
   }));
 
   return (
@@ -26,7 +26,7 @@ export function LearningCurve({ weeks }: { weeks: WeekResult[] }) {
           <Line dataKey="Rule of thumb" stroke="#EF4444" strokeWidth={1.5} dot={false} isAnimationActive={false} />
           <Line dataKey="Priors only" stroke="#94A3B8" strokeWidth={1.5} dot={false} isAnimationActive={false} />
           <Line dataKey="FreshCast (learning)" stroke="#10B981" strokeWidth={2.5} dot={{ r: 2.5 }} isAnimationActive={false} />
-          <Line dataKey="Best possible" stroke="#60A5FA" strokeWidth={1.5} strokeDasharray="4 4" dot={false} isAnimationActive={false} />
+          <Line dataKey="Oracle" stroke="#60A5FA" strokeWidth={1.5} strokeDasharray="4 4" dot={false} isAnimationActive={false} />
         </LineChart>
       </ResponsiveContainer>
     </div>

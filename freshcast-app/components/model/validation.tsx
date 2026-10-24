@@ -11,7 +11,7 @@ function Notes() {
     ["Walk-forward.", "Each morning the model sees only close-outs from earlier nights, the same as in a real kitchen."],
     ["Usual guests, no reservations.", "The forecast uses the kitchen's usual guest count for that weekday. There is no reservation feed, so a surprise rush is a miss."],
     ["Hidden truth.", "Each simulated kitchen has habits the model is never told: an item that is always over-prepped, a slow weekday, rain that hits harder than average."],
-    ["Best possible (oracle).", "Knows the simulator's hidden parameters, but not tonight's guest count or the random noise. No forecaster can beat it on average."],
+    ["Oracle.", "A forecaster that knows the simulator's hidden parameters, but not tonight's guest count or the random noise. No forecaster can beat it on average."],
     ["Scope.", "1 simulated kitchen per restaurant × 5 random seeds, 12 weeks, scored on weeks 3–12. Accuracy in a real kitchen is untested until it runs in one."],
   ];
   return (
@@ -40,7 +40,7 @@ export function Validation({ b, own, restaurantName }: { b: Bench; own: boolean;
         <div>
           <h2 className="font-display text-lg font-600 text-text-primary">How we validated the model</h2>
           <p className="mt-0.5 text-sm text-text-secondary">
-            {own ? "Benchmark" : "Benchmark on the Marco's Trattoria test kitchen"}: {pct(v0, 1)} for a rule of thumb, {pct(v4, 1)} for FreshCast, {pct(b.ceiling, 1)} best possible.
+            {own ? "Benchmark" : "Benchmark on the Marco's Trattoria test kitchen"}: {pct(v0, 1)} for a rule of thumb, {pct(v4, 1)} for FreshCast, {pct(b.ceiling, 1)} for an oracle that knows the simulator's hidden habits.
           </p>
         </div>
         <ChevronDown className="h-5 w-5 shrink-0 text-text-muted transition-transform duration-200 group-open:rotate-180" aria-hidden />
@@ -79,7 +79,7 @@ export function Validation({ b, own, restaurantName }: { b: Bench; own: boolean;
             <h3 className="font-display text-base font-600 text-text-primary">Accuracy week by week</h3>
             <p className="mb-4 mt-0.5 text-sm text-text-secondary">
               {w3
-                ? `By week 3 the learning model scored ${pct(w3.learned)}, against ${pct(w3.priorOnly)} for priors alone and ${pct(w3.ceiling)} best possible.`
+                ? `By week 3 the learning model scored ${pct(w3.learned)}, against ${pct(w3.priorOnly)} for priors alone and ${pct(w3.ceiling)} for the oracle.`
                 : "Priors alone stay flat. The learning model climbs as close-outs build."}
             </p>
             <LearningCurve weeks={b.weeks} />
