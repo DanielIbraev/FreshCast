@@ -20,7 +20,7 @@
 ### What can NEVER be cut
 - The red→green animation when applying recommendations
 - Real weather data pulling from Open-Meteo for the restaurant's location
-- The CO2 counter updating when waste is logged
+- The CO₂e impact card updating when a night is closed out
 - Real dollar calculations (not made-up numbers)
 - The before/after savings comparison
 
