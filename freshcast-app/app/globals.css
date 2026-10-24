@@ -34,29 +34,29 @@ body {
 }
 
 * {
-  border-color: var(--color-border);
+  border-color: rgb(var(--color-border));
 }
 
 body {
-  background: var(--color-canvas);
-  color: var(--color-text-primary);
+  background: rgb(var(--color-canvas));
+  color: rgb(var(--color-text-primary));
   font-family: var(--font-inter);
   -webkit-font-smoothing: antialiased;
 }
 
 ::selection {
-  background: var(--color-good-dim);
-  color: var(--color-text-primary);
+  background: rgb(var(--color-good-dim));
+  color: rgb(var(--color-text-primary));
 }
 
 input,
 textarea {
-  caret-color: var(--color-good);
+  caret-color: rgb(var(--color-good));
 }
 
 /* Keyboard focus: a light ring, 10:1+ against every surface, shown instantly. */
 :focus-visible {
-  outline: 2px solid var(--color-text-primary);
+  outline: 2px solid rgb(var(--color-text-primary));
   outline-offset: 2px;
   transition: none;
 }
