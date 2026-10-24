@@ -69,7 +69,7 @@ export function Podium() {
 export function PrepCard({ rows, day }: { rows: { name: string; usual: number; rec: number }[]; day: string }) {
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease }} className="w-[560px] rounded-2xl border border-border bg-surface p-8">
-      <p className="text-lg text-text-muted">Prep list · {day}</p>
+      <p className="text-[20px] text-text-muted">{day}&apos;s prep list</p>
       <ul className="mt-6 space-y-5">
         {rows.map((r, i) => (
           <motion.li key={r.name} initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.3 + i * 0.12, ease }} className="flex items-center justify-between text-2xl">
