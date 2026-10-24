@@ -27,7 +27,7 @@ export function HowItWorks() {
               key={t.title}
               className={`min-w-0 p-6 ${i > 0 ? "border-t border-border md:border-l md:border-t-0" : ""} ${t.result ? "bg-surface" : ""}`}
             >
-              <p className="flex items-baseline gap-2 font-display text-xl font-600 text-text-primary">
+              <p className="flex h-8 items-center gap-2 font-display text-xl font-600 text-text-primary">
                 {t.op && (
                   <span className="text-2xl font-400 text-text-muted" aria-hidden>
                     {t.op}
