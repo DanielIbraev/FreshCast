@@ -54,6 +54,6 @@
 ## Keep everything in sync (standing rule)
 Commit and push to GitHub after every meaningful change (the save hook covers user saves; agent edits need an explicit commit). Whenever a feature, model change, or number changes, update in the same pass:
 - `.kiro/steering/pitch-and-demo.md` (numbers you can say, demo script, Q&A)
-- `README.md` (accuracy table, what's real vs simulated)
+- `README.md` (accuracy and impact tables, what's real vs simulated), `SUBMISSION.md`, `KIRO.md`
 - The pitch deck at `/pitch` (`components/pitch/*`). Deck numbers read from the store and benchmark, so prefer wiring a number over typing it.
-Run `npx tsx scripts/backtest.ts` after any model change and copy the new accuracy table into all three.
+Run `npm run bench` in `freshcast-app/` after any model change (the rescore hook does this on save), commit `lib/benchmarks.json`, and copy the new per-restaurant accuracy table into the docs above. No pricing, ROI or revenue claims anywhere.
