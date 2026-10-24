@@ -133,9 +133,13 @@ export default function SetupPage() {
         )}
 
         {step === 0 ? (
-          <button type="button" onClick={manual} className="flex cursor-pointer items-center justify-center gap-2 rounded-md border border-good px-4 py-2 text-sm font-600 text-good transition-colors duration-150 hover:bg-good/10">
-            Enter details manually <ArrowRight className="h-4 w-4" aria-hidden />
-          </button>
+          // The search results and the "isn't listed" card are the ways forward;
+          // after coming back here, this keeps what was already filled in.
+          reached > 0 && (
+            <button type="button" onClick={() => go(1)} className="flex cursor-pointer items-center justify-center gap-2 rounded-md border border-good px-4 py-2 text-sm font-600 text-good transition-colors duration-150 hover:bg-good/10">
+              Back to details <ArrowRight className="h-4 w-4" aria-hidden />
+            </button>
+          )
         ) : last ? (
           <button type="button" onClick={create} disabled={creating} className="flex cursor-pointer items-center justify-center gap-2 rounded-md bg-good px-5 py-2.5 text-sm font-600 text-canvas transition-colors duration-150 hover:bg-good-dim disabled:cursor-wait disabled:opacity-70">
             {creating && <Loader2 className="h-4 w-4 animate-spin motion-reduce:animate-none" aria-hidden />}
