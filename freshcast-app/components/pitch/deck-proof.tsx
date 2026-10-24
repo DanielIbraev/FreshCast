@@ -1,6 +1,6 @@
 // Slides 7-14: proof, environmental impact, audience, business, competition, team, ask.
 import { Car, Leaf, MapPin, Utensils } from "lucide-react";
-import { Line, Source } from "./deck-story";
+import { Line, Source, Broll } from "./deck-story";
 import { VersusBars, Matrix, SavingsBar } from "./visuals";
 import { Mark } from "@/components/brand/mark";
 
@@ -25,7 +25,8 @@ function Big({ icon: Icon, value, label }: { icon: typeof Leaf; value: string; l
 }
 
 export const S8Impact = ({ kgYear, co2Year, meals }: { kgYear: number; co2Year: number; meals: number }) => (
-  <div className="relative flex h-full flex-col justify-between">
+  <div className="relative isolate flex h-full flex-col justify-between">
+    <Broll name="produce" />
     <Line>One restaurant, one year.</Line>
     <div className="grid grid-cols-3 gap-16">
       <Big icon={Utensils} value={Math.round(meals).toLocaleString()} label="meals of food never wasted" />
@@ -39,12 +40,15 @@ export const S8Impact = ({ kgYear, co2Year, meals }: { kgYear: number; co2Year: 
 export const S9Scale = ({ co2Year, meals }: { co2Year: number; meals: number }) => {
   const n = 4125; // 1% of 412,498 independent US restaurants (Technomic, 2025)
   return (
-    <div className="relative flex h-full flex-col justify-center">
+    <div className="relative isolate flex h-full flex-col justify-center">
+      <Broll name="traffic" />
       <p className="mb-10 text-[30px] text-text-secondary">At just 1% of America&apos;s independent restaurants:</p>
       <p className="font-display text-[150px] font-800 leading-none tracking-tight tabular-nums text-good">{Math.round((co2Year * n) / 4.6).toLocaleString()}</p>
       <p className="mt-6 text-[40px] font-600 text-text-primary">cars&apos; worth of emissions, gone. Every year.</p>
       <p className="mt-4 text-[28px] text-text-secondary">And {((meals * n) / 1e6).toFixed(0)} million meals of food that never hit a landfill.</p>
-      <Source>4,125 restaurants = 1% of 412,498 US independents (Technomic, 2025)</Source>
+      <div className="absolute bottom-0 right-0">
+        <Source>4,125 restaurants = 1% of 412,498 US independents (Technomic, 2025)</Source>
+      </div>
     </div>
   );
 };

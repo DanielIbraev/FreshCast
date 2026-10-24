@@ -7,7 +7,7 @@ import { StoreProvider, useStore } from "@/lib/store";
 import { dailyTotals, summarize } from "@/lib/history";
 import { parseLocalDate } from "@/lib/demo-data";
 import bench from "@/lib/benchmarks.json";
-import { S1Hook, S2Country, S3Guess, S4Solution, S5Loop, S6Demo } from "@/components/pitch/deck-story";
+import { S0Brand, S1Hook, S2Country, S3Guess, S4Solution, S5Loop, S6Demo } from "@/components/pitch/deck-story";
 import { S7Proof, S8Impact, S9Scale, S10Audience, S11Business, S12Competition, S13Team, S14Ask } from "@/components/pitch/deck-proof";
 
 // Slides render at 1600x900 and scale to fit, so a laptop, projector, and a
@@ -22,6 +22,11 @@ function Deck() {
   const [scale, setScale] = useState(1);
   const [presenting, setPresenting] = useState(false);
   const [idle, setIdle] = useState(false);
+  // cam: shrink slides toward the top-right so a webcam fits bottom-left.
+  // video: the recorded cut (Higgsfield intro replaces the hook, a screen
+  // recording replaces the demo slide).
+  const [cam, setCam] = useState(false);
+  const [videoCut, setVideoCut] = useState(false);
   const idleTimer = useRef<ReturnType<typeof setTimeout>>();
 
   const sum = useMemo(() => summarize(dailyTotals(observations, ingredients)), [observations, ingredients]);
@@ -36,7 +41,7 @@ function Deck() {
   const prepRows = (tomorrow?.ingredients ?? []).slice(0, 4).map((p) => ({ name: p.ingredient.name, usual: p.ingredient.baselinePrepKg, rec: p.recommendedPrepKg }));
   const day = tomorrow ? parseLocalDate(tomorrow.date).toLocaleDateString("en-US", { weekday: "long" }) : "Tomorrow";
 
-  const slides = [
+  const all = [
     <S1Hook key={1} />,
     <S2Country key={2} />,
     <S3Guess key={3} />,
@@ -52,6 +57,8 @@ function Deck() {
     <S13Team key={13} />,
     <S14Ask key={14} />,
   ];
+  // Video cut: brand frame, then problem → ask, without the hook or demo cue.
+  const slides = videoCut ? [<S0Brand key={0} />, ...all.filter((_, n) => n !== 0 && n !== 5)] : all;
   const go = useCallback((d: number) => setI((x) => Math.min(slides.length - 1, Math.max(0, x + d))), [slides.length]);
 
   const togglePresent = useCallback(() => {
@@ -60,8 +67,11 @@ function Deck() {
   }, []);
 
   useEffect(() => {
-    const s = Number(new URLSearchParams(window.location.search).get("s"));
+    const q = new URLSearchParams(window.location.search);
+    const s = Number(q.get("s"));
     if (s >= 1) setI(s - 1);
+    setCam(q.get("cam") === "1");
+    setVideoCut(q.get("cut") === "video");
     const onFs = () => setPresenting(!!document.fullscreenElement);
     document.addEventListener("fullscreenchange", onFs);
     return () => document.removeEventListener("fullscreenchange", onFs);
@@ -76,6 +86,7 @@ function Deck() {
       else if (["ArrowLeft", "PageUp", "Backspace"].includes(e.key)) go(-1);
       else if (e.key === "Home") setI(0);
       else if (e.key.toLowerCase() === "f") togglePresent();
+      else if (e.key.toLowerCase() === "c") setCam((c) => !c);
       else return;
       e.preventDefault();
     };
@@ -100,11 +111,24 @@ function Deck() {
   return (
     <div className="fixed inset-0 flex items-center justify-center overflow-hidden bg-canvas" style={{ cursor: presenting && idle ? "none" : "default" }}>
       <div style={{ width: W, height: H, transform: `scale(${scale})` }} className="relative shrink-0 px-[110px] py-[90px]" onClick={() => go(1)}>
+        <div className="h-full" style={cam ? { transform: "scale(0.8)", transformOrigin: "top right" } : undefined}>
         <AnimatePresence mode="wait">
-          <motion.div key={i} className="relative h-full" initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.3, ease: "easeOut" }}>
+          <motion.div
+            key={i}
+            className="relative h-full"
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+          >
             {slides[i]}
           </motion.div>
         </AnimatePresence>
+        </div>
+        {cam && (
+          // Webcam frame: 230px circle, 40px from the left and bottom edges of the 1600x900 slide.
+          <div className="pointer-events-none absolute bottom-[40px] left-[40px] h-[230px] w-[230px] rounded-full border-[3px] border-good/70" />
+        )}
         {!presenting && (
           <div className="absolute bottom-8 left-[110px] right-[110px] flex gap-1.5" onClick={(e) => e.stopPropagation()}>
             {slides.map((_, n) => (

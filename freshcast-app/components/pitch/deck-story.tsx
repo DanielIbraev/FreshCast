@@ -11,9 +11,39 @@ export function Line({ children, sub }: { children: React.ReactNode; sub?: React
   );
 }
 
+// Sources sit bottom-right so the webcam bubble (bottom-left) never covers them.
 export function Source({ children }: { children: React.ReactNode }) {
-  return <p className="text-base text-text-muted">{children}</p>;
+  return <p className="ml-auto max-w-[900px] text-right text-base text-text-muted">{children}</p>;
 }
+
+// Full-bleed background clip from /public/broll. If the file isn't there,
+// the slide simply renders without it.
+export function Broll({ name }: { name: string }) {
+  return (
+    <div className="pointer-events-none absolute -inset-x-[110px] -inset-y-[90px] -z-10 overflow-hidden">
+      <video
+        src={`/broll/${name}.mp4`}
+        autoPlay
+        muted
+        loop
+        playsInline
+        onError={(e) => ((e.currentTarget.parentElement as HTMLElement).style.display = "none")}
+        className="h-full w-full object-cover opacity-[0.28]"
+      />
+      <div className="absolute inset-0 bg-gradient-to-r from-canvas via-canvas/80 to-canvas/40" />
+    </div>
+  );
+}
+
+// Opening frame. Matches the laptop screen in the Higgsfield intro so the
+// zoom from the laptop into the deck is seamless.
+export const S0Brand = () => (
+  <div className="flex h-full flex-col items-center justify-center">
+    <Mark size={120} animating />
+    <p className="mt-10 font-display text-[72px] font-800 tracking-tight text-text-primary">FreshCast</p>
+    <p className="mt-3 text-[28px] text-text-secondary">Prep less. Waste less.</p>
+  </div>
+);
 
 export const S1Hook = () => (
   <div className="flex h-full flex-col justify-between">
@@ -29,7 +59,8 @@ export const S1Hook = () => (
 );
 
 export const S2Country = () => (
-  <div className="relative flex h-full flex-col justify-between">
+  <div className="relative isolate flex h-full flex-col justify-between">
+    <Broll name="landfill" />
     <Line>If food waste were a country, it would be the 3rd biggest polluter on Earth.</Line>
     <div className="flex justify-center">
       <Podium />
@@ -39,7 +70,8 @@ export const S2Country = () => (
 );
 
 export const S3Guess = () => (
-  <div className="flex h-full flex-col justify-center">
+  <div className="relative isolate flex h-full flex-col justify-center">
+    <Broll name="kitchen" />
     <p className="mb-8 text-[28px] text-text-muted">Why does it happen?</p>
     <h2 className="font-display text-[96px] font-800 leading-[1.0] tracking-tight text-text-primary">
       Every morning,
