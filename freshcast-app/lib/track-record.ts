@@ -133,7 +133,7 @@ function buildActions(items: ItemRecord[], scored: Scored[], dates: string[], pr
   const days = DAYS.map((name, d) => ({ name, ...effect(nights.filter((n) => parseLocalDate(n.date).getDay() === d).map((n) => n.r)) })).filter((d) => d.n >= 4);
   const dayHit = days.filter((d) => d.sure && Math.abs(d.pct) > 0.1).sort((a, b) => Math.abs(b.pct) - Math.abs(a.pct))[0];
   const dayMax = [...days].sort((a, b) => Math.abs(b.pct) - Math.abs(a.pct))[0];
-  let later: Action[] = [];
+  const later: Action[] = [];
   if (dayHit) out.push({ kind: "weekday", lead: dayHit.name, text: `run ${pctOf(dayHit.pct)}% ${dir(dayHit.pct)} the forecast over the last 8 weeks (${dayHit.n} nights). The weekday correction is learning it.` });
   else if (days.length >= 3 && dayMax && Math.abs(dayMax.pct) <= 0.1)
     later.push({ kind: "weekday", ok: true, text: `No weekday runs more than 10% off the forecast over the last 8 weeks. The largest gap is ${dayMax.name} at ${pctOf(dayMax.pct)}% ${dir(dayMax.pct)}.` });
@@ -277,17 +277,7 @@ export function trackRecord(stored: DailyObservation[], ingredients: Ingredient[
     };
   });
 
-  const actions: Action[] = [];
-  const unlogged = items.filter((i) => i.nights < 10);
-  if (unlogged.length) actions.push({ kind: "log-more", text: `${unlogged.map((i) => i.name).join(", ")}: ${unlogged.length === 1 ? "fewer than 10 nights logged" : "each has fewer than 10 nights logged"}. Ranges stay wide until they have more.` });
-  for (const i of items.filter((x) => x.status === "over" || x.status === "under")) {
-    actions.push({ kind: "bias", itemId: i.id, text: `${i.name} has been forecast ${Math.round(Math.abs(i.bias!) * 100)}% ${i.status === "over" ? "too high" : "too low"} over the last 4 weeks. Calibration is catching up; check the usual prep amount in Kitchen if it stays.` });
-  }
-  for (const i of items.filter((x) => x.soldOut >= 3).sort((a, b) => b.soldOut - a.soldOut).slice(0, 2)) {
-    actions.push({ kind: "sold-out", itemId: i.id, text: `${i.name} logged zero after a cut on ${i.soldOut} nights. It may have sold out, so those nights aren't scored. If it ran out during service, raise its usual prep.` });
-  }
-  if (profile.coversSource !== "pos-import") actions.push({ kind: "guests", text: "Weekday guest counts are estimates from setup. Importing a sales export replaces them with your real averages." });
-  if (!actions.length) actions.push({ kind: "keep-going", text: "Every item is within 15% on average. Keep logging nightly to hold it there." });
+  const actions = buildActions(items, scored, dates, profile);
 
   const allScored = scored.filter((x) => last.has(x.date));
   return {
