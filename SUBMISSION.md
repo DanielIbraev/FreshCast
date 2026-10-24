@@ -33,14 +33,15 @@ If food waste were a country, it would be the third-largest greenhouse-gas emitt
 **Built with Kiro.** Kiro IDE only. A spec (`.kiro/specs/forecast-confidence/`) built the 80% ranges; the first design covered only 73% of nights and was redesigned. 13 fast-check properties found 2 bugs the example tests missed. Three active hooks (auto-commit-push, tests on model edits, automatic re-scoring). 7 steering files, the Hallmark design skill, the pptx MCP server, and parallel subagents, including a model audit that found and fixed five real problems. Full write-up with specifics: [KIRO.md](KIRO.md).
 
 ## How to test
-1. Open **https://freshcast-taupe.vercel.app**. No account. You're in a sandbox: changes stay in your browser and can't affect the shared demo.
+1. Open **https://freshcast-taupe.vercel.app** and pick a demo kitchen. No account. You're in a sandbox: changes stay in your browser and can't affect the shared demo.
 2. **Switch restaurants** in the sidebar (or add `?r=kendall-bowls`, `?r=golden-crumb`, `?r=marcos-trattoria`). Kendall shows Sunday as closed and a weekday-heavy lunch week. Golden Crumb's croissants have a 1-day shelf life, so the shelf-life signal pushes their forecast up.
-3. **Forecast:** on Marco's, click a day, then **Atlantic Salmon** to see the 9 signals, their sources, the equation and the 80% range. Drag the guests slider, set weather to rain, then click **Apply prep plan**.
-4. **Log waste:** switch to **Español**, tap an item, then a portion. Click **Close out today** and watch tomorrow's forecast change.
-5. **Model accuracy:** the restaurant's own track record, then the benchmark (each model version, the owner baseline, effort vs. accuracy).
-6. **Kitchen:** under "Guests by weekday", click **Try a sample export** to import a sample sales CSV.
-7. **Set up your own restaurant** (`/setup`): search for any restaurant on OpenStreetMap.
-8. **Pitch deck:** `/pitch`. Arrow keys to move, `F` for full screen.
+3. **Forecast:** on Marco's, follow the 4-step guide, or click a day, then **Atlantic Salmon** to see the 9 signals, their sources, the equation and the 80% range. Drag the guests slider, set weather to rain, then click **Apply prep plan**.
+4. **Log waste:** switch to **Español**, tap an item, then a portion. Click **Close out today**, enter guests served, and read **What tonight taught the model**: each item's calibration and tomorrow's forecast, before and after.
+5. **Kitchen screen:** on Prep & order, click **Kitchen screen** for the wall-tablet prep list; tap an item to mark it done.
+6. **Model accuracy:** the restaurant's own track record and "What would improve accuracy", then the benchmark (each model version, the owner baseline, the oracle, effort vs. accuracy).
+7. **Kitchen:** under "Guests by weekday", click **Try a sample export** to import a sample sales CSV.
+8. **Set up your own restaurant** (`/setup`): search for any restaurant on OpenStreetMap. It starts on day 1, with the milestone view on the Model page.
+9. **Pitch deck:** `/pitch`. Arrow keys to move, `F` for full screen.
 
 **Run locally:** `cd freshcast-app && npm install && npm run dev`. Works without a database (saves to the browser).
 **Tests:** `cd freshcast-app && ./node_modules/.bin/vitest run` (60 tests). **Benchmark:** `npm run bench` (about 20 s).
