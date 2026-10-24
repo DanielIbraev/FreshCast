@@ -69,7 +69,7 @@ All come from code (`lib/benchmarks.json`, or each restaurant's simulated histor
 - Scale: 1% of 412,498 US independents ≈ 4,125 restaurants. With Marco-like savings: ~23,800 t CO₂e and ~9.0 million meals a year, about the yearly CO₂ of 5,200 cars.
 - Conversions: 1 meal = 1.2 lb (Feeding America); ~0.4 kg CO₂ per mile and 4.6 t CO₂ per car per year (EPA). CO₂e = farm-to-retail emissions, Poore & Nemecek (2018), *Science*, via Our World in Data: "embodied emissions of food not bought".
 
-**Tests:** 60 (Vitest), including 13 numbered fast-check properties (P1–P13) plus 3 for the opening-hours parser. PBT found 2 bugs (P4 rounding, P11 2/29/2026).
+**Tests:** 62 (Vitest), including 13 numbered fast-check properties (P1–P13) plus 3 for the opening-hours parser. PBT found 2 bugs (P4 rounding, P11 2/29/2026).
 
 **Sourced industry stats:** 412,498 US independent restaurants (Technomic, 2025); up to 10% of purchased food becomes waste (Galley Solutions); 3–5% restaurant margins (GoFoodService); $162B restaurant food waste a year (Forbes, March 2026).
 
