@@ -14,11 +14,11 @@
    - Accessible: about a minute of quick-tap logging a night, no scale, English and Español staff screen, setup from an OpenStreetMap search.
    - Scales by impact, not revenue: at 1% of independents, ~23,800 t CO₂e and ~9.0 million meals' worth of food a year (simulated, Marco-like savings).
 2. **Implementation** (depth and variety of Kiro use, strategy, experimentation)
-   - Kiro IDE only. Spec → 80% ranges (first design 73% coverage, redesigned). 13 fast-check properties found 2 bugs. 3 active hooks. 7 steering files. Hallmark skill + sloplint. pptx MCP. Parallel subagents, including a model audit that fixed 5 real problems. Details in `KIRO.md`.
-   - Integrations: Open-Meteo live weather, OpenStreetMap Nominatim, Supabase (Postgres + row-level security), the walk-forward benchmark.
+   - Kiro IDE only. Spec → 80% ranges (first design 73% coverage, redesigned). 13 fast-check properties found 2 bugs. 3 active hooks. 7 steering files. Hallmark skill + sloplint (rerun, 0 FAILs on the new pages). pptx MCP. Parallel subagents, including a model audit that fixed 5 real problems and a batch that built the front page, kitchen screen and Model-page actions. Details in `KIRO.md`.
+   - Integrations: Open-Meteo live weather and recorded Boston weather, OpenStreetMap Nominatim, Supabase (Postgres + row-level security), the walk-forward benchmark.
 3. **Quality & Design** (originality, polish, public datasets)
-   - The model breakdown (every signal, its source, the equation), the what-if controls, and the per-restaurant Model accuracy page.
-   - Public data: Open-Meteo, OpenStreetMap, Our World in Data (Poore & Nemecek 2018), Feeding America, EPA, Technomic.
+   - The model breakdown (every signal, its source, the equation), the what-if controls, "What tonight taught the model" after close-out, the kitchen screen, and the per-restaurant Model accuracy page with specific findings.
+   - Public data: Open-Meteo (live forecast, and Boston's recorded daily weather for the last 92 days, which every simulated night and the benchmark replay), OpenStreetMap, Our World in Data (Poore & Nemecek 2018), Feeding America, EPA, Technomic.
 
 ## Track fit (Climate Tech): say this out loud
 Food waste isn't named in the track bullets. Frame it:
