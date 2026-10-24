@@ -5,7 +5,7 @@
 
 import { Ingredient } from "./types";
 import { AVG_COVERS, DEMO_RESTAURANT } from "./demo-data";
-import { priorWasteKg, REDUCTION_RATE, BASE_WASTE_FRACTION } from "./prediction";
+import { priorWasteKg, computeSignals, REDUCTION_RATE, BASE_WASTE_FRACTION } from "./prediction";
 import { learn, accuracy, Observation, NO_LEARNING } from "./learning";
 import { simulateDays, SimDay } from "./sim";
 
