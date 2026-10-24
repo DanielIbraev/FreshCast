@@ -1,7 +1,7 @@
-import Image from "next/image";
 import Link from "next/link";
 import { Mark } from "@/components/brand/mark";
 import { KitchenPicker } from "@/components/landing/kitchen-picker";
+import { ForecastPreview } from "@/components/landing/forecast-preview";
 import { HowItWorks } from "@/components/landing/how-it-works";
 import { Accuracy } from "@/components/landing/accuracy";
 import { LandingFooter } from "@/components/landing/footer";
