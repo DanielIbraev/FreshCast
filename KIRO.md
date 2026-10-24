@@ -53,7 +53,7 @@ The audit also led to removing two multipliers: a fixed industry day-of-week pri
   - **Tasks** reference requirement numbers. Task 1 was to write the properties against the existing code before building anything new.
 - **How it compared with vibe coding:**
   - The properties found 2 bugs before any new code existed (see below).
-  - The first range design measured only **73.4%** coverage on a nominal 80%. Errors were being measured against a forecast rebuilt with the guest count known only at close, which the kitchen never saw in the morning. The fix was to measure errors against the morning forecast, recovered from the stored prep cut (cut = forecast × 0.63). Coverage is now **79.1%** for Marco's, 77.5% for Golden Crumb and 79.9% for Kendall. (Before the benchmark moved to real recorded weather it was 80.7%, 79.6% and 82.0%. Real weather has streaks that the simulated weather didn't, and the ranges came out slightly narrow. The spec's test still requires 70–90%.)
+  - The first range design measured only **73.4%** coverage on a nominal 80%. Errors were being measured against a forecast rebuilt with the guest count known only at close, which the kitchen never saw in the morning. The fix was to measure errors against the morning forecast, recovered from the stored prep cut (cut = forecast × 0.63). Coverage is now **79.1%** for Marco's, 77.5% for Golden Crumb and 79.9% for Kendall. (Before the benchmark moved to real recorded weather it was 80.7%, 79.6% and 82.0%. On real weather the ranges came out slightly narrow. The spec's test still requires 70–90%.)
   - Vibe coding would have shipped the 73% version, because it looked fine on screen.
 
 ## Agent hooks (`.kiro/hooks/`)
