@@ -36,7 +36,7 @@ export function StepReview({ d, goTo }: { d: Draft; goTo: (step: number) => void
       <dl>
         <Row label="Restaurant" value={<span className="font-600">{d.name}</span>} onEdit={() => goTo(1)} />
         <Row label="Address" value={<>{d.address}<span className="block text-xs text-text-muted">Weather for {d.loc?.place || "your location"}</span></>} onEdit={() => goTo(1)} />
-        <Row label="Cuisine" value={d.cuisineLabel.trim() ? `${CUISINE_LABELS[d.cuisineType]}, ${d.cuisineLabel.trim()}` : CUISINE_LABELS[d.cuisineType]} onEdit={() => goTo(1)} />
+        <Row label="Cuisine" value={!d.cuisineLabel.trim() ? CUISINE_LABELS[d.cuisineType] : d.cuisineLabel.trim().toLowerCase().includes(CUISINE_LABELS[d.cuisineType].toLowerCase()) ? d.cuisineLabel.trim() : `${CUISINE_LABELS[d.cuisineType]}, ${d.cuisineLabel.trim()}`} onEdit={() => goTo(1)} />
         <Row label="Service" value={<>{SERVICE_LABELS[d.service]}, {d.seats} seats<span className="block text-xs text-text-muted">{daysSummary(d.openDays)}</span></>} onEdit={() => goTo(1)} />
         <Row
           label="Guests"
