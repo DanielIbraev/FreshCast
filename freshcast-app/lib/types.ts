@@ -1,4 +1,5 @@
 // FreshCast core data types
+import type { Learned } from "./learning";
 
 export type CuisineType =
   | "italian"
