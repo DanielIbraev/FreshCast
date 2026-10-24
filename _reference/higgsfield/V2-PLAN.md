@@ -26,7 +26,12 @@ Only if the pan still looks off. Shoot your real prop instead if you can; a real
 
 ---
 
-## 2. Filming (one take, standing, about 9 seconds)
+## 2. Filming, plain version (solo, camera never moves)
+- The camera stays still the whole time. Prop the phone at chest height (books on a shelf or table), press record, walk into place, wait 2 seconds, act, then walk back and stop. Trim the start and end in editing.
+- Hold a real baking tray or sheet pan (anything flat with a rim). The generator turns it into the steel pan full of food. If you only have a box lid, that works too.
+- "Tipping" = pretending to dump the tray's food into a bin below the counter.
+
+## 2b. Filming detail (one take, standing, about 9 seconds)
 - **Camera:** phone in landscape, 1x, 1080p 30fps, at **your chest height**, 1 metre away, level. Long-press your face for AE/AF LOCK.
 - **You:** standing behind a table or counter at waist height (a kitchen counter at home works). Plain dark fitted t-shirt. Light from **camera left** (window or lamp), nothing bright behind you.
 - **Prop:** a flat box held in **both hands**, tipped toward **your right hand** (camera left), so the food falls out of frame on that side. Keep both hands on it the whole time so the generator can't swap which hand holds it.
