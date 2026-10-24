@@ -16,7 +16,7 @@ export function CategoryDonut({ ingredients }: { ingredients: Ingredient[] }) {
   const total = data.reduce((s, d) => s + d.value, 0);
 
   return (
-    <div className="flex items-center gap-5">
+    <div className="flex items-center gap-6">
       <div className="relative h-[150px] w-[150px] shrink-0">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
@@ -36,16 +36,13 @@ export function CategoryDonut({ ingredients }: { ingredients: Ingredient[] }) {
           <span className="text-[10px] text-text-muted">per day</span>
         </div>
       </div>
-      <ul className="flex-1 space-y-1.5">
+      <ul className="grid min-w-0 flex-1 grid-cols-[auto_minmax(0,1fr)_auto_36px] items-center gap-x-3 gap-y-2 text-xs">
         {data.map((d) => (
-          <li key={d.key} className="flex items-center justify-between text-xs">
-            <span className="flex items-center gap-2 text-text-secondary">
-              <span className="h-2 w-2 rounded-full" style={{ background: d.color }} />
-              {d.name}
-            </span>
-            <span className="tabular-nums text-text-primary">
-              {formatCurrency(d.value)} <span className="text-text-muted">· {Math.round((d.value / total) * 100)}%</span>
-            </span>
+          <li key={d.key} className="contents">
+            <span className="h-2 w-2 rounded-full" style={{ background: d.color }} />
+            <span className="truncate whitespace-nowrap text-text-secondary">{d.name}</span>
+            <span className="text-right tabular-nums text-text-primary">{formatCurrency(d.value)}</span>
+            <span className="text-right tabular-nums text-text-muted">{Math.round((d.value / total) * 100)}%</span>
           </li>
         ))}
       </ul>

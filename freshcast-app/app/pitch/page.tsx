@@ -4,8 +4,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { StoreProvider, useStore } from "@/lib/store";
 import { dailyTotals, summarize } from "@/lib/history";
-import { runAblation, runBacktest, VersionResult } from "@/lib/backtest";
-import { DEMO_INGREDIENTS } from "@/lib/demo-data";
+import bench from "@/lib/benchmarks.json";
 import { TitleSlide, HookSlide, ProblemSlide, CompetitionSlide, DemoSlide } from "@/components/pitch/slides-story";
 import { HowSlide, AccuracySlide, ResultsSlide, ScaleSlide, HonestSlide, KiroSlide } from "@/components/pitch/slides-proof";
 
@@ -18,16 +17,7 @@ function Deck() {
   const { observations, ingredients } = useStore();
   const [i, setI] = useState(0);
   const [scale, setScale] = useState(1);
-  const [bench, setBench] = useState<{ versions: VersionResult[]; ceiling: number } | null>(null);
   const sum = useMemo(() => summarize(dailyTotals(observations, ingredients)), [observations, ingredients]);
-
-  useEffect(() => {
-    const t = setTimeout(() => {
-      const weeks = runBacktest(DEMO_INGREDIENTS, 12, 7).weeks;
-      setBench({ versions: runAblation(DEMO_INGREDIENTS), ceiling: weeks.slice(2).reduce((s, w) => s + w.ceiling, 0) / (weeks.length - 2) });
-    }, 50);
-    return () => clearTimeout(t);
-  }, []);
 
   const slides = [
     <TitleSlide key="t" />,
@@ -36,7 +26,7 @@ function Deck() {
     <CompetitionSlide key="c" />,
     <DemoSlide key="d" />,
     <HowSlide key="w" />,
-    <AccuracySlide key="a" versions={bench?.versions ?? null} ceiling={bench?.ceiling ?? 0.9} />,
+    <AccuracySlide key="a" versions={bench.versions} ceiling={bench.ceiling} />,
     <ResultsSlide key="r" sum={sum} />,
     <ScaleSlide key="s" sum={sum} />,
     <HonestSlide key="o" />,

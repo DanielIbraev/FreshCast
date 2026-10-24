@@ -2,7 +2,8 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { DayPrediction, DayWeather, Ingredient, Scenario, WasteLog } from "./types";
-import { DEMO_INGREDIENTS, COVERS_BY_DAY, EVENTS, seedTodayLogs, parseLocalDate, localISO } from "./demo-data";
+import { DEMO_INGREDIENTS, DEMO_RESTAURANT, AVG_COVERS, COVERS_BY_DAY, EVENTS, seedTodayLogs, parseLocalDate, localISO } from "./demo-data";
+import { priorWasteKg } from "./prediction";
 import { buildDayForecast } from "./forecast";
 import { describe, fallbackWeek } from "./weather";
 import { runBacktest } from "./backtest";
@@ -27,7 +28,7 @@ interface StoreValue {
   removeIngredient: (id: string) => void;
   addLog: (l: WasteLog) => void;
   removeLog: (id: string) => void;
-  closeOutToday: () => Promise<number>;
+  closeOutToday: (guestsServed: number) => Promise<number>;
   setScenario: (patch: Partial<Scenario>) => void;
   resetDemo: () => Promise<void>;
 }
@@ -134,23 +135,29 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   const selected = useMemo(() => week.find((d) => d.date === scenario.selectedDate) ?? week[0] ?? null, [week, scenario.selectedDate]);
 
   // Tonight's close-out: today's logs per ingredient become one observation each.
-  const closeOutToday = useCallback(async () => {
+  // The prior is recomputed for the guests who actually came, so a busy
+  // walk-in night isn't learned as a kitchen habit.
+  const closeOutToday = useCallback(async (guestsServed: number) => {
     if (!today) return 0;
+    const date = parseLocalDate(today.date);
     const todayKey = today.date;
     const isToday = (l: WasteLog) => localISO(new Date(l.loggedAt)) === todayKey;
     const rows: DailyObservation[] = today.ingredients.map((p) => ({
       date: todayKey,
       ingredientId: p.ingredient.id,
-      priorKg: p.priorKg ?? 0,
+      priorKg:
+        Math.round(
+          priorWasteKg({ ingredient: p.ingredient, expectedCovers: guestsServed, avgCovers: AVG_COVERS, weather: today.weather, weatherSource: src, date, event: EVENTS.none, cuisineType: DEMO_RESTAURANT.cuisineType }) * 1000
+        ) / 1000,
       cutKg: p.cutKg,
       loggedKg: Math.round(logs.filter((l) => isToday(l) && l.ingredientId === p.ingredient.id).reduce((s, l) => s + l.quantityKg, 0) * 1000) / 1000,
       weather: today.weather.condition,
-      covers: today.expectedCovers,
+      covers: guestsServed,
     }));
     setObservations((prev) => [...prev.filter((o) => o.date !== todayKey), ...rows]);
     sync(db.upsertObservations(rows));
     return rows.length;
-  }, [today, logs, sync]);
+  }, [today, logs, sync, src]);
 
   const value: StoreValue = {
     hydrated, dbStatus, ingredients, logs, observations, scenario, weatherSource, today, week, selected,

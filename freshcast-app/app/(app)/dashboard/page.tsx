@@ -82,7 +82,7 @@ export default function DashboardPage() {
             </Card>
           </div>
 
-          <div className="grid grid-cols-[1.45fr_1fr] gap-4">
+          <div className="grid grid-cols-1 gap-4 xl:grid-cols-[1.45fr_1fr]">
             <Card>
               <div className="mb-4 flex items-start justify-between gap-4">
                 <div>
@@ -115,7 +115,7 @@ export default function DashboardPage() {
         </>
       )}
 
-      <div className="grid grid-cols-[1.6fr_1fr] gap-4">
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-[1.6fr_1fr]">
         <Card>
           <h2 className="font-display text-lg font-600 text-text-primary">What actually went in the bin</h2>
           <p className="mb-4 mt-0.5 text-sm text-text-secondary">

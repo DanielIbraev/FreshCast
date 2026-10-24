@@ -43,7 +43,7 @@ export interface VersionResult {
   accuracy: number; // over weeks 3-12, after a 2-week warm-up
 }
 
-export function runAblation(ingredients: Ingredient[], seeds = [7, 11, 23], weeks = 12): VersionResult[] {
+export function runAblation(ingredients: Ingredient[], seeds = [7, 11, 23, 31, 42], weeks = 12): VersionResult[] {
   return VERSIONS.map((v) => {
     const scores = seeds.map((seed) => {
       const end = new Date();
@@ -53,14 +53,20 @@ export function runAblation(ingredients: Ingredient[], seeds = [7, 11, 23], week
       const pairs: { predicted: number; actual: number }[] = [];
       days.forEach((day, i) => {
         for (const ing of ingredients) {
-          const signals = computeSignals({ ingredient: ing, expectedCovers: day.expectedCovers, avgCovers: AVG_COVERS, weather: day.weather, weatherSource: "live", date: day.dateObj, event: day.event, cuisineType: DEMO_RESTAURANT.cuisineType });
-          const raw = ing.baselinePrepKg * BASE_WASTE_FRACTION * signals.filter((s) => (v.priors as readonly string[]).includes(s.key)).reduce((a, s) => a * s.value, 1);
+          const priorFor = (covers: number) =>
+            ing.baselinePrepKg *
+            BASE_WASTE_FRACTION *
+            computeSignals({ ingredient: ing, expectedCovers: covers, avgCovers: AVG_COVERS, weather: day.weather, weatherSource: "live", date: day.dateObj, event: day.event, cuisineType: DEMO_RESTAURANT.cuisineType })
+              .filter((s) => (v.priors as readonly string[]).includes(s.key))
+              .reduce((a, s) => a * s.value, 1);
+          const raw = priorFor(day.expectedCovers);
           const L = v.learning > 0 && obs.length ? learn(obs, ing.id, day.date, day.weather.condition) : NO_LEARNING;
           const forecast = raw * L.calibration * (v.learning > 1 ? L.weekday * L.weather * L.recency : 1);
           const actual = day.trueUsual[ing.id];
           if (i >= 14) pairs.push({ predicted: forecast, actual });
           const cut = forecast * REDUCTION_RATE;
-          obs.push({ date: day.date, ingredientId: ing.id, rawKg: raw, usualKg: Math.max(0, actual - cut) + cut, condition: day.weather.condition });
+          // Close-out uses the guest count from the register, like the product does
+          obs.push({ date: day.date, ingredientId: ing.id, rawKg: priorFor(day.actualCovers), usualKg: Math.max(0, actual - cut) + cut, condition: day.weather.condition });
         }
       });
       return accuracy(pairs);
@@ -106,9 +112,10 @@ export function runBacktest(ingredients: Ingredient[], weeks = 12, seed = 7, end
       // the log reads 0 and the observation is censored at the cut amount.
       const cut = i >= planStartDay ? forecast * REDUCTION_RATE : 0;
       const logged = Math.max(0, actual - cut);
-      obs.push({ date: day.date, ingredientId: ing.id, rawKg: raw, usualKg: logged + cut, condition: day.weather.condition });
+      const priorActual = priorWasteKg({ ...input, expectedCovers: day.actualCovers });
+      obs.push({ date: day.date, ingredientId: ing.id, rawKg: priorActual, usualKg: logged + cut, condition: day.weather.condition });
       const r3 = (n: number) => Math.round(n * 1000) / 1000;
-      closeouts.push({ date: day.date, ingredientId: ing.id, priorKg: r3(raw), cutKg: r3(cut), loggedKg: r3(logged), weather: day.weather.condition, covers: day.expectedCovers });
+      closeouts.push({ date: day.date, ingredientId: ing.id, priorKg: r3(priorActual), cutKg: r3(cut), loggedKg: r3(logged), weather: day.weather.condition, covers: day.actualCovers });
     }
   });
 

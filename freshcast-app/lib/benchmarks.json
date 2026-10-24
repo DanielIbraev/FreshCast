@@ -1,35 +1,35 @@
 {
-  "generatedAt": "2026-10-24T14:39:20.741Z",
+  "generatedAt": "2026-10-24T14:41:22.654Z",
   "versions": [
     {
       "id": "v0",
       "name": "Rule of thumb",
       "detail": "Flat 8% of prep, every day",
-      "accuracy": 0.6364267930111936
+      "accuracy": 0.6400061538210235
     },
     {
       "id": "v1",
       "name": "+ Covers & weekday",
       "detail": "Reservations and day-of-week priors",
-      "accuracy": 0.7342250624014327
+      "accuracy": 0.7404726650707776
     },
     {
       "id": "v2",
       "name": "+ Weather, season, events",
       "detail": "Open-Meteo, calendar, events feed",
-      "accuracy": 0.7766591048994048
+      "accuracy": 0.7809412100924197
     },
     {
       "id": "v3",
       "name": "+ Kitchen calibration",
       "detail": "Learns each ingredient from your logs",
-      "accuracy": 0.8535722209280783
+      "accuracy": 0.8546279742140653
     },
     {
       "id": "v4",
       "name": "+ Weekday, weather & recency learning",
       "detail": "Learns your busy days, how rain hits you, and last week",
-      "accuracy": 0.8583962141704317
+      "accuracy": 0.8708277756947911
     }
   ],
   "weeks": [
@@ -37,84 +37,84 @@
       "week": 1,
       "naive": 0.6990776704426132,
       "priorOnly": 0.7992480046332033,
-      "learned": 0.852658383054452,
+      "learned": 0.8543356923741025,
       "ceiling": 0.8887464939863695
     },
     {
       "week": 2,
       "naive": 0.6103999654156604,
       "priorOnly": 0.8181773774614545,
-      "learned": 0.8053043185746763,
+      "learned": 0.8334319102567047,
       "ceiling": 0.8756057770405874
     },
     {
       "week": 3,
       "naive": 0.6135831801396634,
       "priorOnly": 0.7949572892073328,
-      "learned": 0.8810656073458377,
+      "learned": 0.882978861503279,
       "ceiling": 0.9116019850018234
     },
     {
       "week": 4,
       "naive": 0.6738138698529437,
       "priorOnly": 0.7990374991294785,
-      "learned": 0.848051633878906,
+      "learned": 0.8506243253731821,
       "ceiling": 0.8743776158766632
     },
     {
       "week": 5,
       "naive": 0.6534668609305319,
       "priorOnly": 0.7880608163323384,
-      "learned": 0.8398092628149656,
+      "learned": 0.8397730338373111,
       "ceiling": 0.8728037512768574
     },
     {
       "week": 6,
       "naive": 0.5814857834792002,
       "priorOnly": 0.7687222554777093,
-      "learned": 0.8640011160976432,
+      "learned": 0.870267264079621,
       "ceiling": 0.896968052728999
     },
     {
       "week": 7,
       "naive": 0.6205041082603935,
       "priorOnly": 0.7717458156810459,
-      "learned": 0.8825790215136124,
+      "learned": 0.8916065372347581,
       "ceiling": 0.8917822320802153
     },
     {
       "week": 8,
       "naive": 0.674098496122614,
       "priorOnly": 0.7732144826903228,
-      "learned": 0.877530548605052,
+      "learned": 0.8772090940452908,
       "ceiling": 0.8831299092149782
     },
     {
       "week": 9,
       "naive": 0.5652479321112789,
       "priorOnly": 0.7627619262558929,
-      "learned": 0.8438631037567845,
+      "learned": 0.8426950998489979,
       "ceiling": 0.8490422894225824
     },
     {
       "week": 10,
       "naive": 0.5696964073988912,
       "priorOnly": 0.7537640777685481,
-      "learned": 0.8516869996609066,
+      "learned": 0.8642046244461052,
       "ceiling": 0.8960594370696199
     },
     {
       "week": 11,
       "naive": 0.5982344605370926,
       "priorOnly": 0.7689683842829899,
-      "learned": 0.830458641816493,
+      "learned": 0.8356408425289203,
       "ceiling": 0.8622460269156024
     },
     {
       "week": 12,
       "naive": 0.621330019177047,
       "priorOnly": 0.7571451949371539,
-      "learned": 0.8492470162113998,
+      "learned": 0.8587392278970147,
       "ceiling": 0.8683789395621259
     }
   ],

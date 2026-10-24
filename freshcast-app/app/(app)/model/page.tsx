@@ -61,7 +61,7 @@ export default function ModelPage() {
 
       <Card>
         <h2 className="font-display text-lg font-600 text-text-primary">Every version, same kitchens, same 12 weeks</h2>
-        <p className="mt-0.5 text-sm text-text-secondary">Each step adds signals on top of the last. Scored on weeks 3-12, averaged across 3 simulated kitchens.</p>
+        <p className="mt-0.5 text-sm text-text-secondary">Each step adds signals on top of the last. Scored on weeks 3-12, averaged across 5 simulated kitchens.</p>
         <div className="mt-6">
           <VersionLadder versions={bench.versions} ceiling={bench.ceiling} />
         </div>

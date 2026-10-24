@@ -65,21 +65,35 @@ export default function KitchenPage() {
         </button>
       </header>
 
-      <div className="grid grid-cols-[1fr_1fr_1.4fr] gap-4">
-        <Card>
-          <CardLabel>Prepped every morning</CardLabel>
-          <p className="mt-2 font-display text-[40px] font-800 leading-none tabular-nums text-text-primary">{formatCurrency(prepValue)}</p>
-          <p className="mt-2 text-xs text-text-muted">across {ingredients.length} ingredients</p>
-        </Card>
-        <Card>
-          <CardLabel>Use within 2 days</CardLabel>
-          <p className="mt-2 font-display text-[40px] font-800 leading-none tabular-nums text-waste">{perishable.length}</p>
-          <p className="mt-2 truncate text-xs text-text-muted">{perishable.map((p) => p.name).join(", ") || "None"}</p>
-          {learning > 0 && <p className="mt-1 text-xs text-data">{learning} still learning from your logs</p>}
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.25fr)]">
+        <Card className="flex flex-col">
+          <div className="grid grid-cols-2 gap-6">
+            <div>
+              <CardLabel>Prepped every morning</CardLabel>
+              <p className="mt-2 font-display text-[40px] font-800 leading-none tabular-nums text-text-primary">{formatCurrency(prepValue)}</p>
+              <p className="mt-2 text-xs text-text-muted">across {ingredients.length} ingredients</p>
+            </div>
+            <div>
+              <CardLabel>Use within 2 days</CardLabel>
+              <p className="mt-2 font-display text-[40px] font-800 leading-none tabular-nums text-waste">{perishable.length}</p>
+              <p className="mt-2 text-xs text-text-muted">{learning > 0 ? `${learning} still learning from your logs` : "All items calibrated"}</p>
+            </div>
+          </div>
+          {perishable.length > 0 && (
+            <div className="mt-auto flex flex-wrap gap-1.5 border-t border-border pt-4">
+              {perishable.map((p) => (
+                <span key={p.id} className="flex items-center gap-1.5 rounded border border-border bg-canvas px-2 py-0.5 text-[11px] text-text-secondary">
+                  <span className="h-1.5 w-1.5 rounded-full" style={{ background: CATEGORIES[p.category].color }} />
+                  {p.name}
+                  <span className="text-waste">{p.shelfLifeDays}d</span>
+                </span>
+              ))}
+            </div>
+          )}
         </Card>
         <Card>
           <CardLabel>Where the prep money goes</CardLabel>
-          <div className="mt-3">
+          <div className="mt-4">
             <CategoryDonut ingredients={ingredients} />
           </div>
         </Card>
