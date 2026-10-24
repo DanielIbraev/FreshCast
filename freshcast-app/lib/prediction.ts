@@ -1,27 +1,25 @@
 // FreshCast Prediction Engine
-// Pure TypeScript math. NO AI, NO API wrapper. This is the real model.
-// Based on the ML framework in arxiv.org/abs/2609.08078 (R^2 = 0.817 on
-// operational features). Every multiplier below is applied sequentially
-// against an ingredient's baseline prep amount to produce a waste forecast.
+// Pure TypeScript math. No LLM involved in the numbers.
+// Approach follows arxiv.org/abs/2609.08078 (R^2 = 0.817 on operational
+// features). Nine signals multiply against an ingredient's baseline waste.
 
 import {
   PredictionInput,
   IngredientPrediction,
   CuisineType,
-  WeatherForecast,
+  DayWeather,
   NearbyEvent,
+  SignalFactor,
 } from "./types";
 
-// --- Signal 3: Day of week (industry research) ---
 // Index 0 = Sunday ... 6 = Saturday
 const DAY_OF_WEEK_FACTOR = [0.9, 1.22, 1.18, 1.05, 1.0, 0.88, 0.82];
+const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-// --- Signal 4: Season by month (0 = Jan ... 11 = Dec) ---
-const SEASONAL_FACTOR = [
-  1.15, 1.15, 1.0, 1.0, 0.95, 0.95, 0.92, 0.92, 1.05, 1.05, 1.2, 1.2,
-];
+// 0 = Jan ... 11 = Dec
+const SEASONAL_FACTOR = [1.15, 1.15, 1.0, 1.0, 0.95, 0.95, 0.92, 0.92, 1.05, 1.05, 1.2, 1.2];
+const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-// --- Signal 7: Cuisine type baseline ---
 const CUISINE_FACTOR: Record<CuisineType, number> = {
   italian: 1.0,
   french: 1.0,
@@ -32,179 +30,156 @@ const CUISINE_FACTOR: Record<CuisineType, number> = {
   fine_dining: 1.25,
 };
 
-// --- Signal 2: Weather multiplier ---
-function weatherMultiplier(weather: WeatherForecast): number {
-  switch (weather.condition) {
-    case "rain":
-    case "storm":
-      return 1.15; // fewer walk-ins, lighter dishes under-ordered
-    case "hot":
-      return 0.9; // lighter dishes, higher traffic
-    case "cold":
-      return 1.08; // comfort food orders up
-    default:
-      return 1.0;
-  }
-}
+// Share of a normal day's prep that ends up in the bin with no forecasting.
+// Industry range is 4-10% of purchases; per-item prep waste runs higher.
+const BASE_WASTE_FRACTION = 0.12;
 
-// --- Signal 6: Nearby events ---
-function eventMultiplier(event: NearbyEvent): number {
-  switch (event.type) {
-    case "concert":
-    case "game":
-      return 0.78; // foot traffic up, sell through more
-    case "festival":
-    case "graduation":
-      return 0.82;
-    default:
-      return 1.0;
-  }
-}
+// How much of the predicted waste FreshCast's prep adjustment removes.
+const REDUCTION_RATE = 0.63;
 
-// --- Signal 5: Public holiday ---
-// Returns a multiplier if the date is a known high/low waste holiday.
-function holidayMultiplier(date: Date): number {
-  const month = date.getMonth();
-  const day = date.getDate();
-  // Thanksgiving Eve (approx 4th Wed of Nov) - surge
-  if (month === 10 && day >= 22 && day <= 28) return 0.7;
-  // Christmas Eve / Day
-  if (month === 11 && (day === 24 || day === 25)) return 0.75;
-  // Super Bowl Sunday (approx early Feb)
-  if (month === 1 && day >= 7 && day <= 13) return 0.72;
-  // New Year's Day - slow, high waste
-  if (month === 0 && day === 1) return 1.35;
+function weatherFactor(w: DayWeather): number {
+  if (w.condition === "rain" || w.condition === "storm") return 1.15;
+  if (w.condition === "hot") return 0.9;
+  if (w.condition === "cold") return 1.08;
   return 1.0;
 }
 
-// --- Signal 1: Demand factor from covers ---
-function demandFactor(expectedCovers: number, avgCovers: number): number {
-  if (avgCovers <= 0) return 1.0;
-  // More covers than average = relatively less waste per prepped unit.
-  // Fewer covers = more waste. Dampened so it doesn't swing wildly.
-  const ratio = expectedCovers / avgCovers;
-  return 1 + (1 - ratio) * 0.6;
+function eventFactor(e: NearbyEvent): number {
+  if (e.type === "game" || e.type === "concert") return 0.78;
+  if (e.type === "festival" || e.type === "graduation") return 0.82;
+  return 1.0;
 }
 
-// --- Signal 8: Recency (strongest short-term signal) ---
-function recencyFactor(
-  lastWeekActualKg?: number,
-  lastWeekPredictedKg?: number
-): number {
-  if (
-    lastWeekActualKg === undefined ||
-    lastWeekPredictedKg === undefined ||
-    lastWeekPredictedKg <= 0
-  ) {
-    return 1.0; // cold start - no history yet
-  }
-  const ratio = lastWeekActualKg / lastWeekPredictedKg;
-  // 60% weight on last week's reality, 40% anchor to baseline
-  return 0.6 * ratio + 0.4 * 1.0;
+function holiday(date: Date): { value: number; name: string } {
+  const m = date.getMonth();
+  const d = date.getDate();
+  if (m === 10 && d >= 22 && d <= 28 && date.getDay() === 3) return { value: 0.7, name: "Thanksgiving Eve" };
+  if (m === 11 && (d === 24 || d === 25)) return { value: 0.75, name: "Christmas" };
+  if (m === 0 && d === 1) return { value: 1.35, name: "New Year's Day" };
+  if (m === 6 && d === 4) return { value: 0.85, name: "July 4th" };
+  return { value: 1.0, name: "" };
 }
 
-// Determine which signal moved the prediction most, for the explanation text.
-function findPrimaryDriver(
-  input: PredictionInput,
-  factors: Record<string, number>
-): string {
-  let maxDeviation = 0;
-  let driver = "baseline demand";
-  const labels: Record<string, string> = {
-    weather: `${input.weather.description.toLowerCase()} weather`,
-    dayOfWeek: dayName(input.date.getDay()),
-    event: input.event.type !== "none" ? `a nearby ${input.event.type}` : "",
-    recency: "last week's actual waste",
-    season: "seasonal demand",
-  };
-  for (const [key, value] of Object.entries(factors)) {
-    const deviation = Math.abs(value - 1.0);
-    if (deviation > maxDeviation && labels[key]) {
-      maxDeviation = deviation;
-      driver = labels[key];
-    }
-  }
-  return driver;
+// Fewer covers than average means more of the prep goes unsold.
+function demandFactor(expected: number, avg: number): number {
+  if (avg <= 0) return 1.0;
+  return 1 + (1 - expected / avg) * 0.6;
 }
 
-function dayName(dayIndex: number): string {
+function round(n: number, places = 2): number {
+  const f = Math.pow(10, places);
+  return Math.round(n * f) / f;
+}
+
+// Returns all nine signals for one ingredient, each with its source.
+export function computeSignals(input: PredictionInput): SignalFactor[] {
+  const { date, weather, event, ingredient } = input;
+  const dow = date.getDay();
+  const hol = holiday(date);
+  const h = ingredient.history;
+  const recency = h ? 0.6 * h.lastWeekRatio + 0.4 : 1.0;
+
+  const weatherSourceLabel =
+    input.weatherSource === "live" ? "Open-Meteo API" : input.weatherSource === "override" ? "Manual what-if" : "Seasonal fallback";
+
   return [
-    "Sunday",
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-  ][dayIndex];
+    {
+      key: "demand",
+      label: "Expected covers",
+      source: "Reservations",
+      detail: `${input.expectedCovers} vs ${input.avgCovers} avg`,
+      value: demandFactor(input.expectedCovers, input.avgCovers),
+    },
+    {
+      key: "weather",
+      label: "Weather",
+      source: weatherSourceLabel,
+      detail: weather.description,
+      value: weatherFactor(weather),
+    },
+    {
+      key: "dayOfWeek",
+      label: "Day of week",
+      source: "Calendar",
+      detail: DAY_NAMES[dow],
+      value: DAY_OF_WEEK_FACTOR[dow],
+    },
+    {
+      key: "season",
+      label: "Season",
+      source: "Calendar",
+      detail: MONTH_NAMES[date.getMonth()],
+      value: SEASONAL_FACTOR[date.getMonth()],
+    },
+    {
+      key: "holiday",
+      label: "Holiday",
+      source: "Holiday calendar",
+      detail: hol.name || "None",
+      value: hol.value,
+    },
+    {
+      key: "event",
+      label: "Nearby events",
+      source: "Events feed",
+      detail: event.type === "none" ? "None within 1 mi" : event.name,
+      value: eventFactor(event),
+    },
+    {
+      key: "cuisine",
+      label: "Cuisine profile",
+      source: "Set at onboarding",
+      detail: input.cuisineType.replace("_", " "),
+      value: CUISINE_FACTOR[input.cuisineType],
+    },
+    {
+      key: "recency",
+      label: "Last week, same day",
+      source: "Your waste logs",
+      detail: h ? `${Math.round(h.lastWeekRatio * 100)}% of forecast` : "No data yet",
+      value: recency,
+    },
+    {
+      key: "calibration",
+      label: "Kitchen calibration",
+      source: "Learned over time",
+      detail: h ? `${h.weeksOfData} weeks of data` : "Cold start",
+      value: h ? h.calibration : 1.0,
+    },
+  ].map((s) => ({ ...s, value: round(s.value, 3) })) as SignalFactor[];
 }
 
-function riskLevel(wasteCost: number): "high" | "medium" | "low" {
-  if (wasteCost >= 15) return "high";
-  if (wasteCost >= 6) return "medium";
-  return "low";
-}
-
-/**
- * Core prediction: forecast waste for a single ingredient on a given day.
- * All nine signals combine multiplicatively against the baseline prep amount.
- */
-export function predictIngredientWaste(
-  input: PredictionInput
-): IngredientPrediction {
+export function predictIngredientWaste(input: PredictionInput): IngredientPrediction {
   const { ingredient } = input;
+  const signals = computeSignals(input);
+  const baseWasteKg = ingredient.baselinePrepKg * BASE_WASTE_FRACTION;
 
-  const factors = {
-    demand: demandFactor(input.expectedCovers, input.avgCovers),
-    weather: weatherMultiplier(input.weather),
-    dayOfWeek: DAY_OF_WEEK_FACTOR[input.date.getDay()],
-    season: SEASONAL_FACTOR[input.date.getMonth()],
-    holiday: holidayMultiplier(input.date),
-    event: eventMultiplier(input.event),
-    cuisine: CUISINE_FACTOR[input.cuisineType],
-    recency: recencyFactor(
-      input.lastWeekSameDayActualKg,
-      input.lastWeekSameDayPredictedKg
-    ),
-    calibration: input.personalCalibration ?? 1.0,
-  };
+  const multiplier = signals.reduce((acc, s) => acc * s.value, 1);
+  const predictedWasteKg = Math.max(0, baseWasteKg * multiplier);
+  const reducedWasteKg = predictedWasteKg * (1 - REDUCTION_RATE);
+  const cutKg = predictedWasteKg - reducedWasteKg;
 
-  // The baseline prep amount is what the kitchen would normally over-prep.
-  // Waste is a fraction of that baseline, scaled by every signal.
-  const baseWasteFraction = 0.18; // ~18% of baseline prep is at risk on an avg day
-  let predictedWasteKg = ingredient.baselinePrepKg * baseWasteFraction;
-
-  for (const value of Object.values(factors)) {
-    predictedWasteKg *= value;
-  }
-  predictedWasteKg = Math.max(0, predictedWasteKg);
-
-  // FreshCast's recommendation: prep down to cut ~63% of the predicted waste.
-  const reductionRate = 0.63;
-  const reducedWasteKg = predictedWasteKg * (1 - reductionRate);
+  // Strongest single push toward more waste (or the largest swing overall).
+  const primaryDriver = [...signals].sort(
+    (a, b) => Math.abs(b.value - 1) - Math.abs(a.value - 1)
+  )[0];
 
   const predictedWasteCost = predictedWasteKg * ingredient.costPerKg;
-  const reducedWasteCost = reducedWasteKg * ingredient.costPerKg;
-  const predictedCo2Kg = predictedWasteKg * ingredient.co2PerKg;
-  const reducedCo2Kg = reducedWasteKg * ingredient.co2PerKg;
-
-  const primaryDriver = findPrimaryDriver(input, factors);
-  const prepReductionKg = predictedWasteKg - reducedWasteKg;
+  const verb = primaryDriver.value >= 1 ? "pushes waste up" : "keeps waste down";
 
   return {
     ingredient,
+    baseWasteKg: round(baseWasteKg, 3),
+    signals,
     predictedWasteKg: round(predictedWasteKg),
     predictedWasteCost: round(predictedWasteCost),
-    predictedCo2Kg: round(predictedCo2Kg),
+    predictedCo2Kg: round(predictedWasteKg * ingredient.co2PerKg),
     reducedWasteKg: round(reducedWasteKg),
-    reducedWasteCost: round(reducedWasteCost),
-    reducedCo2Kg: round(reducedCo2Kg),
-    recommendation: `Prep ${round(prepReductionKg)}kg less ${ingredient.name.toLowerCase()} — driven by ${primaryDriver}.`,
-    riskLevel: riskLevel(predictedWasteCost),
+    reducedWasteCost: round(reducedWasteKg * ingredient.costPerKg),
+    reducedCo2Kg: round(reducedWasteKg * ingredient.co2PerKg),
+    recommendedPrepKg: round(Math.max(0, ingredient.baselinePrepKg - cutKg)),
+    recommendation: `Prep ${round(cutKg, 1)}kg less. ${primaryDriver.label} (${primaryDriver.detail}) ${verb}.`,
+    riskLevel: predictedWasteCost >= 12 ? "high" : predictedWasteCost >= 5 ? "medium" : "low",
     primaryDriver,
   };
-}
-
-function round(n: number): number {
-  return Math.round(n * 100) / 100;
 }
