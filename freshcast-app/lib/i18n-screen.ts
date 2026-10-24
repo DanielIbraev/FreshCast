@@ -19,7 +19,7 @@ const STRINGS = {
     guests: (n: number, d: Date) => `Usually ${n} guests on ${plural("en", d)}`,
     weather: { rain: "Rain", storm: "Storms", hot: "Hot", cold: "Cold", normal: "Dry" } as Record<WeatherCondition, string>,
     prep: "Prep",
-    usual: (n: number) => `usual ${kg(n)}`,
+    usual: "usual",
     less: (n: number) => `−${kg(n)}`,
     asUsual: "Prep as usual",
     done: "Done",
@@ -37,7 +37,7 @@ const STRINGS = {
     guests: (n: number, d: Date) => `Suelen venir ${n} clientes ${plural("es", d)}`,
     weather: { rain: "Lluvia", storm: "Tormentas", hot: "Calor", cold: "Frío", normal: "Seco" } as Record<WeatherCondition, string>,
     prep: "Preparar",
-    usual: (n: number) => `de costumbre ${kg(n)}`,
+    usual: "de costumbre",
     less: (n: number) => `−${kg(n)}`,
     asUsual: "Igual que siempre",
     done: "Hecho",
@@ -52,6 +52,7 @@ const STRINGS = {
 };
 
 export type ScreenStrings = (typeof STRINGS)["en"];
+export { kg };
 export const ts = (lang: Lang): ScreenStrings => STRINGS[lang] as ScreenStrings;
 
 export const dayName = (lang: Lang, d: Date) => weekday(lang, d);
