@@ -8,6 +8,7 @@ import { AVG_COVERS, DEMO_RESTAURANT } from "./demo-data";
 import { priorWasteKg, computeSignals, REDUCTION_RATE, BASE_WASTE_FRACTION } from "./prediction";
 import { learn, accuracy, Observation, NO_LEARNING } from "./learning";
 import { simulateDays, SimDay } from "./sim";
+import type { DailyObservation } from "./db";
 
 export interface WeekResult {
   week: number;
@@ -20,6 +21,8 @@ export interface WeekResult {
 export interface BacktestResult {
   weeks: WeekResult[];
   observations: Observation[];
+  // Same nights, in the shape the database stores (used to seed Marco's history)
+  closeouts: DailyObservation[];
   days: SimDay[];
 }
 
@@ -66,10 +69,12 @@ export function runAblation(ingredients: Ingredient[], seeds = [7, 11, 23], week
   });
 }
 
-export function runBacktest(ingredients: Ingredient[], weeks = 12, seed = 7, end = new Date()): BacktestResult {
+// planStartDay: days before the kitchen started prepping to FreshCast's plan.
+export function runBacktest(ingredients: Ingredient[], weeks = 12, seed = 7, end = new Date(), planStartDay = 0): BacktestResult {
   const start = new Date(end.getFullYear(), end.getMonth(), end.getDate() - weeks * 7);
   const days = simulateDays(ingredients, start, weeks * 7, seed);
   const obs: Observation[] = [];
+  const closeouts: DailyObservation[] = [];
   const buckets: Record<"naive" | "priorOnly" | "learned" | "ceiling", { predicted: number; actual: number }[]>[] = [];
 
   days.forEach((day, i) => {
@@ -99,9 +104,11 @@ export function runBacktest(ingredients: Ingredient[], weeks = 12, seed = 7, end
       // Tonight: kitchen prepped to plan, then logged what went in the bin.
       // If the plan cut more than would have been wasted, the item sold out;
       // the log reads 0 and the observation is censored at the cut amount.
-      const cut = forecast * REDUCTION_RATE;
+      const cut = i >= planStartDay ? forecast * REDUCTION_RATE : 0;
       const logged = Math.max(0, actual - cut);
       obs.push({ date: day.date, ingredientId: ing.id, rawKg: raw, usualKg: logged + cut, condition: day.weather.condition });
+      const r3 = (n: number) => Math.round(n * 1000) / 1000;
+      closeouts.push({ date: day.date, ingredientId: ing.id, priorKg: r3(raw), cutKg: r3(cut), loggedKg: r3(logged), weather: day.weather.condition, covers: day.expectedCovers });
     }
   });
 
@@ -114,6 +121,7 @@ export function runBacktest(ingredients: Ingredient[], weeks = 12, seed = 7, end
       ceiling: accuracy(b.ceiling),
     })),
     observations: obs,
+    closeouts,
     days,
   };
 }

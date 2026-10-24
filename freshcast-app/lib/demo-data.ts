@@ -25,17 +25,16 @@ export const EVENTS: Record<EventType, NearbyEvent> = {
 // Index 0 = Sunday.
 export const COVERS_BY_DAY = [48, 38, 45, 50, 56, 68, 72];
 
-// History values are what the model has learned from 3 weeks of Marco's logs.
-// lastWeekRatio > 1 means Marco wasted more than forecast last week.
+// Nothing here is pre-learned. The model learns each item from stored logs.
 export const DEMO_INGREDIENTS: Ingredient[] = [
-  { id: "arugula", name: "Arugula", category: "produce", costPerKg: 12.5, baselinePrepKg: 4, shelfLifeDays: 3, co2PerKg: 2.0, history: { lastWeekRatio: 1.24, calibration: 1.12, weeksOfData: 3 } },
-  { id: "salmon", name: "Atlantic Salmon", category: "seafood", costPerKg: 28, baselinePrepKg: 6, shelfLifeDays: 2, co2PerKg: 11.9, history: { lastWeekRatio: 0.92, calibration: 0.95, weeksOfData: 3 } },
-  { id: "mozzarella", name: "Fresh Mozzarella", category: "dairy", costPerKg: 16, baselinePrepKg: 5, shelfLifeDays: 5, co2PerKg: 8.6, history: { lastWeekRatio: 1.05, calibration: 1.02, weeksOfData: 3 } },
-  { id: "tomatoes", name: "San Marzano Tomatoes", category: "produce", costPerKg: 6.5, baselinePrepKg: 8, shelfLifeDays: 6, co2PerKg: 2.1, history: { lastWeekRatio: 0.88, calibration: 0.91, weeksOfData: 3 } },
-  { id: "basil", name: "Fresh Basil", category: "produce", costPerKg: 22, baselinePrepKg: 1.5, shelfLifeDays: 2, co2PerKg: 2.0, history: { lastWeekRatio: 1.31, calibration: 1.18, weeksOfData: 3 } },
-  { id: "pasta", name: "Fresh Pasta Dough", category: "bakery", costPerKg: 4, baselinePrepKg: 10, shelfLifeDays: 2, co2PerKg: 1.4, history: { lastWeekRatio: 1.1, calibration: 1.06, weeksOfData: 3 } },
-  { id: "prosciutto", name: "Prosciutto di Parma", category: "meat", costPerKg: 42, baselinePrepKg: 3, shelfLifeDays: 7, co2PerKg: 12.3, history: { lastWeekRatio: 0.97, calibration: 0.98, weeksOfData: 3 } },
-  { id: "focaccia", name: "Focaccia", category: "bakery", costPerKg: 3.5, baselinePrepKg: 12, shelfLifeDays: 1, co2PerKg: 1.3, history: { lastWeekRatio: 1.15, calibration: 1.09, weeksOfData: 3 } },
+  { id: "arugula", name: "Arugula", category: "produce", costPerKg: 12.5, baselinePrepKg: 4, shelfLifeDays: 3, co2PerKg: 2.0 },
+  { id: "salmon", name: "Atlantic Salmon", category: "seafood", costPerKg: 28, baselinePrepKg: 6, shelfLifeDays: 2, co2PerKg: 11.9 },
+  { id: "mozzarella", name: "Fresh Mozzarella", category: "dairy", costPerKg: 16, baselinePrepKg: 5, shelfLifeDays: 5, co2PerKg: 8.6 },
+  { id: "tomatoes", name: "San Marzano Tomatoes", category: "produce", costPerKg: 6.5, baselinePrepKg: 8, shelfLifeDays: 6, co2PerKg: 2.1 },
+  { id: "basil", name: "Fresh Basil", category: "produce", costPerKg: 22, baselinePrepKg: 1.5, shelfLifeDays: 2, co2PerKg: 2.0 },
+  { id: "pasta", name: "Fresh Pasta Dough", category: "bakery", costPerKg: 4, baselinePrepKg: 10, shelfLifeDays: 2, co2PerKg: 1.4 },
+  { id: "prosciutto", name: "Prosciutto di Parma", category: "meat", costPerKg: 42, baselinePrepKg: 3, shelfLifeDays: 7, co2PerKg: 12.3 },
+  { id: "focaccia", name: "Focaccia", category: "bakery", costPerKg: 3.5, baselinePrepKg: 12, shelfLifeDays: 1, co2PerKg: 1.3 },
 ];
 
 export const DEMO_RUNNING_TOTALS = {

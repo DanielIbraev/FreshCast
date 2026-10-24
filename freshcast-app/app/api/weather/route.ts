@@ -19,11 +19,11 @@ export async function GET() {
     const data = await res.json();
     const d = data.daily;
 
-    // Skip index 0 (today); forecast the next 7 days.
-    const days: DayWeather[] = d.time.slice(1, 8).map((date: string, i: number) => {
-      const code = d.weather_code[i + 1];
-      const tempF = d.temperature_2m_max[i + 1];
-      const precipProb = d.precipitation_probability_max[i + 1] ?? 0;
+    // Index 0 is today (used for tonight's close-out); 1-7 are the forecast week.
+    const days: DayWeather[] = d.time.slice(0, 8).map((date: string, i: number) => {
+      const code = d.weather_code[i];
+      const tempF = d.temperature_2m_max[i];
+      const precipProb = d.precipitation_probability_max[i] ?? 0;
       const condition = classify(code, tempF, precipProb);
       return { date, tempF, condition, precipProb, description: describe(condition, tempF) };
     });
