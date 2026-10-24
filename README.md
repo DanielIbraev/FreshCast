@@ -159,4 +159,4 @@ Optional database: create a Supabase project, run `freshcast-app/supabase/schema
 Next.js 15 (App Router, TypeScript), Tailwind CSS, Framer Motion, Recharts, Lucide icons, Supabase (Postgres + RLS), Vercel. Tests: Vitest + fast-check.
 
 ## Data and credits
-Open-Meteo (weather, CC BY 4.0) · OpenStreetMap Nominatim (search and geocoding, © OpenStreetMap contributors, ODbL) · Poore & Nemecek (2018) via Our World in Data (CO₂e per kg) · Feeding America (1.2 lb per meal) · EPA (CO₂ per mile and per car) · Technomic (restaurant counts). Design steering from [Anti-AI-UI](https://github.com/Vanszs/Anti-AI-UI) (MIT) and the [Hallmark](https://github.com/nutlope/hallmark) skill (MIT).
+Open-Meteo (live forecast and Boston's recorded daily weather, CC BY 4.0) · OpenStreetMap Nominatim (search and geocoding, © OpenStreetMap contributors, ODbL) · Poore & Nemecek (2018) via Our World in Data (CO₂e per kg) · Feeding America (1.2 lb per meal) · EPA (CO₂ per mile and per car) · Technomic (restaurant counts). Design steering from [Anti-AI-UI](https://github.com/Vanszs/Anti-AI-UI) (MIT) and the [Hallmark](https://github.com/nutlope/hallmark) skill (MIT).
