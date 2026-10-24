@@ -115,6 +115,7 @@ export interface IngredientPrediction {
   reducedWasteKg: number;
   reducedWasteCost: number;
   reducedCo2Kg: number;
+  cutKg: number;
   recommendedPrepKg: number;
   recommendation: string;
   riskLevel: "high" | "medium" | "low";
