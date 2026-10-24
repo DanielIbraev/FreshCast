@@ -44,6 +44,12 @@ function Deck() {
   ];
   const go = useCallback((d: number) => setI((x) => Math.min(slides.length - 1, Math.max(0, x + d))), [slides.length]);
 
+  // /pitch?s=7 opens slide 7 (handy for jumping back after the live demo)
+  useEffect(() => {
+    const s = Number(new URLSearchParams(window.location.search).get("s"));
+    if (s >= 1) setI(s - 1);
+  }, []);
+
   useEffect(() => {
     const fit = () => setScale(Math.min(window.innerWidth / W, window.innerHeight / H));
     fit();
