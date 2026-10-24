@@ -20,7 +20,7 @@ export function CategoryDonut({ ingredients }: { ingredients: Ingredient[] }) {
       <div className="relative h-[150px] w-[150px] shrink-0">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
-            <Pie data={data} dataKey="value" innerRadius={50} outerRadius={70} paddingAngle={2} stroke="none" animationDuration={800}>
+            <Pie data={data} dataKey="value" innerRadius={50} outerRadius={70} paddingAngle={2} stroke="none" isAnimationActive={false}>
               {data.map((d) => (
                 <Cell key={d.key} fill={d.color} />
               ))}

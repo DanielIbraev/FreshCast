@@ -122,7 +122,7 @@ export default function LogWastePage() {
               return (
                 <motion.li key={l.id} initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="flex items-center justify-between py-2.5">
                   <span className="flex items-center gap-3">
-                    <span className="w-14 text-xs tabular-nums text-text-muted">{new Date(l.loggedAt).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}</span>
+                    <span className="w-16 whitespace-nowrap text-xs tabular-nums text-text-muted">{new Date(l.loggedAt).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}</span>
                     <span className="text-sm text-text-primary">{ing?.name ?? "Removed item"}</span>
                     <span className="rounded px-1.5 py-0.5 text-[10px]" style={{ color: WASTE_REASONS[l.reason].color, background: `${WASTE_REASONS[l.reason].color}1A` }}>
                       {WASTE_REASONS[l.reason].label}
