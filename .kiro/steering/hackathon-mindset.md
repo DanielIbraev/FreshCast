@@ -52,7 +52,7 @@
 - Never apologize excessively — move forward
 
 ## Keep everything in sync (standing rule)
-Do NOT spend effort on the pitch, deck, or README until the user says the software and model are done. Then update all of these in one pass:
+Commit and push to GitHub after every meaningful change (the save hook covers user saves; agent edits need an explicit commit). Whenever a feature, model change, or number changes, update in the same pass:
 - `.kiro/steering/pitch-and-demo.md` (numbers you can say, demo script, Q&A)
 - `README.md` (accuracy table, what's real vs simulated)
 - The pitch deck at `/pitch` (`components/pitch/*`). Deck numbers read from the store and benchmark, so prefer wiring a number over typing it.
