@@ -32,13 +32,13 @@ const plain = (e: React.MouseEvent) => !(e.metaKey || e.ctrlKey || e.shiftKey ||
 export function Sidebar() {
   const pathname = usePathname();
   const { resetDemo, dbStatus, profile } = useStore();
-  const { pending, start } = useNavTransition();
+  const { start } = useNavTransition();
   const st = STATUS[dbStatus];
 
   return (
     <aside className="hidden h-screen w-60 shrink-0 flex-col border-r border-border bg-surface md:flex">
       <div className="flex items-center gap-2.5 px-5 py-5">
-        <Mark size={32} animating={pending} />
+        <Mark size={32} />
         <span className="font-display text-lg font-700 text-text-primary">FreshCast</span>
       </div>
 

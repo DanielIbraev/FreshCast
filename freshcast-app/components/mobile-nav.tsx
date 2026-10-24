@@ -12,10 +12,9 @@ import { cn } from "@/lib/utils";
 // Phones and tablets: a slim top bar plus a thumb-reach tab bar at the bottom.
 export function MobileTopBar() {
   const { dbStatus } = useStore();
-  const { pending } = useNavTransition();
   return (
     <div className="sticky top-0 z-20 flex items-center gap-3 border-b border-border bg-surface/95 px-4 py-3 backdrop-blur md:hidden">
-      <Mark size={28} animating={pending} />
+      <Mark size={28} />
       <div className="min-w-0 flex-1">
         <RestaurantSwitcher compact />
       </div>

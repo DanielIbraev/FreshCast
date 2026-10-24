@@ -19,6 +19,7 @@ export { EVENTS };
 
 interface StoreValue {
   hydrated: boolean;
+  ready: boolean; // data and weather loaded: safe to show the page without it shifting
   dbStatus: DbStatus;
   profile: Profile;
   restaurants: Profile[]; // demos first, then the visitor's own
@@ -253,7 +254,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
   );
 
   const value: StoreValue = {
-    hydrated, dbStatus, profile, restaurants, ingredients, logs, observations, scenario, weatherSource, today, week, selected,
+    hydrated, ready: hydrated && weatherSource !== "loading", dbStatus, profile, restaurants, ingredients, logs, observations, scenario, weatherSource, today, week, selected,
     addIngredient: (i) => { setIngredients((p) => [...p, i]); sync(() => db.upsertIngredient(i)); },
     updateIngredient: (i) => { setIngredients((p) => p.map((x) => (x.id === i.id ? i : x))); sync(() => db.upsertIngredient(i)); },
     removeIngredient: (id) => {
