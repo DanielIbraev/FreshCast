@@ -12,7 +12,7 @@
 1. **Potential Value** (real problem, scalable, accessible, equity, adoption)
    - ~70% of US restaurants are single-location independents (412,498, Technomic 2025). Waste tools that put cameras and scales on the bin are built for chains. FreshCast needs no hardware and runs on the phone or tablet the kitchen already has.
    - Accessible: about a minute of quick-tap logging a night, no scale, English and Español staff screen, setup from an OpenStreetMap search.
-   - Scales by impact, not revenue: at 1% of independents, ~25,000 t CO₂e and ~9.5 million meals' worth of food a year (simulated, Marco-like savings).
+   - Scales by impact, not revenue: at 1% of independents, ~23,800 t CO₂e and ~9.0 million meals' worth of food a year (simulated, Marco-like savings).
 2. **Implementation** (depth and variety of Kiro use, strategy, experimentation)
    - Kiro IDE only. Spec → 80% ranges (first design 73% coverage, redesigned). 13 fast-check properties found 2 bugs. 3 active hooks. 7 steering files. Hallmark skill + sloplint. pptx MCP. Parallel subagents, including a model audit that fixed 5 real problems. Details in `KIRO.md`.
    - Integrations: Open-Meteo live weather, OpenStreetMap Nominatim, Supabase (Postgres + row-level security), the walk-forward benchmark.
