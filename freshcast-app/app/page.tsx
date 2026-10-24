@@ -12,7 +12,7 @@ export default function Home() {
   return (
     <div className="min-h-screen overflow-x-clip bg-canvas">
       <header className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:px-8">
-        <Link href="/" className="flex items-center gap-2.5 rounded-md">
+        <Link href="/" aria-label="FreshCast home" className="flex items-center gap-2.5 rounded-md">
           <Mark size={30} />
           <span className="font-display text-lg font-700 text-text-primary">FreshCast</span>
         </Link>
