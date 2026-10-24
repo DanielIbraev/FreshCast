@@ -101,7 +101,7 @@ export function trackRecord(stored: DailyObservation[], ingredients: Ingredient[
   const own = new Map<string, number[]>();
   const pooled: number[] = [];
   const nights: NightTotal[] = [];
-  type Scored = { date: string; id: string; f: number; a: number; hit: boolean };
+
   const scored: Scored[] = [];
   const perItem = new Map<string, { nights: number; soldOut: number; waste28: number }>();
   const cutoff28 = dates.slice(-28)[0] ?? "";
