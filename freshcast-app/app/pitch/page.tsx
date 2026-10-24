@@ -27,7 +27,7 @@ function Deck() {
   // recording replaces the demo slide).
   const [cam, setCam] = useState(false);
   const [videoCut, setVideoCut] = useState(false);
-  const idleTimer = useRef<ReturnType<typeof setTimeout>>();
+  const idleTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const sum = useMemo(() => summarize(dailyTotals(observations, ingredients)), [observations, ingredients]);
   const kgYear = sum.kgLast30 * 12;
