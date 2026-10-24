@@ -119,7 +119,7 @@ export default function DashboardPage() {
         <Card>
           <h2 className="font-display text-lg font-600 text-text-primary">What actually went in the bin</h2>
           <p className="mb-4 mt-0.5 text-sm text-text-secondary">
-            Last 8 weeks of nightly close-outs{drop !== null ? `. Down ${drop}% since Marco started prepping to the plan.` : "."}
+            7-day average of {totals.length} nightly close-outs{drop !== null ? `. Down ${drop}% since Marco started prepping to the plan.` : "."}
           </p>
           <WasteTrend data={trend} adoptionDate={sum.planStart} />
         </Card>
