@@ -46,7 +46,7 @@ export interface Ingredient {
   costPerKg: number;
   baselinePrepKg: number; // what the kitchen preps on a normal day
   shelfLifeDays: number;
-  co2PerKg: number; // kg CO2e per kg wasted (FAO/WRAP factors)
+  co2PerKg: number; // kg CO2e per kg of food, farm to retail (Poore & Nemecek 2018, via Our World in Data)
 }
 
 export interface WasteLog {
@@ -107,6 +107,9 @@ export interface PredictionInput {
   date: Date;
   event: NearbyEvent;
   cuisineType: CuisineType;
+  usualCovers?: number; // usual guests for this weekday (defaults to avgCovers)
+  guestsSource?: "usual" | "what-if" | "served";
+  coversSource?: "default" | "pos-import";
   learned?: Learned;
 }
 
@@ -122,6 +125,7 @@ export interface IngredientPrediction {
   reducedCo2Kg: number;
   cutKg: number;
   priorKg?: number; // forecast from industry priors alone, stored at close-out
+  usualPrepKg: number; // this weekday's usual prep
   recommendedPrepKg: number;
   recommendation: string;
   riskLevel: "high" | "medium" | "low";
@@ -137,6 +141,8 @@ export interface IngredientPrediction {
 
 export interface DayPrediction {
   date: string;
+  closed?: boolean; // restaurant not open this weekday: no prep, no forecast
+  usualCovers: number;
   expectedCovers: number;
   weather: DayWeather;
   event: NearbyEvent;
