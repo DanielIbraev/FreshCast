@@ -6,7 +6,7 @@ FreshCast was built solo during Hackachusetts 2026 in the **Kiro IDE**. Kiro wro
 Kiro was the only AI tool used to plan and build FreshCast. No separate chatbot for brainstorming, no other coding assistant, no other writing tool. In Kiro:
 - **Ideas and research:** choosing the problem, comparing competitors, and sourcing every statistic with Kiro's web search.
 - **Planning:** the battle plan, the steering files and the spec.
-- **Building:** every line of code, the database schema and security policies, 60 tests, the benchmark.
+- **Building:** every line of code, the database schema and security policies, 62 tests, the benchmark, and the script that fetches Boston's recorded weather for it.
 - **Checking:** property-based tests, a subagent audit of the model's math and sources, and the Hallmark design checker run against the live app.
 - **Shipping:** hooks for commits, tests and re-scoring; diagnosing CI and deploy failures.
 - **Pitching:** the deck at `/pitch` (a page in the app, wired to the same data), the demo script, the submission text and this write-up. Kiro also wrote the shot list and prompts for the 10-second intro clip; the clip itself was rendered by a separate video-generation tool, the one step Kiro can't do.
