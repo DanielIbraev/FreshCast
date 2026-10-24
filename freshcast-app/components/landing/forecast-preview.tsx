@@ -28,16 +28,18 @@ export function ForecastPreview() {
       </div>
 
       <figcaption className="border-t border-border px-3.5 py-3 sm:px-4">
-        <div className="flex items-center justify-between gap-4 text-xs leading-none">
-          <span className="font-600 text-waste">Likely waste: {pct(BASE_WASTE_FRACTION)} base rate</span>
-          <span className="text-right font-600 text-good">Prep plan cuts {pct(REDUCTION_RATE)}</span>
-        </div>
-        <div
-          className="mt-2 h-1.5 overflow-hidden rounded-full bg-waste/35"
-          role="img"
-          aria-label={`The prep plan cuts ${pct(REDUCTION_RATE)} of likely waste and keeps ${pct(1 - REDUCTION_RATE)} as a buffer.`}
-        >
-          <span className="landing-plan-fill block h-full w-full rounded-full bg-good" />
+        <div className="lg:w-2/3">
+          <div className="flex items-center justify-between gap-4 text-xs leading-none">
+            <span className="font-600 text-waste">Waste starts at {pct(BASE_WASTE_FRACTION)} of usual prep</span>
+            <span className="text-right font-600 text-good">Plan cuts {pct(REDUCTION_RATE)}</span>
+          </div>
+          <div
+            className="mt-2 h-1.5 overflow-hidden rounded-full bg-waste/35"
+            role="img"
+            aria-label={`The prep plan cuts ${pct(REDUCTION_RATE)} of likely waste and keeps ${pct(1 - REDUCTION_RATE)} as a buffer.`}
+          >
+            <span className="landing-plan-fill block h-full w-full rounded-full bg-good" />
+          </div>
         </div>
       </figcaption>
     </figure>
