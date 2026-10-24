@@ -4,7 +4,10 @@
 // has to discover the gap from waste logs alone.
 
 import { DayWeather, Ingredient, NearbyEvent, WeatherCondition } from "./types";
-import { AVG_COVERS, COVERS_BY_DAY, EVENTS, localISO } from "./demo-data";
+import { EVENTS, localISO } from "./demo-data";
+import { KitchenShape, shapeOf, isOpen } from "./kitchens";
+import { DEMO_PROFILE } from "./profile";
+import { usualPrepKg } from "./prediction";
 import { describe } from "./weather";
 
 // Seeded RNG (mulberry32) so every run produces the same kitchen.
@@ -23,16 +26,17 @@ function gauss(r: () => number): number {
   return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * r());
 }
 
+// Shared parts of the hidden world. Each kitchen adds its own guest
+// sensitivity, weather response, weekday habits and per-item bias
+// (lib/kitchens.ts). The model's priors are deliberately different.
 export const TRUE_WORLD = {
   baseFraction: 0.08,
-  coversSlope: 0.8, // model assumes 0.6
-  weather: { rain: 1.25, storm: 1.3, hot: 0.88, cold: 1.12, normal: 1.0 } as Record<WeatherCondition, number>, // model: rain 1.15
-  dayOfWeek: [0.95, 1.3, 1.12, 1.0, 0.97, 0.85, 0.8], // model: [0.9, 1.22, 1.18, 1.05, 1.0, 0.88, 0.82]
   season: [1.1, 1.1, 1.0, 1.0, 0.95, 0.95, 0.9, 0.9, 1.08, 1.08, 1.15, 1.15],
   event: 0.75,
   noiseSigma: 0.12, // day-to-day randomness no model can predict
-  // Marco's habits: he over-preps basil and arugula, under-preps tomatoes.
-  ingredientBias: { arugula: 1.3, salmon: 0.85, mozzarella: 1.05, tomatoes: 0.8, basil: 1.4, pasta: 1.15, prosciutto: 0.95, focaccia: 1.25 } as Record<string, number>,
+  coversDrift: 0.15, // actual guests vs. the usual for that weekday
+  // Real perishability effect, steeper than the model's shelfLifeFactor prior.
+  shelfLife: (days: number) => (days <= 1 ? 1.3 : days <= 2 ? 1.15 : days <= 4 ? 1.0 : days <= 7 ? 0.85 : 0.75),
 };
 
 // Boston average daily high by month (°F)
@@ -42,12 +46,13 @@ export interface SimDay {
   date: string;
   dateObj: Date;
   weather: DayWeather;
-  expectedCovers: number; // what reservations said
-  actualCovers: number; // who actually showed up (the POS knows this at close)
+  usualCovers: number; // the kitchen's usual guests for this weekday (all FreshCast knows at 8am)
+  expectedCovers: number; // same as usualCovers: no reservation feed is assumed
+  actualCovers: number; // who actually showed up (the register knows this at close)
   event: NearbyEvent;
   trueUsual: Record<string, number>; // waste if prepped as usual (kg), with noise
   trueMean: Record<string, number>; // same, without noise, knowing who actually came
-  trueMeanAtPrep: Record<string, number>; // best possible at 8am: knows the kitchen, only has reservations
+  trueMeanAtPrep: Record<string, number>; // oracle at 8am: knows the hidden parameters, not tonight's guests or noise
 }
 
 function hashBias(id: string): number {
@@ -56,46 +61,56 @@ function hashBias(id: string): number {
   return 0.8 + ((Math.abs(h) % 1000) / 1000) * 0.5;
 }
 
-export function simulateDays(ingredients: Ingredient[], start: Date, numDays: number, seed: number): SimDay[] {
+// Closed weekdays produce no row at all: no prep, no waste, nothing to learn.
+export function simulateDays(ingredients: Ingredient[], start: Date, numDays: number, seed: number, kitchen: KitchenShape = shapeOf(DEMO_PROFILE)): SimDay[] {
   const r = rng(seed);
+  const H = kitchen.hidden;
   const days: SimDay[] = [];
   for (let i = 0; i < numDays; i++) {
     const d = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i);
     const dow = d.getDay();
+    // Draw the same random numbers every day so open/closed days don't shift the sequence.
     const tempF = MONTH_HIGH[d.getMonth()] + gauss(r) * 6;
     const wet = r() < 0.3;
-    const condition: WeatherCondition = wet ? (r() < 0.12 ? "storm" : "rain") : tempF >= 85 ? "hot" : tempF <= 32 ? "cold" : "normal";
+    const stormy = r() < 0.12;
+    const condition: WeatherCondition = wet ? (stormy ? "storm" : "rain") : tempF >= 85 ? "hot" : tempF <= 32 ? "cold" : "normal";
     const event = !wet && r() < 0.08 ? EVENTS.game : EVENTS.none;
-    const expectedCovers = Math.max(10, Math.round(COVERS_BY_DAY[dow] * (1 + 0.12 * gauss(r))));
-    // Walk-ins and no-shows: actual guests drift ~10% from reservations
-    const trueCovers = expectedCovers * (1 + 0.1 * gauss(r));
+    const drift = gauss(r);
+    const noise = ingredients.map(() => gauss(r));
+    if (!isOpen(kitchen, dow)) continue;
+
+    const usual = kitchen.coversByDay[dow];
+    const trueCovers = Math.max(1, usual * (1 + TRUE_WORLD.coversDrift * drift));
+    const demand = (c: number) => Math.max(0.3, 1 + (1 - c / usual) * H.coversSlope);
 
     const trueUsual: Record<string, number> = {};
     const trueMean: Record<string, number> = {};
     const trueMeanAtPrep: Record<string, number> = {};
-    for (const ing of ingredients) {
-      const bias = TRUE_WORLD.ingredientBias[ing.id] ?? hashBias(ing.id);
-      const demand = (c: number) => Math.max(0.3, 1 + (1 - c / AVG_COVERS) * TRUE_WORLD.coversSlope);
-      const mean =
-        ing.baselinePrepKg *
+    ingredients.forEach((ing, k) => {
+      const bias = H.ingredientBias[ing.id] ?? hashBias(ing.id);
+      const prep = usualPrepKg(ing.baselinePrepKg, usual, kitchen.avgCovers);
+      const atPrep =
+        prep *
         TRUE_WORLD.baseFraction *
-        demand(trueCovers) *
-        TRUE_WORLD.weather[condition] *
-        TRUE_WORLD.dayOfWeek[dow] *
+        H.weather[condition] *
+        H.weekday[dow] *
         TRUE_WORLD.season[d.getMonth()] *
         (event.type === "none" ? 1 : TRUE_WORLD.event) *
+        TRUE_WORLD.shelfLife(ing.shelfLifeDays) *
         bias;
+      const mean = Math.min(prep * 0.6, atPrep * demand(trueCovers));
       const s = TRUE_WORLD.noiseSigma;
       trueMean[ing.id] = mean;
-      trueMeanAtPrep[ing.id] = (mean / demand(trueCovers)) * demand(expectedCovers);
-      trueUsual[ing.id] = mean * Math.exp(s * gauss(r) - (s * s) / 2);
-    }
+      trueMeanAtPrep[ing.id] = Math.min(prep * 0.6, atPrep); // demand(usual) = 1
+      trueUsual[ing.id] = mean * Math.exp(s * noise[k] - (s * s) / 2);
+    });
 
     days.push({
       date: localISO(d),
       dateObj: d,
       weather: { date: localISO(d), tempF, condition, precipProb: wet ? 75 : 10, description: describe(condition, tempF) },
-      expectedCovers,
+      usualCovers: usual,
+      expectedCovers: usual,
       actualCovers: Math.round(trueCovers),
       event,
       trueUsual,

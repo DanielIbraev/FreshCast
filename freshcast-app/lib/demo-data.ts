@@ -1,6 +1,7 @@
-// Marco's Trattoria: the demo restaurant. 60-seat independent Italian, Boston.
+// Shared demo constants and date helpers.
 
-import { Restaurant, Ingredient, WasteLog, WasteReason, EventType, NearbyEvent } from "./types";
+import { Restaurant, Ingredient, EventType, NearbyEvent } from "./types";
+import { KITCHENS } from "./kitchens";
 
 export const DEMO_RESTAURANT: Restaurant = {
   id: "marcos-trattoria",
@@ -11,47 +12,16 @@ export const DEMO_RESTAURANT: Restaurant = {
   cuisineType: "italian",
 };
 
-export const AVG_COVERS = 52;
-
 export const EVENTS: Record<EventType, NearbyEvent> = {
   none: { type: "none", name: "", distanceMiles: 0 },
   game: { type: "game", name: "Home game at the arena", distanceMiles: 0.6 },
   concert: { type: "concert", name: "Arena concert", distanceMiles: 0.6 },
-  festival: { type: "festival", name: "North End Feast", distanceMiles: 0.2 },
+  festival: { type: "festival", name: "Street festival nearby", distanceMiles: 0.2 },
   graduation: { type: "graduation", name: "University commencement", distanceMiles: 0.8 },
 };
 
-// Expected covers by weekday, as a reservation integration would report them.
-// Index 0 = Sunday.
-export const COVERS_BY_DAY = [48, 38, 45, 50, 56, 68, 72];
-
-// Nothing here is pre-learned. The model learns each item from stored logs.
-export const DEMO_INGREDIENTS: Ingredient[] = [
-  { id: "arugula", name: "Arugula", category: "produce", costPerKg: 12.5, baselinePrepKg: 4, shelfLifeDays: 3, co2PerKg: 2.0 },
-  { id: "salmon", name: "Atlantic Salmon", category: "seafood", costPerKg: 28, baselinePrepKg: 6, shelfLifeDays: 2, co2PerKg: 11.9 },
-  { id: "mozzarella", name: "Fresh Mozzarella", category: "dairy", costPerKg: 16, baselinePrepKg: 5, shelfLifeDays: 5, co2PerKg: 8.6 },
-  { id: "tomatoes", name: "San Marzano Tomatoes", category: "produce", costPerKg: 6.5, baselinePrepKg: 8, shelfLifeDays: 6, co2PerKg: 2.1 },
-  { id: "basil", name: "Fresh Basil", category: "produce", costPerKg: 22, baselinePrepKg: 1.5, shelfLifeDays: 2, co2PerKg: 2.0 },
-  { id: "pasta", name: "Fresh Pasta Dough", category: "bakery", costPerKg: 4, baselinePrepKg: 10, shelfLifeDays: 2, co2PerKg: 1.4 },
-  { id: "prosciutto", name: "Prosciutto di Parma", category: "meat", costPerKg: 42, baselinePrepKg: 3, shelfLifeDays: 7, co2PerKg: 12.3 },
-  { id: "focaccia", name: "Focaccia", category: "bakery", costPerKg: 3.5, baselinePrepKg: 12, shelfLifeDays: 1, co2PerKg: 1.3 },
-];
-
-// A few logs from earlier today so the log screen and charts aren't empty.
-export function seedTodayLogs(): WasteLog[] {
-  const seed: [string, number, WasteReason, number][] = [
-    ["focaccia", 1.2, "overprep", 9],
-    ["arugula", 0.4, "spoiled", 10],
-    ["salmon", 0.3, "plate", 13],
-    ["basil", 0.15, "spoiled", 14],
-  ];
-  const now = new Date();
-  return seed.map(([ingredientId, quantityKg, reason, hour], i) => {
-    const t = new Date(now);
-    t.setHours(hour, 10 + i * 7, 0, 0);
-    return { id: `seed-${i}`, ingredientId, quantityKg, reason, loggedAt: t.toISOString() };
-  });
-}
+// Marco's menu lives in lib/kitchens.ts with the other demo kitchens.
+export const DEMO_INGREDIENTS: Ingredient[] = KITCHENS["marcos-trattoria"].ingredients;
 
 export function localISO(d: Date): string {
   const y = d.getFullYear();
