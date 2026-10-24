@@ -72,7 +72,7 @@ The first three are from [Anti-AI-UI](https://github.com/Vanszs/Anti-AI-UI) (MIT
 The [Hallmark](https://github.com/nutlope/hallmark) design skill (MIT) was added as a workspace skill. Its `sloplint` script was run against the live app. It flagged low-contrast muted text, weak focus rings, labels in tracked capitals, and 4 font weights where 2–3 is the target. Those are being fixed. Some of the flagged patterns came from our own `ui-design.md` (uppercase, wide-tracked card labels), so the skill also caught a weak rule in our steering.
 
 ## MCP (`.kiro/settings/mcp.json`)
-- **`pptx-mcp`** is the one MCP server configured. It lets Kiro create and edit real PowerPoint files, and Kiro used it to generate an editable backup deck (`_reference/FreshCast-Pitch-Deck.pptx`) in case the web deck failed on the presentation machine. The live deck at `/pitch` is the current one.
+- **`pptx-mcp`** is the one MCP server configured. It lets Kiro create and edit real PowerPoint files, and Kiro used it to generate an editable backup deck (`_reference/FreshCast-Pitch-Deck.pptx`). The live deck at `/pitch` is the current one; the backup is from an earlier draft.
 - Getting it running took debugging: its `cryptography` dependency failed to build because macOS had no OpenSSL, so Kiro pinned a version with prebuilt wheels and pointed the config at the Python interpreter that had the dependencies.
 - **Web search and fetch** (built into Kiro, not an MCP server) did the sourcing work: every statistic in the README, app and deck has a named source.
 
