@@ -20,7 +20,7 @@ Kiro dispatched subagents in parallel for:
 5. These docs, checked line by line against the code.
 
 The audit was the most valuable. It found real problems, and each was fixed in code:
-- **Closed days forecast maximum waste.** A day with 0 usual guests drove the guest signal to its cap. Closed days now have no forecast, no prep cut and no savings (property P12).
+- **Closed days were forecast with maximum waste.** Closed days now have no forecast, no prep cut and no savings (property P12), and the simulator produces no rows for them.
 - **All demo restaurants shared one history.** Each restaurant now has its own menu, hidden habits, weather and simulated history (`lib/kitchens.ts`).
 - **Savings counted sold-out nights.** If the plan cut prep and an item logged 0, the cut wasn't provably waste. Those nights now count $0 saved and are excluded from scoring and ranges (P13).
 - **The guest signal claimed a reservation integration that didn't exist.** It now says what it is: the restaurant's usual guests for that weekday, a what-if slider, and guests served entered at close-out.
