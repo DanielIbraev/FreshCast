@@ -31,11 +31,11 @@ export const S8Impact = ({ kgYear, co2Year, meals }: { kgYear: number; co2Year: 
     <Broll name="produce" />
     <Line>One restaurant, one year.</Line>
     <div className="grid grid-cols-3 gap-16">
-      <Big icon={Utensils} value={Math.round(meals).toLocaleString()} label="meals of food never wasted" />
-      <Big icon={Leaf} value={`${co2Year.toFixed(1)} t`} label="CO₂e kept out of the air" />
-      <Big icon={Car} value={Math.round((co2Year / 4.6) * 12).toString()} label="months of a car's emissions" />
+      <Big icon={Utensils} value={Math.round(meals).toLocaleString()} label="meals' worth of food not bought and binned" />
+      <Big icon={Leaf} value={`${co2Year.toFixed(1)} t`} label="CO₂e embodied in that food" />
+      <Big icon={Car} value={Math.round((co2Year / 4.6) * 12).toString()} label="months of a car's CO₂" />
     </div>
-    <Source>From Marco&apos;s last 30 days, annualized. 1.2 lb = 1 meal (USDA). 4.6 t CO₂e per car per year (EPA).</Source>
+    <Source>Marco&apos;s simulated last 30 days × 365/30. 1.2 lb = 1 meal (Feeding America). CO₂e: Poore & Nemecek 2018 via Our World in Data. 4.6 t CO₂ per car per year (EPA).</Source>
   </div>
 );
 
@@ -46,8 +46,8 @@ export const S9Scale = ({ co2Year, meals }: { co2Year: number; meals: number }) 
       <Broll name="traffic" />
       <p className="mb-10 text-[30px] text-text-secondary">At just 1% of America&apos;s independent restaurants:</p>
       <p className="font-display text-[150px] font-800 leading-none tracking-tight tabular-nums text-good">{Math.round((co2Year * n) / 4.6).toLocaleString()}</p>
-      <p className="mt-6 text-[40px] font-600 text-text-primary">cars&apos; worth of emissions, gone. Every year.</p>
-      <p className="mt-4 text-[28px] text-text-secondary">And {((meals * n) / 1e6).toFixed(0)} million meals of food that never hit a landfill.</p>
+      <p className="mt-6 text-[40px] font-600 text-text-primary">cars&apos; worth of CO₂, every year.</p>
+      <p className="mt-4 text-[28px] text-text-secondary">And {((meals * n) / 1e6).toFixed(0)} million meals&apos; worth of food not bought and binned.</p>
       <div className="absolute bottom-0 right-0">
         <Source>4,125 restaurants = 1% of 412,498 US independents (Technomic, 2025)</Source>
       </div>
@@ -79,7 +79,7 @@ export const S10Audience = () => (
 export const S11Business = ({ saved }: { saved: number }) => (
   <div className="flex h-full flex-col justify-center gap-16">
     <Line sub="Monthly subscription. No hardware to ship, install, or repair.">
-      $49 a month. <span className="text-good">Pays for itself in {Math.max(1, Math.round(49 / (saved / 30)))} days.</span>
+      $49 a month. <span className="text-good">Pays for itself in {(() => { const d = Math.max(1, Math.round(49 / (saved / 30))); return `${d} day${d === 1 ? "" : "s"}`; })()}.</span>
     </Line>
     <SavingsBar saved={saved} price={49} />
   </div>
@@ -142,7 +142,7 @@ export const S14Ask = () => (
 export const S7bTrust = ({ coverage }: { coverage: number }) => {
   const tiles: [string, string, string][] = [
     [`${Math.round(coverage * 100)}%`, "of simulated nights land inside the 80% range", "Calibrated uncertainty, not a guess"],
-    ["35", "automated tests, 11 property-based", "Caught 2 real bugs before launch"],
+    ["60", "automated tests, 13 property-based", "Caught 2 real bugs before launch"],
     ["0", "writes allowed from the public", "Postgres row-level security"],
     ["9", "signals per forecast, 1 live feed", "Live weather, usual guests, calendar, your logs"],
   ];
@@ -167,8 +167,8 @@ export const S7bTrust = ({ coverage }: { coverage: number }) => {
 export const S12bKiro = () => {
   const tiles: [string, string, string][] = [
     ["Spec", "requirements → design → tasks", "Forecast confidence ranges"],
-    ["PBT", "11 correctness properties", "Found 2 bugs unit tests missed"],
-    ["Hooks", "150+ auto-pushed commits", "Tests + model re-score on save"],
+    ["PBT", "13 correctness properties", "Found 2 bugs unit tests missed"],
+    ["Hooks", "200+ auto-pushed commits", "Tests + model re-score on save"],
     ["Steering", "7 docs incl. anti-AI-slop", "Every screen built against them"],
     ["MCP", "PowerPoint server + web research", "Backup deck, sourced stats"],
   ];

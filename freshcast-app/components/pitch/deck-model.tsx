@@ -18,7 +18,7 @@ export const S6bHow = ({ item, day }: { item: IngredientPrediction | null; day: 
   const world = v("demand") * v("weather") * v("season") * v("holiday") * v("event") * v("shelfLife");
   const kitchen = v("calibration") * v("dayOfWeek") * v("recency");
   const steps = [
-    { top: `${item.usualPrepKg.toFixed(1)} kg`, mid: "Usual prep", sub: `${day}'s par level × 8% normally binned` },
+    { top: `${(item.usualPrepKg * 0.08).toFixed(2)} kg`, mid: "Normal waste", sub: `8% of the ${item.usualPrepKg.toFixed(1)} kg usually prepped on ${day}` },
     { top: x(world), mid: "The day", sub: `${item.signals.find((s) => s.key === "weather")?.detail ?? "Weather"}, season, shelf life` },
     { top: x(kitchen), mid: "Your kitchen", sub: "Learned from every close-out" },
   ];
@@ -29,8 +29,8 @@ export const S6bHow = ({ item, day }: { item: IngredientPrediction | null; day: 
         {steps.map((s, i) => (
           <motion.div key={s.mid} className="flex items-center gap-5" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 + i * 0.35, duration: 0.45, ease }}>
             {i > 0 && <span className="font-display text-[56px] font-700 text-text-muted">×</span>}
-            <div className="w-[300px] rounded-2xl border border-border bg-surface p-7">
-              <p className="font-display text-[56px] font-800 leading-none tabular-nums text-text-primary">{s.top}</p>
+            <div className="w-[290px] rounded-2xl border border-border bg-surface p-7">
+              <p className="whitespace-nowrap font-display text-[52px] font-800 leading-none tabular-nums text-text-primary">{s.top}</p>
               <p className="mt-4 text-[26px] font-600 text-text-primary">{s.mid}</p>
               <p className="mt-2 text-[19px] leading-snug text-text-muted">{s.sub}</p>
             </div>
@@ -38,8 +38,8 @@ export const S6bHow = ({ item, day }: { item: IngredientPrediction | null; day: 
         ))}
         <motion.div className="flex items-center gap-5" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.3, duration: 0.45, ease }}>
           <span className="font-display text-[56px] font-700 text-text-muted">=</span>
-          <div className="rounded-2xl border-2 border-waste/60 bg-waste/10 p-7">
-            <p className="font-display text-[56px] font-800 leading-none tabular-nums text-waste">{item.predictedWasteKg.toFixed(2)} kg</p>
+          <div className="w-[300px] rounded-2xl border-2 border-waste/60 bg-waste/10 p-7">
+            <p className="whitespace-nowrap font-display text-[56px] font-800 leading-none tabular-nums text-waste">{item.predictedWasteKg.toFixed(2)} kg</p>
             <p className="mt-4 text-[26px] font-600 text-text-primary">likely binned</p>
             <p className="mt-2 text-[19px] text-text-muted">
               80% range {item.lowKg?.toFixed(2)}–{item.highKg?.toFixed(2)} kg

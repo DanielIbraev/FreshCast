@@ -38,8 +38,8 @@ export function Crates() {
 export function Podium() {
   const bars = [
     { label: "China", h: 420, c: "#3B4A61", rank: "1" },
-    { label: "United States", h: 190, c: "#3B4A61", rank: "2" },
-    { label: "Food waste", h: 140, c: "#EF4444", rank: "3" },
+    { label: "United States", h: 205, c: "#3B4A61", rank: "2" },
+    { label: "Food waste", h: 130, c: "#EF4444", rank: "3" },
   ];
   return (
     <div className="flex items-end gap-10">

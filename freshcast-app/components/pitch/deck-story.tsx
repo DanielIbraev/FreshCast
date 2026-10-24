@@ -65,7 +65,7 @@ export const S2Country = () => (
     <div className="flex justify-center">
       <Podium />
     </div>
-    <Source>FAO, United Nations · Food is also the #1 material in US landfills, where it rots into methane (EPA)</Source>
+    <Source>FAO 2013, Food Wastage Footprint, 3.3 Gt CO₂e a year · Food is 24% of what goes into US landfills, where it rots into methane (EPA)</Source>
   </div>
 );
 

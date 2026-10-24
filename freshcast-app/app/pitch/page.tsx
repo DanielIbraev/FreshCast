@@ -7,8 +7,9 @@ import { StoreProvider, useStore } from "@/lib/store";
 import { dailyTotals, summarize } from "@/lib/history";
 import { parseLocalDate } from "@/lib/demo-data";
 import bench from "@/lib/benchmarks.json";
+import { S6bHow, S7Kitchens, S13Roadmap } from "@/components/pitch/deck-model";
 import { S0Brand, S1Hook, S2Country, S3Guess, S4Solution, S5Loop, S6Demo } from "@/components/pitch/deck-story";
-import { S7Proof, S7bTrust, S8Impact, S9Scale, S10Audience, S11Business, S12Competition, S12bKiro, S13Team, S14Ask } from "@/components/pitch/deck-proof";
+import { S7bTrust, S8Impact, S9Scale, S10Audience, S11Business, S12Competition, S12bKiro, S13Team, S14Ask } from "@/components/pitch/deck-proof";
 
 // Slides render at 1600x900 and scale to fit, so a laptop, projector, and a
 // screen recording all look identical.
@@ -35,11 +36,9 @@ function Deck() {
   const co2Year = (sum.co2Last30 * 365) / 30 / 1000;
   const meals = (kgYear * LB_PER_KG) / 1.2;
   const savedMonthly = (sum.savedLast30 * 365) / 30 / 12;
-  const owner = bench.owner;
-  const us = bench.effort.find((e) => e.id === "all-pos")!.accuracy;
 
   const tomorrow = week[0];
-  const prepRows = (tomorrow?.ingredients ?? []).slice(0, 4).map((p) => ({ name: p.ingredient.name, usual: p.usualPrepKg, rec: p.recommendedPrepKg }));
+  const prepRows = (tomorrow?.ingredients ?? []).slice(0, 4).map((p) => ({ name: p.ingredient.name, usual: Math.round(p.usualPrepKg * 10) / 10, rec: p.recommendedPrepKg }));
   const day = tomorrow ? parseLocalDate(tomorrow.date).toLocaleDateString("en-US", { weekday: "long" }) : "Tomorrow";
 
   const all = [
@@ -49,13 +48,15 @@ function Deck() {
     <S4Solution key={4} rows={prepRows} day={day} />,
     <S5Loop key={5} />,
     <S6Demo key={6} />,
-    <S7Proof key={7} owner={owner} us={us} />,
+    <S6bHow key={61} item={tomorrow?.ingredients.find((p) => p.ingredient.id === "salmon") ?? tomorrow?.ingredients[0] ?? null} day={day} />,
+    <S7Kitchens key={7} />,
     <S7bTrust key={70} coverage={bench.coverage80} />,
     <S8Impact key={8} kgYear={kgYear} co2Year={co2Year} meals={meals} />,
     <S9Scale key={9} co2Year={co2Year} meals={meals} />,
     <S10Audience key={10} />,
     <S11Business key={11} saved={savedMonthly} />,
     <S12Competition key={12} />,
+    <S13Roadmap key={121} />,
     <S12bKiro key={120} />,
     <S13Team key={13} />,
     <S14Ask key={14} />,
