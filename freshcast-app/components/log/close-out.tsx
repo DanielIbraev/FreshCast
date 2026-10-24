@@ -5,7 +5,6 @@ import { motion } from "framer-motion";
 import { Database, Minus, MoonStar, Plus } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useStore } from "@/lib/store";
-import { formatCurrency } from "@/lib/utils";
 import { Strings, t } from "@/lib/i18n";
 import { localISO, parseLocalDate } from "@/lib/demo-data";
 import { DayPrediction } from "@/lib/types";

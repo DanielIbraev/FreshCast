@@ -33,7 +33,7 @@ export function Accuracy() {
                 <th scope="col" className="py-3 pr-2 font-400 sm:pr-4">Kitchen</th>
                 <th scope="col" className="px-2 py-3 text-right font-400 sm:px-4">FreshCast</th>
                 <th scope="col" className="px-2 py-3 text-right font-400 sm:px-4">Owner&apos;s guess</th>
-                <th scope="col" className="py-3 pl-2 text-right font-400 sm:pl-4">Ceiling</th>
+                <th scope="col" className="py-3 pl-2 text-right font-400 sm:pl-4">Oracle</th>
               </tr>
             </thead>
             <tbody>
@@ -49,7 +49,7 @@ export function Accuracy() {
           </table>
           <p className="mt-4 text-sm leading-relaxed text-text-muted">
             {weeks} weeks, {bench.seeds.length} seeds. Accuracy is 1 − WAPE by kg. The owner recalls the last 4 same
-            weekdays exactly; the ceiling knows the hidden habits.
+            weekdays exactly; the oracle knows the hidden habits.
           </p>
         </div>
       </div>

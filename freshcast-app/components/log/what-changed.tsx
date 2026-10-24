@@ -2,7 +2,6 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, TrendingDown, TrendingUp } from "lucide-react";
-import { formatCurrency } from "@/lib/utils";
 
 export interface ItemChange {
   id: string;
@@ -16,6 +15,8 @@ export interface ItemChange {
 }
 
 const kg = (n: number) => `${n.toFixed(2)} kg`;
+// Cents: a single night moves things by small amounts, and whole dollars would hide it.
+const usd = (n: number) => `$${n.toFixed(2)}`;
 
 // After a close-out: what the model learned tonight, item by item, in numbers.
 // This is the learning loop made visible: log → correction → tomorrow moves.
@@ -35,9 +36,9 @@ export function WhatChanged({ items, tomorrowBefore, tomorrowAfter, dayName }: {
         <h3 className="font-display text-base font-600 text-text-primary">What tonight taught the model</h3>
         <p className="flex items-center gap-2 text-sm tabular-nums text-text-secondary">
           {dayName}&apos;s forecast
-          <span className="text-text-muted line-through">{formatCurrency(tomorrowBefore)}</span>
+          <span className="text-text-muted line-through">{usd(tomorrowBefore)}</span>
           <ArrowRight className="h-3.5 w-3.5 text-text-muted" aria-hidden />
-          <span className="font-600 text-text-primary">{formatCurrency(tomorrowAfter)}</span>
+          <span className="font-600 text-text-primary">{usd(tomorrowAfter)}</span>
         </p>
       </div>
       {moved.length === 0 ? (
@@ -59,7 +60,7 @@ export function WhatChanged({ items, tomorrowBefore, tomorrowAfter, dayName }: {
                   <span className="tabular-nums text-text-primary">×{i.calAfter.toFixed(2)}</span>.
                 </p>
                 <p className="mt-1 text-[13px] tabular-nums text-text-muted">
-                  {dayName}: {formatCurrency(i.costBefore)} → <span className={up ? "text-waste" : "text-good"}>{formatCurrency(i.costAfter)}</span>
+                  {dayName}: {usd(i.costBefore)} → <span className={up ? "text-waste" : "text-good"}>{usd(i.costAfter)}</span>
                 </p>
               </li>
             );

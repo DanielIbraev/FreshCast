@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ArrowDown, Check, Database, Leaf, Radio, Sparkles } from "lucide-react";
+import { ArrowDown, ArrowRight, Check, Database, Leaf, Radio, Sparkles, Sprout } from "lucide-react";
 import { Card, CardLabel } from "@/components/ui/card";
 import { Counter } from "@/components/ui/counter";
 import { WeeklyBin, weeklyBin } from "@/components/charts/weekly-bin";
@@ -10,13 +10,15 @@ import { ScenarioBar } from "@/components/dashboard/scenario-bar";
 import { IngredientBars } from "@/components/dashboard/ingredient-bars";
 import { SignalBreakdown } from "@/components/dashboard/signal-breakdown";
 import { ImpactCard } from "@/components/dashboard/impact-card";
+import { Guide } from "@/components/dashboard/guide";
+import Link from "next/link";
 import { useStore } from "@/lib/store";
 import { parseLocalDate } from "@/lib/demo-data";
 import { dailyTotals, summarize } from "@/lib/history";
 import { cn, formatCurrency } from "@/lib/utils";
 
 export default function DashboardPage() {
-  const { selected, weatherSource, ingredients, observations, dbStatus, profile } = useStore();
+  const { selected, weatherSource, ingredients, observations, dbStatus, profile, scenario, hydrated } = useStore();
   const [applied, setApplied] = useState(false);
   const [focusId, setFocusId] = useState<string | null>(null);
   const totals = useMemo(() => dailyTotals(observations, ingredients), [observations, ingredients]);
@@ -45,12 +47,36 @@ export default function DashboardPage() {
         </div>
         <span className="flex flex-wrap items-center gap-2 rounded-md border border-border bg-surface px-3 py-1.5 text-xs text-text-secondary">
           <Database className={cn("h-3.5 w-3.5", dbStatus === "connected" ? "text-good" : dbStatus === "sandbox" ? "text-data" : "text-caution")} />
-          {dbStatus === "connected" ? `Supabase · ${observations.length} close-outs` : dbStatus === "sandbox" ? `Demo sandbox · ${observations.length} close-outs` : dbStatus === "loading" ? "Connecting" : "Offline copy"}
+          {dbStatus === "connected" ? `Supabase, ${observations.length} close-outs` : dbStatus === "sandbox" ? `Demo sandbox, ${observations.length} close-outs` : dbStatus === "loading" ? "Connecting" : "Offline copy"}
           <span className="text-border">|</span>
           <Radio className={cn("h-3.5 w-3.5", weatherSource === "live" ? "text-good" : "text-caution")} />
-          {weatherSource === "live" ? "Live weather · Open-Meteo" : weatherSource === "loading" ? "Fetching weather" : "Offline · seasonal weather"}
+          {weatherSource === "live" ? "Live weather from Open-Meteo" : weatherSource === "loading" ? "Fetching weather" : "Offline, seasonal weather"}
         </span>
       </header>
+
+      <Guide
+        state={{
+          pickedDay: scenario.selectedDate !== null,
+          openedItem: focusId !== null,
+          triedWhatIf: scenario.coversOverride !== null || scenario.weatherOverride !== "live" || scenario.event !== "none",
+          applied,
+        }}
+      />
+
+      {hydrated && observations.length === 0 && ingredients.length > 0 && (
+        <Card className="flex flex-wrap items-center gap-4 border-data/40">
+          <Sprout className="h-6 w-6 shrink-0 text-data" aria-hidden />
+          <div className="min-w-[260px] flex-1">
+            <p className="font-display text-base font-600 text-text-primary">Day 1 for {profile.name}</p>
+            <p className="mt-0.5 text-sm text-text-secondary">
+              Forecasts come from the priors (usual prep, weather, season, shelf life) until you close out a few nights, so the ranges are wide on purpose. Night 3 starts scoring; by night 14 it has learned your kitchen.
+            </p>
+          </div>
+          <Link href="/log" className="inline-flex shrink-0 items-center gap-1.5 rounded-md bg-good px-4 py-2 text-sm font-600 text-canvas transition-colors duration-150 hover:bg-good-dim">
+            Close out tonight <ArrowRight className="h-4 w-4" aria-hidden />
+          </Link>
+        </Card>
+      )}
 
       <WeekStrip />
       <ScenarioBar />
@@ -65,7 +91,7 @@ export default function DashboardPage() {
               </p>
               <p className="mt-2 text-xs text-text-muted">
                 {applied ? "With FreshCast prep plan" : "If you prep like a normal day"}
-                {!applied && selected.totalLow !== undefined && selected.totalHigh !== undefined && ` · likely ${formatCurrency(selected.totalLow)}–${formatCurrency(selected.totalHigh)}`}
+                {!applied && selected.totalLow !== undefined && selected.totalHigh !== undefined && `, likely ${formatCurrency(selected.totalLow)}–${formatCurrency(selected.totalHigh)}`}
               </p>
             </Card>
             <Card>
@@ -88,7 +114,6 @@ export default function DashboardPage() {
             </Card>
           </div>
 
-          <ImpactCard sum={sum} />
 
           <div className="grid grid-cols-1 gap-4 xl:grid-cols-[1.45fr_1fr]">
             <Card>
@@ -166,6 +191,7 @@ export default function DashboardPage() {
           </div>
         </Card>
       </div>
+      {sum.daysLogged > 0 && <ImpactCard sum={sum} />}
     </div>
   );
 }

@@ -145,7 +145,7 @@ export const S7bTrust = ({ coverage }: { coverage: number }) => {
 export const S12bKiro = () => {
   const tiles: [string, string, string][] = [
     ["Plan", "Idea, research, sourced stats", "Web search inside Kiro, 7 steering docs"],
-    ["Spec", "Requirements → design → tasks", "Confidence ranges: 73% → 81% coverage"],
+    ["Spec", "Requirements → design → tasks", "Confidence ranges: 73% → 79% coverage"],
     ["Build", "Every line of code", "Model, app, database, 60 tests"],
     ["Check", "13 property tests, a subagent audit", "Found 2 bugs and 5 model errors"],
     ["Ship", "3 hooks, 200+ auto-pushed commits", "Tests and re-scoring on every save"],
