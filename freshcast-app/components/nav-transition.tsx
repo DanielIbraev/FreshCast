@@ -6,8 +6,11 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Mark } from "@/components/brand/mark";
 
 // Shows the looping logo between tabs. Held for at least MIN_MS so a fast
-// navigation reads as a deliberate transition instead of a flicker.
-const MIN_MS = 450;
+// navigation reads as a deliberate transition instead of a flicker, then
+// fades out over EXIT_S while the new page's sections fade up underneath.
+const MIN_MS = 300;
+const ENTER_S = 0.16;
+const EXIT_S = 0.2;
 
 const NavContext = createContext<{ pending: boolean; start: (href: string) => void }>({ pending: false, start: () => {} });
 export const useNavTransition = () => useContext(NavContext);
