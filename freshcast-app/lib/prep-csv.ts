@@ -16,7 +16,7 @@ export function prepListCsv(day: DayPrediction): string {
     const less = p.usualPrepKg - p.recommendedPrepKg;
     return [
       p.ingredient.name,
-      p.ingredient.category,
+      CATEGORIES[p.ingredient.category]?.label ?? p.ingredient.category,
       +p.usualPrepKg.toFixed(1),
       +p.recommendedPrepKg.toFixed(1),
       +less.toFixed(1),
