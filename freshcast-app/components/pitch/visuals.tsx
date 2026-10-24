@@ -6,18 +6,18 @@ import { ArrowRight, Moon, Sun, Trash2, Utensils } from "lucide-react";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
-// 10 crates of food arrive; the last one falls into the bin.
+// 10 crates of food arrive; the last one drops into the bin beside them.
 export function Crates() {
   return (
-    <div className="flex items-end gap-5">
+    <div className="flex h-[150px] items-start gap-5">
       {Array.from({ length: 10 }, (_, i) => {
         const lost = i === 9;
         return (
           <motion.div
             key={i}
             initial={{ opacity: 0, y: -30 }}
-            animate={lost ? { opacity: [0, 1, 1, 1], y: [-30, 0, 0, 150], x: [0, 0, 0, 120], rotate: [0, 0, 0, 25] } : { opacity: 1, y: 0 }}
-            transition={lost ? { duration: 2.2, times: [0, 0.2, 0.55, 1], delay: 0.5, ease } : { duration: 0.4, delay: i * 0.05, ease }}
+            animate={lost ? { opacity: [0, 1, 1, 0], y: [-30, 0, 0, 70], x: [0, 0, 0, 108], rotate: [0, 0, 0, 18], scale: [1, 1, 1, 0.6] } : { opacity: 1, y: 0 }}
+            transition={lost ? { duration: 2.0, times: [0, 0.2, 0.55, 1], delay: 0.6, ease } : { duration: 0.4, delay: i * 0.05, ease }}
             className="flex h-[88px] w-[88px] flex-col justify-between rounded-lg border-2 p-2"
             style={{ borderColor: lost ? "#EF4444" : "#2D3748", background: lost ? "#EF44441A" : "#1A1D27" }}
           >
@@ -27,8 +27,8 @@ export function Crates() {
           </motion.div>
         );
       })}
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.2 }} className="mb-[-150px] ml-6">
-        <Trash2 className="h-28 w-28 text-waste" strokeWidth={1.5} />
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.0 }} className="ml-2 self-end">
+        <Trash2 className="h-[120px] w-[120px] text-waste" strokeWidth={1.4} />
       </motion.div>
     </div>
   );
@@ -37,15 +37,15 @@ export function Crates() {
 // FAO: food waste would rank third among the world's emitters.
 export function Podium() {
   const bars = [
-    { label: "China", h: 300, c: "#3B4A61", rank: "1" },
+    { label: "China", h: 420, c: "#3B4A61", rank: "1" },
     { label: "United States", h: 190, c: "#3B4A61", rank: "2" },
-    { label: "Food waste", h: 150, c: "#EF4444", rank: "3" },
+    { label: "Food waste", h: 140, c: "#EF4444", rank: "3" },
   ];
   return (
     <div className="flex items-end gap-10">
       {bars.map((b, i) => (
-        <div key={b.label} className="flex w-[220px] flex-col items-center">
-          <span className={`mb-3 font-display text-2xl font-700 ${i === 2 ? "text-waste" : "text-text-secondary"}`}>{b.label}</span>
+        <div key={b.label} className="flex w-[260px] flex-col items-center">
+          <span className={`mb-4 font-display text-[30px] font-700 ${i === 2 ? "text-waste" : "text-text-secondary"}`}>{b.label}</span>
           <motion.div
             className="flex w-full items-start justify-center rounded-t-lg pt-4 font-display text-5xl font-800"
             style={{ background: b.c, color: i === 2 ? "#0F1117" : "#94A3B8" }}

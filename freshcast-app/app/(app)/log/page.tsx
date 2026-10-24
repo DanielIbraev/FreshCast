@@ -12,7 +12,15 @@ import { WasteReason } from "@/lib/types";
 import { CATEGORIES, WASTE_REASONS } from "@/lib/categories";
 import { cn, formatCurrency } from "@/lib/utils";
 
-const AMOUNTS = [0.1, 0.25, 0.5, 1, 2];
+// Kitchen-sized portions so staff can eyeball it. No scale needed: the model
+// averages out estimate error over a few nights (see Model accuracy).
+const AMOUNTS = [
+  { kg: 0.1, label: "A handful" },
+  { kg: 0.25, label: "A bowl" },
+  { kg: 0.5, label: "Half a pan" },
+  { kg: 1, label: "A full pan" },
+  { kg: 2, label: "Two pans" },
+];
 
 export default function LogWastePage() {
   const { ingredients, logs, addLog, removeLog, hydrated } = useStore();
@@ -35,7 +43,7 @@ export default function LogWastePage() {
   return (
     <div className="space-y-5">
       <header>
-        <p className="text-sm text-text-muted">Tap the item, tap the amount. The reason defaults to over-prepped. This is the only daily input FreshCast needs.</p>
+        <p className="text-sm text-text-muted">Tap the item, then how much. About a minute at close, no scale needed.</p>
         <h1 className="font-display text-[28px] font-700 leading-tight text-text-primary">Log waste</h1>
       </header>
 
@@ -100,9 +108,20 @@ export default function LogWastePage() {
             <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.2 }} className="overflow-hidden">
               <div className="mt-4 border-t border-border pt-4">
                 <p className="mb-2 text-sm font-600 text-text-primary">
-                  <span className="mr-2 text-sm font-500 text-text-muted">2</span>Why, and how much {find(picked)?.name}?
+                  <span className="mr-2 text-sm font-500 text-text-muted">2</span>How much {find(picked)?.name}?
                 </p>
-                <div className="mb-3 flex gap-1.5" role="radiogroup" aria-label="Reason">
+              <div className="flex items-center gap-2">
+                {AMOUNTS.map((a) => (
+                  <button key={a.kg} onClick={() => log(a.kg)} className="flex-1 rounded-md border border-border bg-canvas px-2 py-3 transition-colors duration-150 hover:border-waste">
+                    <span className="block font-display text-base font-700 text-text-primary">{a.label}</span>
+                    <span className="mt-0.5 block text-[11px] tabular-nums text-text-muted">
+                      ~{a.kg}kg · {formatCurrency((find(picked)?.costPerKg ?? 0) * a.kg)}
+                    </span>
+                  </button>
+                ))}
+              </div>
+                <div className="mt-3 flex items-center gap-1.5" role="radiogroup" aria-label="Reason">
+                  <span className="mr-1 text-xs text-text-muted">Why (optional):</span>
                   {(Object.keys(WASTE_REASONS) as WasteReason[]).map((r) => (
                     <button
                       key={r}
@@ -119,16 +138,6 @@ export default function LogWastePage() {
                     </button>
                   ))}
                 </div>
-              <div className="flex items-center gap-2">
-                {AMOUNTS.map((a) => (
-                  <button key={a} onClick={() => log(a)} className="flex-1 rounded-md border border-border bg-canvas py-3 transition-colors duration-150 hover:border-waste">
-                    <span className="block font-display text-lg font-700 tabular-nums text-text-primary">{a}kg</span>
-                    <span className="block text-[11px] tabular-nums text-text-muted">
-                      {formatCurrency((find(picked)?.costPerKg ?? 0) * a)} · {WASTE_REASONS[reason].label.toLowerCase()}
-                    </span>
-                  </button>
-                ))}
-              </div>
               </div>
             </motion.div>
           )}

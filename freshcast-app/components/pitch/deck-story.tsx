@@ -12,16 +12,16 @@ export function Line({ children, sub }: { children: React.ReactNode; sub?: React
 }
 
 export function Source({ children }: { children: React.ReactNode }) {
-  return <p className="absolute bottom-0 left-0 text-base text-text-muted">{children}</p>;
+  return <p className="text-base text-text-muted">{children}</p>;
 }
 
 export const S1Hook = () => (
   <div className="flex h-full flex-col justify-between">
     <Line>Who here has worked in a restaurant?</Line>
-    <div className="flex items-end justify-between">
+    <div>
       <Crates />
-      <p className="max-w-[360px] text-right text-[28px] leading-snug text-text-secondary">
-        Up to <span className="font-700 text-waste">1 in 10</span> crates a restaurant buys ends up in the trash.
+      <p className="mt-10 text-[34px] leading-snug text-text-secondary">
+        Up to <span className="font-700 text-waste">1 in 10</span> crates of food a restaurant buys ends up in the trash.
       </p>
     </div>
     <Source>Galley Solutions: 4–10% of food purchased by restaurants becomes waste</Source>
@@ -31,7 +31,7 @@ export const S1Hook = () => (
 export const S2Country = () => (
   <div className="relative flex h-full flex-col justify-between">
     <Line>If food waste were a country, it would be the 3rd biggest polluter on Earth.</Line>
-    <div className="flex justify-center pb-10">
+    <div className="flex justify-center">
       <Podium />
     </div>
     <Source>FAO, United Nations · Food is also the #1 material in US landfills, where it rots into methane (EPA)</Source>
