@@ -92,21 +92,24 @@ Learning is walk-forward: it never sees the day it predicts. Only over-prep and 
 ## Accuracy (simulated benchmark)
 Each restaurant gets 1 simulated kitchen × 5 random seeds (7, 11, 23, 31, 42), replayed for 12 weeks, walk-forward, scored after a 2-week warm-up. Accuracy = 1 − WAPE (weighted absolute percentage error, by kg). Numbers are in `freshcast-app/lib/benchmarks.json`; regenerate with `npm run bench` (about 20 s).
 
+**Real weather.** Each simulated night is replayed on the weather Boston actually had that day: daily max temperature and precipitation from Open-Meteo for the last 92 days, saved in `lib/history-weather.json` by `scripts/fetch-history-weather.ts`. A day counts as rainy if its weather code is rain or drizzle or at least 2 mm fell. Nights outside that window fall back to simulated weather. The kitchens' guests and habits are still simulated.
+
 | Model version | Marco's | Golden Crumb | Kendall |
 |---|---|---|---|
-| v0 Rule of thumb (8% of usual prep) | 66.5% | 57.7% | 62.4% |
-| v1 + Weather, season, holidays | 69.0% | 58.6% | 64.6% |
-| v2 + Shelf life | 75.9% | 67.6% | 70.8% |
-| v3 + Kitchen calibration (learned with guests served at close) | 85.4% | 82.4% | 83.5% |
-| **v4 + Weekday, weather and recency learning** | **85.9%** | **84.4%** | **86.4%** |
-| Owner's best guess (remembers the last 4 same weekdays exactly) | 80.1% | 77.1% | 82.8% |
-| Oracle (knows the hidden habits, not tonight's guests or noise) | 86.8% | 85.8% | 87.3% |
-| Nights inside the 80% range | 80.7% | 79.6% | 82.0% |
-| Misses vs. owner's best guess (misses = 1 − accuracy) | 29% fewer | 32% fewer | 21% fewer |
+| v0 Rule of thumb (8% of usual prep) | 66.7% | 58.3% | 62.9% |
+| v1 + Weather, season, holidays | 68.6% | 59.0% | 64.5% |
+| v2 + Shelf life | 75.4% | 68.0% | 70.7% |
+| v3 + Kitchen calibration (learned with guests served at close) | 84.6% | 82.9% | 83.2% |
+| **v4 + Weekday, weather and recency learning** | **85.4%** | **84.1%** | **86.0%** |
+| Owner's best guess (remembers the last 4 same weekdays exactly) | 79.6% | 78.0% | 83.3% |
+| Oracle (knows the hidden habits, not tonight's guests or noise) | 86.3% | 85.3% | 87.0% |
+| Nights inside the 80% range | 79.1% | 77.5% | 79.9% |
+| Misses vs. owner's best guess (misses = 1 − accuracy) | 29% fewer | 28% fewer | 16% fewer |
+| Misses vs. rule of thumb (v0) | 56% fewer | 62% fewer | 62% fewer |
 
 **Read this carefully.** The simulator shares the model's structure (the same kinds of multipliers, with different hidden values), so this shows that the learning recovers a kitchen's habits. It does not show real-world accuracy. That needs a real kitchen.
 
-Staff effort (`lib/effort.ts`, Marco's): quick-tap logging of every item plus guests served takes about 1.2 minutes a night and scores 85.4%. Weighing every item on a scale takes about 3.5 minutes and scores 85.9%.
+Staff effort (`lib/effort.ts`, Marco's): quick-tap logging of every item plus guests served takes about 1.2 minutes a night and scores 84.7%. Weighing every item on a scale takes about 3.5 minutes and scores 85.4%. With no logging at all, the priors score 75.4%.
 
 ## Impact (simulated)
 From each restaurant's simulated history (`runBacktest`, seed 7, plan starts on night 15, summarized by `lib/history.ts`). Savings count only food the plan didn't prep on provable nights (not sold-out nights). Yearly = last 30 days × 365/30. Before/after monthly bin totals are not season-adjusted. The history ends on the day it is generated, so these move slightly from day to day; figures below were computed on Oct 24, 2026.
