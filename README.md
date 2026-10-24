@@ -141,7 +141,7 @@ Conversions: 1 meal = 1.2 lb of food (Feeding America). About 0.4 kg CO₂ per m
 ```bash
 cd freshcast-app && ./node_modules/.bin/vitest run
 ```
-60 tests. Property-based tests use fast-check: 13 numbered properties (P1–P13) in `tests/properties.test.ts`, 200 generated cases each, plus 3 properties for the opening-hours parser. They found 2 real bugs, both fixed with regression tests (see [KIRO.md](KIRO.md#property-based-testing)). GitHub Actions runs the tests and a type check on every push.
+62 tests. Property-based tests use fast-check: 13 numbered properties (P1–P13) in `tests/properties.test.ts`, 200 generated cases each, plus 3 properties for the opening-hours parser. They found 2 real bugs, both fixed with regression tests (see [KIRO.md](KIRO.md#property-based-testing)). GitHub Actions runs the tests and a type check on every push.
 
 ## Run it locally
 ```bash
