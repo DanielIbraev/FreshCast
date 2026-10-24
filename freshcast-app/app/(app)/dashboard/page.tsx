@@ -124,6 +124,13 @@ export default function DashboardPage() {
               <p className="font-display text-3xl font-700 tabular-nums text-good">{formatCurrency(DEMO_RUNNING_TOTALS.wasteAfterMonthly)}</p>
             </div>
           </div>
+          <div className="mt-5 space-y-2">
+            <div className="h-2.5 w-full rounded-full bg-waste/80" />
+            <div className="h-2.5 rounded-full bg-good" style={{ width: `${(DEMO_RUNNING_TOTALS.wasteAfterMonthly / DEMO_RUNNING_TOTALS.wasteBeforeMonthly) * 100}%` }} />
+            <p className="text-xs text-text-muted">
+              {Math.round((1 - DEMO_RUNNING_TOTALS.wasteAfterMonthly / DEMO_RUNNING_TOTALS.wasteBeforeMonthly) * 100)}% less food in the bin each month
+            </p>
+          </div>
           <div className="mt-auto border-t border-border pt-4">
             <p className="text-xs text-text-muted">Kept per year</p>
             <p className="font-display text-[40px] font-800 leading-none tabular-nums text-good">{formatCurrency(yearly)}</p>
