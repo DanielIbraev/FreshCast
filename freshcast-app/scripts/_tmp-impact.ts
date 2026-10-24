@@ -27,6 +27,10 @@ for (const p of DEMO_PROFILES) {
       kgYear: (s.kgLast30 * y).toFixed(0),
       co2Last30: s.co2Last30.toFixed(1),
       co2Year: (s.co2Last30 * y).toFixed(0),
+      mealsYear: ((s.kgLast30 * y * 2.2046) / 1.2).toFixed(0),
+      scaleTonnes: ((s.co2Last30 * y * 4125) / 1000).toFixed(0),
+      scaleMealsM: ((s.kgLast30 * y * 2.2046 * 4125) / 1.2 / 1e6).toFixed(2),
+      scaleCars: ((s.co2Last30 * y * 4125) / 1000 / 4.6).toFixed(0),
       censoredRows: censored,
       rows: bt.closeouts.length,
     })
