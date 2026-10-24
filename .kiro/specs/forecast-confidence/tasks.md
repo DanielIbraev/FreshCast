@@ -32,3 +32,4 @@
 - Task 5: measured coverage of the 80% range is **79.1%** for Marco's, **77.5%** for Golden Crumb and **79.9%** for Kendall (1 simulated kitchen per restaurant × 5 seeds × 12 weeks, each night on Boston's recorded weather). All three are inside the 70–90% band that Req 3.3 tests.
   - The first version scored 73.4%, because residuals were measured against forecasts rebuilt with the guest count known only at close.
   - Switching to the forecast the kitchen actually saw that morning (recovered from the stored prep cut) made the range honest.
+- After the model audit, two properties were added outside this spec's original task list: **P12** (a closed day never forecasts waste, savings or a prep cut) and **P13** (sold-out, censored nights never feed the confidence ranges). Both are in `tests/properties.test.ts`.
