@@ -31,6 +31,10 @@ h2,
 h3 {
   text-wrap: balance;
 }
+/* No one-word last lines in copy either. */
+p {
+  text-wrap: pretty;
+}
 
 /* Thin scrollbar that matches the dark surface */
 ::-webkit-scrollbar {
