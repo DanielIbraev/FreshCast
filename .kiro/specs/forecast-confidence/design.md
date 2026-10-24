@@ -17,7 +17,7 @@ buildDayForecast(...) ──► withRanges(day, R) ──► IngredientPredictio
 ```
 
 ## Components and interfaces
-- `residuals(obs: Observation[]): Residuals` returns `{ byIngredient: Map<string, number[]>, pooled: number[], byDay: number[] }`. Each value is `ln(usualKg / forecastKg)`, with the forecast rebuilt from `rawKg × calibration × weekday × weather × recency` learned at that date.
+- `residuals(obs: Observation[]): Residuals` returns `{ byIngredient: Map<string, number[]>, pooled: number[], byDay: number[] }`. Each value is `ln(usualKg / forecastKg)`. As built, the forecast is the one shown that morning when it is known (recovered from the stored prep cut, cut = forecast × 0.63); otherwise it is rebuilt walk-forward from `rawKg × calibration × weekday × weather × recency` learned at that date. The first design always rebuilt it and measured 73.4% coverage (see `tasks.md`).
 - `range(forecast, own, pooled, level = 0.8): { low, high, source: "own" | "blended" | "cold-start", n }`.
   - n ≥ 10: quantiles of `own`.
   - 1 ≤ n < 10: quantiles of `own` plus `pooled` resampled to weight `own` by n/10.
