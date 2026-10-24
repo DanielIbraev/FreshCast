@@ -13,13 +13,10 @@ const TERMS = [
 export function HowItWorks() {
   return (
     <section aria-labelledby="how" className="border-t border-border">
-      <div className="mx-auto max-w-6xl px-5 py-16 sm:px-8 lg:py-20">
-        <h2 id="how" className="max-w-xl font-display text-4xl font-700 lg:text-5xl leading-tight text-text-primary">
-          How the forecast works
+      <div className="mx-auto max-w-6xl px-5 py-20 sm:px-8 lg:py-32">
+        <h2 id="how" className="max-w-3xl font-display text-4xl font-700 lg:text-5xl leading-tight text-text-primary">
+          How it works: one multiplication
         </h2>
-        <p className="mt-3 max-w-xl text-base leading-relaxed text-text-secondary">
-          One multiplication per ingredient, with every factor shown in the app.
-        </p>
 
         <ol className="mt-10 grid overflow-hidden rounded-lg border border-border md:grid-cols-4">
           {TERMS.map((t, i) => (
@@ -41,8 +38,7 @@ export function HowItWorks() {
         </ol>
 
         <p className="mt-8 max-w-2xl text-lg leading-relaxed text-text-primary">
-          The plan preps <span className="font-700 text-good">{pct(REDUCTION_RATE)} of that</span> less. The rest is a
-          buffer against running out.
+          Then prep <span className="font-700 text-good">{pct(REDUCTION_RATE)} of that</span> less. The rest is a buffer.
         </p>
       </div>
     </section>

@@ -4,6 +4,8 @@
 
 **Prep less. Waste less.** FreshCast tells an independent restaurant, each morning, how much less of each ingredient to prep, so less food is bought, cooked and thrown out. It needs no hardware. It uses the restaurant's usual guests for that weekday, live local weather and the calendar, and it learns each kitchen from a short log at close.
 
+![The FreshCast front page: pick one of three demo kitchens, next to the live forecast](docs/screenshots/front-page.jpg)
+
 Built solo at Hackachusetts 2026. **Track: Climate Tech.** How Kiro was used: [KIRO.md](KIRO.md). Submission text: [SUBMISSION.md](SUBMISSION.md).
 
 ## Why it matters
@@ -35,6 +37,15 @@ Each one has its own menu, its own hidden simulated habits, its own local weathe
 | Model accuracy (`/model`) | Per restaurant. How the morning forecast has done against each close-out (scored leak-free), how often nights landed in the 80% range, per-item accuracy, bias and sold-out nights, and suggested actions. Also the benchmark: each model version, the owner's best guess, and staff effort vs. accuracy. |
 | Set up (`/setup`) | Add your own restaurant: search OpenStreetMap (Nominatim) to fill in name, address, cuisine and opening hours, then guests and starter ingredients. Saved on your device only. |
 | Pitch deck (`/pitch`) | The pitch, wired to the same data. Arrow keys to move, `F` for full screen, `?s=N` to jump to slide N, `?cut=video&cam=1` for the recording version. |
+
+| | |
+|---|---|
+| ![Forecast for Marco's Trattoria](docs/screenshots/forecast.jpg) | ![Signal breakdown for Atlantic Salmon](docs/screenshots/signal-breakdown.jpg) |
+| **Forecast.** Marco's 7-day outlook with live weather, today's waste at risk and what the plan saves. | **How the model got there.** All 9 signals for one ingredient, the equation and its 80% range. |
+| ![Log waste screen](docs/screenshots/log-waste.jpg) | ![Model accuracy for Kendall Bowl Co.](docs/screenshots/model-accuracy.jpg) |
+| **Log waste.** Tap an item, tap a portion, then close out with guests served. | **Model accuracy.** Kendall Bowl Co.'s own track record against each close-out. |
+| ![Kendall Bowl Co. week strip with Sunday closed](docs/screenshots/kitchen-closed-sunday.jpg) | ![Setup: find your restaurant on OpenStreetMap](docs/screenshots/setup.jpg) |
+| **Closed days.** Kendall is closed Sundays, so there is no forecast and no prep. | **Set up.** Search OpenStreetMap to fill in your own restaurant. |
 
 ## How the model works
 All of it is TypeScript arithmetic in `freshcast-app/lib/`. No LLM touches the numbers.

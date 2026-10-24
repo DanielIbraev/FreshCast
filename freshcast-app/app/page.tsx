@@ -27,8 +27,8 @@ export default function Home() {
       <main>
         <section className="mx-auto grid max-w-6xl gap-10 px-5 pb-16 pt-6 sm:px-8 lg:grid-cols-[minmax(0,1.08fr)_minmax(0,1fr)] lg:min-h-[calc(100svh-4rem)] lg:items-center lg:gap-12 lg:py-10">
           <div className="min-w-0">
-            <h1 className="font-display text-[2.6rem] font-700 leading-[1.05] text-text-primary [overflow-wrap:break-word] sm:text-6xl">
-              Prep less food. Throw less away.
+            <h1 className="font-display text-[2rem] font-700 leading-[1.05] text-text-primary [overflow-wrap:break-word] sm:text-5xl xl:text-6xl">
+              <span className="block">Prep less food.</span> <span className="block">Throw less away.</span>
             </h1>
             <p className="mt-5 max-w-[34rem] text-lg leading-relaxed text-text-secondary">
               Each morning, FreshCast tells an independent restaurant how much less of each ingredient to prep. No hardware.
@@ -40,9 +40,9 @@ export default function Home() {
             <Image
               src="/landing/dashboard.webp"
               width={1800}
-              height={1200}
+              height={1500}
               priority
-              sizes="(min-width: 1024px) 780px, 100vw"
+              unoptimized
               alt="The FreshCast forecast for Marco's Trattoria: a 7-day outlook with live weather, guests and dollars of likely waste per day, then today's waste at risk and what the prep plan saves."
               className="h-auto w-full max-w-none rounded-lg border border-border lg:w-[150%]"
             />
