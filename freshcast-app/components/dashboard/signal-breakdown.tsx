@@ -26,8 +26,9 @@ export function SignalBreakdown({ item }: { item: IngredientPrediction }) {
             <li key={s.key} className="grid grid-cols-[1fr_96px_52px] items-center gap-3">
               <div className="min-w-0">
                 <p className="truncate text-[13px] text-text-primary">{s.label}</p>
-                <p className="truncate text-[11px] text-text-muted">
-                  {s.detail} · {s.source}
+                <p className="flex min-w-0 gap-2 text-xs">
+                  <span className="max-w-full shrink-0 truncate text-text-secondary">{s.detail}</span>
+                  <span className="min-w-0 truncate text-text-muted" title={s.source}>{s.source}</span>
                 </p>
               </div>
               {/* centered track: left = less waste, right = more waste */}
@@ -53,7 +54,7 @@ export function SignalBreakdown({ item }: { item: IngredientPrediction }) {
       </ul>
 
       {/* The actual equation, so judges can see this is arithmetic, not a chatbot */}
-      <div className="mt-4 rounded-md border border-border bg-canvas px-3 py-2.5 font-mono text-[11px] leading-relaxed text-text-secondary">
+      <div className="mt-4 rounded-md border border-border bg-canvas px-3 py-2.5 font-mono text-xs leading-relaxed text-text-secondary">
         <span className="text-text-primary">{item.baseWasteKg.toFixed(2)}kg</span> base
         {item.signals.map((s) => (
           <span key={s.key}> × {s.value.toFixed(2)}</span>
@@ -65,7 +66,7 @@ export function SignalBreakdown({ item }: { item: IngredientPrediction }) {
       </div>
 
       {item.lowKg !== undefined && item.highKg !== undefined && (
-        <div className="mt-3 flex items-center justify-between rounded-md border border-border bg-canvas px-3 py-2 text-[12px]">
+        <div className="mt-3 flex items-center justify-between rounded-md border border-border bg-canvas px-3 py-2 text-xs">
           <span className="text-text-secondary">
             80% range: <span className="font-600 tabular-nums text-text-primary">{item.lowKg.toFixed(2)}–{item.highKg.toFixed(2)}kg</span> ({formatCurrency(item.lowCost ?? 0)}–{formatCurrency(item.highCost ?? 0)})
           </span>

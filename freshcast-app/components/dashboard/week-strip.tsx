@@ -26,18 +26,23 @@ export function WeekStrip() {
         if (day.closed) {
           return (
             <div key={day.date} className="flex min-w-[112px] flex-col rounded-lg border border-dashed border-border px-3 py-3 md:min-w-0" aria-label={`${DAY_SHORT[date.getDay()]} ${date.getDate()}: closed`}>
-              <span className="text-xs font-600 text-text-muted">
-                {DAY_SHORT[date.getDay()]} {date.getDate()}
-              </span>
-              <span className="mt-0.5 text-[11px] text-text-muted">{Math.round(day.weather.tempF)}°F</span>
+              <div className="flex items-center justify-between gap-2 text-xs">
+                <span className="font-600 text-text-muted">
+                  {DAY_SHORT[date.getDay()]} {date.getDate()}
+                </span>
+                <span className="tabular-nums text-text-muted">{Math.round(day.weather.tempF)}°F</span>
+              </div>
+              <span className="mt-0.5 text-xs text-text-muted">No prep</span>
               <span className="mt-2 font-display text-lg font-600 text-text-muted">Closed</span>
-              <span className="mt-1.5 text-[11px] text-text-muted">No prep</span>
             </div>
           );
         }
         // 0 = lowest-risk day of the week, 1 = highest
         const t = max === min ? 0.5 : (day.totalWasteCost - min) / (max - min);
         const riskColor = t > 0.66 ? "#EF4444" : t > 0.33 ? "#F59E0B" : "#10B981";
+        // Hallmark 39b: each day is a card-sized button (about 107px tall) on
+        // purpose. It shows the day, weather, guests and the forecast cost, and
+        // the whole card is the target; a 40px row would hide what you pick by.
         return (
           <button
             key={day.date}
@@ -47,13 +52,16 @@ export function WeekStrip() {
               isSel ? "border-good bg-surface-hover" : "border-border bg-surface hover:border-text-muted"
             )}
           >
-            <div className="flex items-center justify-between">
-              <span className={cn("text-xs font-600", isSel ? "text-text-primary" : "text-text-secondary")}>
+            <div className="flex items-center justify-between gap-2 text-xs">
+              <span className={cn("font-600", isSel ? "text-text-primary" : "text-text-secondary")}>
                 {DAY_SHORT[date.getDay()]} {date.getDate()}
               </span>
-              <WeatherIcon condition={day.weather.condition} className="h-4 w-4 text-data" />
+              <span className="flex items-center gap-1 tabular-nums text-text-muted">
+                <WeatherIcon condition={day.weather.condition} className="h-4 w-4 text-data" />
+                {Math.round(day.weather.tempF)}°F
+              </span>
             </div>
-            <span className="mt-0.5 text-[11px] text-text-muted">{Math.round(day.weather.tempF)}°F · {day.expectedCovers} guests</span>
+            <span className="mt-0.5 text-xs tabular-nums text-text-muted">{day.expectedCovers} guests</span>
             <span className="mt-2 font-display text-lg font-700 tabular-nums" style={{ color: riskColor }}>
               {formatCurrency(day.totalWasteCost)}
             </span>
