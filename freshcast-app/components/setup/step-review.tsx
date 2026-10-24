@@ -12,7 +12,7 @@ function Row({ label, value, onEdit }: { label: string; value: React.ReactNode; 
     <div className="grid grid-cols-[110px_minmax(0,1fr)_auto] items-baseline gap-3 border-b border-border py-2.5 last:border-0">
       <dt className="text-xs text-text-muted">{label}</dt>
       <dd className="min-w-0 text-sm text-text-primary">{value}</dd>
-      <button type="button" onClick={onEdit} className="cursor-pointer text-xs text-text-muted transition-colors duration-150 hover:text-good" aria-label={`Edit ${label.toLowerCase()}`}>
+      <button type="button" onClick={onEdit} className="-mx-1 -my-2 cursor-pointer rounded-md px-1 py-2 text-xs text-text-muted transition-colors duration-150 hover:text-good" aria-label={`Edit ${label.toLowerCase()}`}>
         Edit
       </button>
     </div>

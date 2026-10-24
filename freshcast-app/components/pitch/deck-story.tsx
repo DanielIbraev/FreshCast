@@ -1,4 +1,6 @@
+"use client";
 // Slides 1-7: problem, solution, demo cue. One line + one visual per slide.
+import { useReducedMotion } from "framer-motion";
 import { Crates, Podium, PrepCard, Loop } from "./visuals";
 import { Mark } from "@/components/brand/mark";
 
@@ -11,9 +13,10 @@ export function Line({ children, sub }: { children: React.ReactNode; sub?: React
   );
 }
 
-// Sources sit bottom-right so the webcam bubble (bottom-left) never covers them.
+// Sources sit bottom-right, where the 0.86 cam scale keeps them clear of the
+// webcam circle.
 export function Source({ children }: { children: React.ReactNode }) {
-  return <p className="ml-auto max-w-[900px] text-right text-base text-text-muted">{children}</p>;
+  return <p className="ml-auto max-w-[1100px] text-right text-base text-text-muted">{children}</p>;
 }
 
 // Full-bleed background clip from /public/broll. If the file isn't there,
@@ -35,13 +38,13 @@ export function Broll({ name }: { name: string }) {
   );
 }
 
-// Opening frame. Matches the laptop screen in the Higgsfield intro so the
-// zoom from the laptop into the deck is seamless.
+// Opening frame of the video cut. The intro clip ends on this logo and
+// dissolves into it, so the mark is static (a redraw loop could be mid-fade).
 export const S0Brand = () => (
-  <div className="flex h-full flex-col items-center justify-center">
-    <Mark size={120} animating />
-    <p className="mt-10 font-display text-[72px] font-800 tracking-tight text-text-primary">FreshCast</p>
-    <p className="mt-3 text-[28px] text-text-secondary">Prep less. Waste less.</p>
+  <div className="flex h-full flex-col items-center justify-center text-center">
+    <Mark size={120} />
+    <p className="mt-10 font-display text-[72px] font-800 leading-none tracking-tight text-text-primary">FreshCast</p>
+    <p className="mt-6 text-[28px] text-text-secondary">Prep less. Waste less.</p>
   </div>
 );
 
@@ -51,7 +54,7 @@ export const S1Hook = () => (
     <div>
       <Crates />
       <p className="mt-10 text-[34px] leading-snug text-text-secondary">
-        Up to <span className="font-700 text-waste">1 in 10</span> crates of food a restaurant buys ends up in the trash.
+        Up to <span className="font-700 text-text-primary">1 in 10</span> crates of food a restaurant buys ends up in the trash.
       </p>
     </div>
     <Source>Galley Solutions: 4–10% of food purchased by restaurants becomes waste</Source>
@@ -61,29 +64,29 @@ export const S1Hook = () => (
 export const S2Country = () => (
   <div className="relative isolate flex h-full flex-col justify-between">
     <Broll name="landfill" />
-    <Line>If food waste were a country, it would be the 3rd largest greenhouse-gas emitter, after China and the US.</Line>
+    <Line>If food waste were a country, it would be the world&apos;s third-largest emitter.</Line>
     <div className="flex justify-center">
       <Podium />
     </div>
-    <Source>FAO 2013, Food Wastage Footprint, 3.3 Gt CO₂e a year · Food is 24% of what goes into US landfills, where it rots into methane (EPA)</Source>
+    <Source>FAO 2013, Food Wastage Footprint: 3.3 Gt CO₂e a year. Food is 24% of what goes into US landfills, where it rots into methane (EPA).</Source>
   </div>
 );
 
 export const S3Guess = () => (
   <div className="relative isolate flex h-full flex-col justify-center">
     <Broll name="kitchen" />
-    <p className="mb-8 text-[28px] text-text-muted">Why does it happen?</p>
     <h2 className="font-display text-[96px] font-800 leading-[1.0] tracking-tight text-text-primary">
       Every morning,
       <br />
       a cook guesses.
     </h2>
+    <p className="mt-10 text-[30px] text-text-secondary">Running out mid-service is worse than the bin, so they guess high.</p>
   </div>
 );
 
 export const S4Solution = ({ rows, day }: { rows: { name: string; usual: number; rec: number }[]; day: string }) => (
   <div className="flex h-full items-center justify-between gap-16">
-    <div className="max-w-[640px]">
+    <div className="max-w-[740px]">
       <div className="mb-10 flex items-center gap-4">
         <Mark size={56} />
         <span className="font-display text-4xl font-700 text-text-primary">FreshCast</span>
@@ -101,9 +104,12 @@ export const S5Loop = () => (
   </div>
 );
 
-export const S6Demo = () => (
-  <div className="flex h-full flex-col items-center justify-center text-center">
-    <Mark size={96} animating />
-    <h2 className="mt-12 font-display text-[88px] font-800 tracking-tight text-text-primary">Let&apos;s see it.</h2>
-  </div>
-);
+export const S6Demo = () => {
+  const reduce = useReducedMotion();
+  return (
+    <div className="flex h-full flex-col items-center justify-center text-center">
+      <Mark size={96} animating={!reduce} />
+      <h2 className="mt-12 font-display text-[88px] font-800 tracking-tight text-text-primary">Let&apos;s see it.</h2>
+    </div>
+  );
+};

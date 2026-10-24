@@ -133,7 +133,7 @@ export default function KitchenPage() {
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search ingredients"
               aria-label="Search ingredients"
-              className="w-full rounded-md border border-border bg-canvas py-2 pl-9 pr-3 text-sm text-text-primary focus:border-good focus:outline-none"
+              className="w-full rounded-md border border-[#66768C] bg-canvas py-2 pl-9 pr-3 text-sm text-text-primary focus:border-good focus:outline-none"
             />
           </label>
           <div className="flex flex-wrap gap-1">
@@ -142,7 +142,7 @@ export default function KitchenPage() {
                 key={c}
                 onClick={() => setFilter(c)}
                 className={cn(
-                  "rounded-md px-2.5 py-1.5 text-xs transition-colors duration-150",
+                  "rounded-md px-2.5 py-2 text-xs transition-colors duration-150",
                   filter === c ? "bg-surface-hover font-600 text-text-primary" : "text-text-muted hover:text-text-secondary"
                 )}
               >

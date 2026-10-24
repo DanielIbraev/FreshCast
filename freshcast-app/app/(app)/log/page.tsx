@@ -55,7 +55,7 @@ export default function LogWastePage() {
                 saveLang(l);
               }}
               aria-pressed={lang === l}
-              className={cn("rounded px-3 py-1 text-xs", lang === l ? "bg-surface-hover font-600 text-text-primary" : "text-text-muted hover:text-text-secondary")}
+              className={cn("rounded px-3 py-2 text-xs", lang === l ? "bg-surface-hover font-600 text-text-primary" : "text-text-muted hover:text-text-secondary")}
             >
               {l === "en" ? "English" : "Español"}
             </button>
@@ -97,6 +97,8 @@ export default function LogWastePage() {
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
           {ingredients.map((i) => {
             const kgToday = todays.filter((l) => l.ingredientId === i.id).reduce((s, l) => s + l.quantityKg, 0);
+            // Hallmark 39b: 76px tiles on purpose. Staff tap these at close with
+            // wet hands; the tile shows the item, its price and what is logged.
             return (
             <button
               key={i.id}

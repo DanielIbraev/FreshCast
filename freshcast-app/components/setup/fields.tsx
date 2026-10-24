@@ -4,8 +4,9 @@ import { MapPinned } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { DAY_SHORT } from "./draft";
 
+// Field edges are #66768C: 3:1 or better on the surface and canvas (Hallmark 40).
 export const inputCls =
-  "w-full rounded-md border border-border bg-canvas px-3 py-2 text-sm text-text-primary placeholder:text-text-muted transition-colors duration-150 focus:border-good focus:outline-none focus-visible:ring-1 focus-visible:ring-good";
+  "w-full rounded-md border border-[#66768C] bg-canvas px-3 py-2 text-sm text-text-primary placeholder:text-text-muted transition-colors duration-150 focus:border-good focus:outline-none focus-visible:ring-1 focus-visible:ring-good";
 export const errorCls = "border-waste focus:border-waste";
 
 export function AutoChip() {

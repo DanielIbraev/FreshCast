@@ -93,6 +93,7 @@ export function StepFind({ search, setSearch, onPick, onManual }: { search: Sear
         )}
       </div>
 
+      {/* Hallmark 39b: card-sized on purpose, it matches the result cards above. */}
       <button
         type="button"
         onClick={onManual}

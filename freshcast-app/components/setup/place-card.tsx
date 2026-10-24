@@ -33,6 +33,8 @@ function hoursSummary(p: PlaceResult): string {
 export function PlaceCard({ p, onPick }: { p: PlaceResult; onPick: () => void }) {
   return (
     <li>
+      {/* Hallmark 39b: a search result is a whole card (name, address, hours) and
+          the card is the target, so it stands about 70px tall on purpose. */}
       <button
         type="button"
         onClick={onPick}

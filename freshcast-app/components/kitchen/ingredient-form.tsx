@@ -13,7 +13,7 @@ interface Props {
   onClose: () => void;
 }
 
-const input = "w-full rounded-md border border-border bg-canvas px-3 py-2 text-sm text-text-primary focus:border-good focus:outline-none";
+const input = "w-full rounded-md border border-[#66768C] bg-canvas px-3 py-2 text-sm text-text-primary focus:border-good focus:outline-none";
 
 export function IngredientForm({ initial, onSave, onClose }: Props) {
   const [name, setName] = useState(initial?.name ?? "");

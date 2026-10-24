@@ -8,7 +8,7 @@ import { cn, formatCurrency } from "@/lib/utils";
 import { Errors, PrepRow as Row, positive } from "./draft";
 
 const CATS = CATEGORY_ORDER.map((c) => ({ value: c, label: CATEGORIES[c].label }));
-const cell = "w-full rounded-md border border-border bg-canvas px-2 py-1.5 text-right text-sm tabular-nums text-text-primary transition-colors duration-150 focus:border-good focus:outline-none disabled:opacity-40";
+const cell = "w-full rounded-md border border-[#66768C] bg-canvas px-2 py-1.5 text-right text-sm tabular-nums text-text-primary transition-colors duration-150 focus:border-good focus:outline-none disabled:opacity-40";
 
 // Shared column template so the header in step-prep lines up with rows.
 export const ROW_GRID = "grid grid-cols-[28px_minmax(0,1fr)] gap-x-3 gap-y-2 sm:grid-cols-[28px_minmax(0,1fr)_84px_84px_72px_76px] sm:items-center";
@@ -44,7 +44,7 @@ export function PrepRowView({ r, errors, onChange, onRemove }: { r: Row; errors:
   return (
     <li className={cn(ROW_GRID, "border-b border-border py-3 last:border-0", off && "opacity-60")}>
       {r.custom ? (
-        <button type="button" onClick={onRemove} aria-label={`Remove ${r.name || "new item"}`} className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-md text-text-muted transition-colors duration-150 hover:bg-waste/10 hover:text-waste">
+        <button type="button" onClick={onRemove} aria-label={`Remove ${r.name || "new item"}`} className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-md text-text-muted transition-colors duration-150 hover:bg-waste/10 hover:text-waste">
           <Trash2 className="h-4 w-4" aria-hidden />
         </button>
       ) : (
@@ -68,7 +68,7 @@ export function PrepRowView({ r, errors, onChange, onRemove }: { r: Row; errors:
             maxLength={60}
             placeholder="Item name, e.g. Short Rib"
             onChange={(e) => onChange({ name: e.target.value })}
-            className={cn("min-w-0 flex-1 rounded-md border border-border bg-canvas px-2 py-1.5 text-sm text-text-primary placeholder:text-text-muted focus:border-good focus:outline-none", bad("name") && "border-waste")}
+            className={cn("min-w-0 flex-1 rounded-md border border-[#66768C] bg-canvas px-2 py-1.5 text-sm text-text-primary placeholder:text-text-muted focus:border-good focus:outline-none", bad("name") && "border-waste")}
           />
           <Select<Category> label="Category" value={r.category} options={CATS} onChange={(c) => onChange({ category: c })} className="sm:w-36" />
         </div>

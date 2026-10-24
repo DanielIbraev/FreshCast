@@ -86,7 +86,7 @@ export function CloseOut({ s = t("en") }: { s?: Strings }) {
         </div>
         <div className="flex items-center gap-2">
           <span className="text-xs text-text-muted">{s.guests}</span>
-          <div className="flex items-center rounded-md border border-border bg-canvas">
+          <div className="flex items-center rounded-md border border-[#66768C] bg-canvas">
             <button onClick={() => step(-1)} aria-label="One fewer guest" className="px-2 py-2 text-text-muted hover:text-text-primary">
               <Minus className="h-3.5 w-3.5" />
             </button>

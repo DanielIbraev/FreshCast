@@ -66,7 +66,7 @@ export function StepBusy({ d, errors, update }: { d: Draft; errors: Errors; upda
         <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
           <h3 className="text-sm font-600 text-text-primary">Have a POS sales export? Use your real week.</h3>
           {d.imported && (
-            <button type="button" onClick={() => update({ imported: null })} className="flex cursor-pointer items-center gap-1.5 text-xs text-text-muted transition-colors duration-150 hover:text-text-primary">
+            <button type="button" onClick={() => update({ imported: null })} className="-my-2 flex cursor-pointer items-center gap-1.5 rounded-md py-2 text-xs text-text-muted transition-colors duration-150 hover:text-text-primary">
               <RotateCcw className="h-3.5 w-3.5" aria-hidden /> Use the typical pattern instead
             </button>
           )}
