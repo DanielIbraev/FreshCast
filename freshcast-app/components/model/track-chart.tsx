@@ -67,7 +67,7 @@ export function TrackChart({ tr }: { tr: TrackRecord }) {
           </p>
         </div>
         <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-text-secondary">
-          <Swatch kind="band" color="#60A5FA" label="Range" />
+          <Swatch kind="band" color="#60A5FA" label="Forecast range" />
           <Swatch kind="line" color="#60A5FA" label="Morning forecast" />
           <Swatch kind="dot" color="#E2E8F0" label="What happened" />
           {tr.planStart && <Swatch kind="line" color="#10B981" label="Actually binned" />}
