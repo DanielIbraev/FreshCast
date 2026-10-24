@@ -13,3 +13,7 @@ out
 # misc
 .DS_Store
 *.log
+
+# secrets
+*.local.sql
+*.secret
