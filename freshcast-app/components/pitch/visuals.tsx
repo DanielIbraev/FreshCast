@@ -85,8 +85,7 @@ export function PrepCard({ rows, day }: { rows: { name: string; usual: number; r
   );
 }
 
-// The daily loop: forecast in the morning, one-minute log at night.
-// The daily loop, shown with real screenshots of the app (public/deck, captured
+// The daily loop (forecast at 6am, smaller prep, log at close), shown with real screenshots of the app (public/deck, captured
 // from the running app), not icons.
 export function Loop() {
   const steps = [
@@ -121,17 +120,17 @@ export function Matrix() {
       style={{ left: `${x}%`, top: `${y}%` }}
     >
       <div className={`mx-auto rounded-full ${us ? "h-8 w-8 bg-good" : "h-5 w-5 bg-text-muted"}`} />
-      <p className={`mt-3 whitespace-nowrap ${us ? "font-display text-3xl font-700 text-good" : "text-xl text-text-secondary"}`}>{label}</p>
+      <p className={`mt-3 whitespace-nowrap ${us ? "font-display text-3xl font-700 text-good" : "text-[22px] text-text-secondary"}`}>{label}</p>
     </motion.div>
   );
   return (
-    <div className="relative h-[520px] w-[900px]">
+    <div className="relative h-[420px] w-[900px]">
       <div className="absolute left-1/2 top-0 h-full w-px bg-border" />
       <div className="absolute left-0 top-1/2 h-px w-full bg-border" />
-      <span className="absolute -top-9 left-1/2 -translate-x-1/2 text-lg text-text-muted">Needs hardware</span>
-      <span className="absolute -bottom-10 left-1/2 -translate-x-1/2 text-lg text-text-muted">Software only</span>
-      <span className="absolute -left-4 top-1/2 -translate-x-full -translate-y-1/2 text-right text-lg text-text-muted">Measures waste<br />after the bin</span>
-      <span className="absolute -right-4 top-1/2 -translate-y-1/2 translate-x-full text-lg text-text-muted">Prevents it<br />before prep</span>
+      <span className="absolute -top-9 left-1/2 -translate-x-1/2 text-[20px] text-text-muted">Needs hardware</span>
+      <span className="absolute -bottom-10 left-1/2 -translate-x-1/2 text-[20px] text-text-muted">Software only</span>
+      <span className="absolute -left-4 top-1/2 -translate-x-full -translate-y-1/2 text-right text-[20px] text-text-muted">Measures waste<br />after the bin</span>
+      <span className="absolute -right-4 top-1/2 -translate-y-1/2 translate-x-full text-[20px] text-text-muted">Prevents it<br />before prep</span>
       {dot("Camera trackers", 22, 22, false, 0.1)}
       {dot("Smart scales", 38, 36, false, 0.2)}
       {dot("Spreadsheets & gut feel", 28, 74, false, 0.4)}

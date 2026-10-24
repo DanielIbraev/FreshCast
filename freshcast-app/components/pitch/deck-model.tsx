@@ -7,6 +7,7 @@ import { Croissant, Salad, UtensilsCrossed } from "lucide-react";
 import { Line, Source } from "./deck-story";
 import { IngredientPrediction } from "@/lib/types";
 import bench from "@/lib/benchmarks.json";
+import { BASE_WASTE_FRACTION, REDUCTION_RATE } from "@/lib/prediction";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 const x = (v: number) => `×${v.toFixed(2)}`;
@@ -18,8 +19,8 @@ export const S6bHow = ({ item, day }: { item: IngredientPrediction | null; day: 
   const world = v("demand") * v("weather") * v("season") * v("holiday") * v("event") * v("shelfLife");
   const kitchen = v("calibration") * v("dayOfWeek") * v("recency");
   const steps = [
-    { top: `${(item.usualPrepKg * 0.08).toFixed(2)} kg`, mid: "Normal waste", sub: `8% of the ${item.usualPrepKg.toFixed(1)} kg usually prepped on ${day}` },
-    { top: x(world), mid: "The day", sub: `${item.signals.find((s) => s.key === "weather")?.detail ?? "Weather"}, season, shelf life` },
+    { top: `${(item.usualPrepKg * BASE_WASTE_FRACTION).toFixed(2)} kg`, mid: "Normal waste", sub: `${Math.round(BASE_WASTE_FRACTION * 100)}% of the ${item.usualPrepKg.toFixed(1)} kg usually prepped on ${day}` },
+    { top: x(world), mid: "The day", sub: `${(item.signals.find((s) => s.key === "weather")?.detail ?? "Weather").split(", adjusted")[0]}, season, shelf life` },
     { top: x(kitchen), mid: "Your kitchen", sub: "Learned from every close-out" },
   ];
   return (
@@ -48,7 +49,7 @@ export const S6bHow = ({ item, day }: { item: IngredientPrediction | null; day: 
         </motion.div>
       </div>
       <motion.p className="text-[30px] text-text-secondary" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.9 }}>
-        So prep <span className="font-700 text-good">{item.cutKg.toFixed(2)} kg less</span>. It cuts 63% of the forecast and keeps the rest as a buffer, so the kitchen doesn&apos;t run out.
+        So prep <span className="font-700 text-good">{item.cutKg.toFixed(2)} kg less</span>: {Math.round(REDUCTION_RATE * 100)}% of the forecast, with the rest kept as a buffer.
       </motion.p>
     </div>
   );
@@ -92,22 +93,22 @@ export const S7Kitchens = () => {
                 </div>
               </div>
               <div className="relative h-12 flex-1 rounded-lg bg-surface">
-                <motion.div className="absolute inset-y-0 left-0 rounded-lg bg-good/85" initial={{ width: 0 }} animate={{ width: pos(v4) }} transition={{ delay: 0.3 + i * 0.25, duration: 0.8, ease }} />
+                <motion.div className="absolute inset-y-0 left-0 origin-left rounded-lg bg-good/85" style={{ width: pos(v4) }} initial={{ scaleX: 0 }} animate={{ scaleX: 1 }} transition={{ delay: 0.3 + i * 0.25, duration: 0.8, ease }} />
                 <span className="absolute top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-canvas bg-waste" style={{ left: pos(v0) }} />
                 <span className="absolute top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-canvas bg-text-secondary" style={{ left: pos(b.owner) }} />
                 <span className="absolute -inset-y-2 w-0.5 bg-data" style={{ left: pos(b.ceiling) }} />
               </div>
               <div className="w-[230px] shrink-0 text-right">
                 <p className="font-display text-[40px] font-800 leading-none tabular-nums text-good">{(v4 * 100).toFixed(1)}%</p>
-                <p className="mt-1 text-[18px] text-text-muted">{fewer}% fewer misses than the owner</p>
+                <p className="mt-2 text-[18px] leading-snug text-text-muted">{fewer}% fewer misses<br />than the owner</p>
               </div>
             </div>
           );
         })}
-        <div className="ml-[420px] mr-[270px] flex justify-between text-[16px] tabular-nums text-text-muted">
-          <span>50%</span>
-          <span>75%</span>
-          <span>100% accurate</span>
+        <div className="relative ml-[420px] mr-[270px] h-6 text-[18px] tabular-nums text-text-muted">
+          <span className="absolute left-0">50%</span>
+          <span className="absolute left-1/2 -translate-x-1/2">75%</span>
+          <span className="absolute right-0">100% accurate</span>
         </div>
       </div>
       <Source>Simulated kitchens, 12 weeks, 5 random seeds each, walk-forward. Accuracy = 1 − weighted absolute error. Real-world accuracy needs a real kitchen.</Source>
@@ -117,12 +118,12 @@ export const S7Kitchens = () => {
 
 export const S13Roadmap = () => {
   const cols: [string, string, string[]][] = [
-    ["Built today", "text-good", ["Forecast + prep list for any restaurant", "Two-tap logging, English and Español", "Setup from an OpenStreetMap search", "Accuracy page that shows its own misses"]],
+    ["Live now", "text-good", ["Forecast + prep list for any restaurant", "Two-tap logging, English and Español", "Setup from an OpenStreetMap search", "Accuracy page that shows its own misses"]],
     ["Next", "text-data", ["Run it in one real kitchen", "Measure real accuracy against a scale", "Sold-out button for the close-out"]],
     ["After that", "text-text-secondary", ["Guest counts straight from the POS", "Order list sent to the supplier", "Multi-location groups"]],
   ];
   return (
-    <div className="flex h-full flex-col justify-center gap-14">
+    <div className="flex h-full flex-col gap-16">
       <Line>Roadmap.</Line>
       <div className="grid grid-cols-3 gap-8">
         {cols.map(([h, tone, items], i) => (
