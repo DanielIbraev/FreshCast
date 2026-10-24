@@ -48,12 +48,12 @@ export function IngredientBars({ items, applied, selectedId, onSelect }: Props) 
                   }}
                   transition={{ duration: 0.8, ease: [0.4, 0, 0.2, 1], delay: idx * 0.05 }}
                 />
-                <span className="absolute inset-y-0 left-2.5 flex items-center text-[11px] font-500 tabular-nums text-canvas mix-blend-normal">
-                  {kg.toFixed(2)}kg
-                </span>
               </div>
-              <span className={cn("text-right text-sm font-600 tabular-nums", applied ? "text-good" : "text-text-primary")}>
-                {formatCurrency(cost)}
+              <span className="text-right leading-tight">
+                <span className={cn("block text-sm font-600 tabular-nums", applied ? "text-good" : "text-text-primary")}>
+                  {formatCurrency(cost)}
+                </span>
+                <span className="block text-[11px] tabular-nums text-text-muted">{kg.toFixed(2)}kg</span>
               </span>
             </button>
           </li>
