@@ -105,7 +105,7 @@ export default function SetupPage() {
 
       <Stepper current={step} reached={reached} onJump={go} />
 
-      <Card className="overflow-hidden p-5 sm:p-6">
+      <Card className="p-5 [overflow-x:clip] sm:p-6">
         <AnimatePresence mode="wait" initial={false} custom={dir}>
           <motion.div
             key={step}

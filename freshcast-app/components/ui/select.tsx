@@ -88,7 +88,7 @@ export function Select<T extends string>({ value, options, onChange, label, icon
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.12, ease: "easeOut" }}
-            className="absolute left-0 right-0 top-full z-40 mt-1 min-w-[220px] overflow-hidden rounded-lg border border-border bg-surface p-1"
+            className="absolute left-0 right-0 top-full z-40 mt-1 max-h-72 min-w-[220px] overflow-y-auto rounded-lg border border-border bg-surface p-1"
           >
             {options.map((o, i) => {
               const selected = o.value === value;

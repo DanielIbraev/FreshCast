@@ -176,17 +176,17 @@ export default function LogWastePage() {
             {todays.map((l) => {
               const ing = find(l.ingredientId);
               return (
-                <motion.li key={l.id} initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="flex items-center justify-between py-2.5">
-                  <span className="flex items-center gap-3">
-                    <span className="w-16 whitespace-nowrap text-xs tabular-nums text-text-muted">{new Date(l.loggedAt).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}</span>
-                    <span className="text-sm text-text-primary">{ing?.name ?? s.removed}</span>
-                    <span className="rounded px-1.5 py-0.5 text-xs" style={{ color: WASTE_REASONS[l.reason].color, background: `${WASTE_REASONS[l.reason].color}1A` }}>
+                <motion.li key={l.id} initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }} className="flex items-center justify-between gap-2 py-2.5">
+                  <span className="flex min-w-0 items-center gap-2 sm:gap-3">
+                    <span className="w-14 shrink-0 whitespace-nowrap sm:w-16 text-xs tabular-nums text-text-muted">{new Date(l.loggedAt).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}</span>
+                    <span className="truncate text-sm text-text-primary">{ing?.name ?? s.removed}</span>
+                    <span className="shrink-0 rounded px-1.5 py-0.5 text-xs" style={{ color: WASTE_REASONS[l.reason].color, background: `${WASTE_REASONS[l.reason].color}1A` }}>
                       {s.reasons[l.reason]}
                     </span>
                   </span>
-                  <span className="flex items-center gap-4">
+                  <span className="flex shrink-0 items-center gap-3 sm:gap-4">
                     <span className="text-xs tabular-nums text-text-muted">{l.quantityKg}kg</span>
-                    <span className="w-16 text-right text-sm font-600 tabular-nums text-waste">{formatCurrency((ing?.costPerKg ?? 0) * l.quantityKg)}</span>
+                    <span className="w-14 text-right text-sm font-600 sm:w-16 tabular-nums text-waste">{formatCurrency((ing?.costPerKg ?? 0) * l.quantityKg)}</span>
                     <button onClick={() => removeLog(l.id)} aria-label={s.undo} className="-m-2 rounded-md p-2 text-text-muted transition-colors duration-150 hover:text-text-primary">
                       <Undo2 className="h-4 w-4" />
                     </button>

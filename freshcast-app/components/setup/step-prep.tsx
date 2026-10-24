@@ -15,7 +15,7 @@ export function StepPrep({ d, errors, setRows }: { d: Draft; errors: Errors; set
     <div className="space-y-5">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <p className="max-w-prose text-sm text-text-secondary">
-          Common for {CUISINE_LABELS[d.cuisineType].toLowerCase()} kitchens, with typical wholesale prices. Adjust the amounts to what you actually prep on a normal day and untick anything you don&apos;t use.
+          Common for {CUISINE_LABELS[d.cuisineType]} kitchens, with typical wholesale prices. Adjust the amounts to what you actually prep on a normal day and untick anything you don&apos;t use.
         </p>
         <div className="text-right" aria-live="polite">
           <p className="text-xs text-text-muted">You prep about</p>

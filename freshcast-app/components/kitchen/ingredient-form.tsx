@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
 import { Category, Ingredient } from "@/lib/types";
@@ -44,7 +45,9 @@ export function IngredientForm({ initial, onSave, onClose }: Props) {
     });
   }
 
-  return (
+  // Portaled to <body>: the page's staggered sections can act as a containing
+  // block for `fixed`, which pinned the drawer inside the scrolled page.
+  return createPortal(
     <div className="fixed inset-0 z-50 flex justify-end bg-black/50" onClick={onClose}>
       <motion.form
         initial={{ x: 40, opacity: 0 }}
@@ -116,7 +119,7 @@ export function IngredientForm({ initial, onSave, onClose }: Props) {
         </div>
       </motion.form>
     </div>
-  );
+  , document.body);
 }
 
 function Field({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) {
