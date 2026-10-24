@@ -41,9 +41,9 @@ export default function DashboardPage() {
           <p className="text-sm text-text-muted">Prep forecast</p>
           <h1 className="font-display text-[28px] font-700 leading-tight text-text-primary">{dateLabel || "Loading forecast"}</h1>
         </div>
-        <span className="flex items-center gap-2 rounded-md border border-border bg-surface px-3 py-1.5 text-xs text-text-secondary">
-          <Database className={cn("h-3.5 w-3.5", dbStatus === "connected" ? "text-good" : "text-caution")} />
-          {dbStatus === "connected" ? `Supabase · ${observations.length} close-outs` : dbStatus === "loading" ? "Connecting" : "Offline copy"}
+        <span className="flex flex-wrap items-center gap-2 rounded-md border border-border bg-surface px-3 py-1.5 text-xs text-text-secondary">
+          <Database className={cn("h-3.5 w-3.5", dbStatus === "connected" ? "text-good" : dbStatus === "sandbox" ? "text-data" : "text-caution")} />
+          {dbStatus === "connected" ? `Supabase · ${observations.length} close-outs` : dbStatus === "sandbox" ? `Demo sandbox · ${observations.length} close-outs` : dbStatus === "loading" ? "Connecting" : "Offline copy"}
           <span className="text-border">|</span>
           <Radio className={cn("h-3.5 w-3.5", weatherSource === "live" ? "text-good" : "text-caution")} />
           {weatherSource === "live" ? "Live weather · Open-Meteo" : weatherSource === "loading" ? "Fetching weather" : "Offline · seasonal weather"}
