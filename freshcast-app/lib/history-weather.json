@@ -1,0 +1,564 @@
+{
+ "source": "Open-Meteo (open-meteo.com), Boston 42.36,-71.06, daily max temperature and precipitation",
+ "fetched": "2026-10-24T20:44:09.515Z",
+ "days": {
+  "2026-08-17": {
+   "tempF": 76.1,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-08-18": {
+   "tempF": 77.3,
+   "code": 45,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-08-19": {
+   "tempF": 87.9,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "hot"
+  },
+  "2026-08-20": {
+   "tempF": 85.5,
+   "code": 53,
+   "precipMm": 1.5,
+   "condition": "rain"
+  },
+  "2026-08-21": {
+   "tempF": 74.4,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-08-22": {
+   "tempF": 73.3,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-08-23": {
+   "tempF": 71.2,
+   "code": 51,
+   "precipMm": 0.8,
+   "condition": "rain"
+  },
+  "2026-08-24": {
+   "tempF": 84.3,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-08-25": {
+   "tempF": 79.9,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-08-26": {
+   "tempF": 80.6,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-08-27": {
+   "tempF": 83.1,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-08-28": {
+   "tempF": 83.5,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-08-29": {
+   "tempF": 74.7,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-08-30": {
+   "tempF": 84.6,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-08-31": {
+   "tempF": 74.3,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-09-01": {
+   "tempF": 68,
+   "code": 61,
+   "precipMm": 2.9,
+   "condition": "rain"
+  },
+  "2026-09-02": {
+   "tempF": 72.2,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-09-03": {
+   "tempF": 72.9,
+   "code": 61,
+   "precipMm": 3.9,
+   "condition": "rain"
+  },
+  "2026-09-04": {
+   "tempF": 81.5,
+   "code": 45,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-09-05": {
+   "tempF": 72,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-09-06": {
+   "tempF": 70,
+   "code": 51,
+   "precipMm": 0.4,
+   "condition": "rain"
+  },
+  "2026-09-07": {
+   "tempF": 81,
+   "code": 1,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-09-08": {
+   "tempF": 80,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-09-09": {
+   "tempF": 76.4,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-09-10": {
+   "tempF": 86.3,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "hot"
+  },
+  "2026-09-11": {
+   "tempF": 78.9,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-09-12": {
+   "tempF": 73.6,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-09-13": {
+   "tempF": 69.2,
+   "code": 63,
+   "precipMm": 9.1,
+   "condition": "rain"
+  },
+  "2026-09-14": {
+   "tempF": 72.2,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-09-15": {
+   "tempF": 67.2,
+   "code": 0,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-09-16": {
+   "tempF": 80.8,
+   "code": 0,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-09-17": {
+   "tempF": 79,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-09-18": {
+   "tempF": 79.8,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-09-19": {
+   "tempF": 63.5,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-09-20": {
+   "tempF": 62.2,
+   "code": 61,
+   "precipMm": 2.5,
+   "condition": "rain"
+  },
+  "2026-09-21": {
+   "tempF": 65.6,
+   "code": 51,
+   "precipMm": 1.6,
+   "condition": "rain"
+  },
+  "2026-09-22": {
+   "tempF": 63.4,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-09-23": {
+   "tempF": 63.9,
+   "code": 2,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-09-24": {
+   "tempF": 65,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-09-25": {
+   "tempF": 65.9,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-09-26": {
+   "tempF": 61.2,
+   "code": 63,
+   "precipMm": 16.9,
+   "condition": "rain"
+  },
+  "2026-09-27": {
+   "tempF": 59.4,
+   "code": 63,
+   "precipMm": 36.5,
+   "condition": "rain"
+  },
+  "2026-09-28": {
+   "tempF": 57.8,
+   "code": 65,
+   "precipMm": 19.4,
+   "condition": "rain"
+  },
+  "2026-09-29": {
+   "tempF": 65.1,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-09-30": {
+   "tempF": 66.8,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-10-01": {
+   "tempF": 75.5,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-10-02": {
+   "tempF": 86.5,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "hot"
+  },
+  "2026-10-03": {
+   "tempF": 67.6,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-10-04": {
+   "tempF": 63.5,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-10-05": {
+   "tempF": 70.8,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-10-06": {
+   "tempF": 62.6,
+   "code": 0,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-10-07": {
+   "tempF": 66.7,
+   "code": 0,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-10-08": {
+   "tempF": 73.1,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-10-09": {
+   "tempF": 68,
+   "code": 1,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-10-10": {
+   "tempF": 63,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-10-11": {
+   "tempF": 59.5,
+   "code": 63,
+   "precipMm": 13,
+   "condition": "rain"
+  },
+  "2026-10-12": {
+   "tempF": 68.4,
+   "code": 55,
+   "precipMm": 2.6,
+   "condition": "rain"
+  },
+  "2026-10-13": {
+   "tempF": 58.5,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-10-14": {
+   "tempF": 74.5,
+   "code": 51,
+   "precipMm": 0.4,
+   "condition": "rain"
+  },
+  "2026-10-15": {
+   "tempF": 63.7,
+   "code": 1,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-10-16": {
+   "tempF": 67.7,
+   "code": 61,
+   "precipMm": 5.4,
+   "condition": "rain"
+  },
+  "2026-10-17": {
+   "tempF": 60.1,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-10-18": {
+   "tempF": 55.4,
+   "code": 0,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-10-19": {
+   "tempF": 58.3,
+   "code": 2,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-10-20": {
+   "tempF": 63.8,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-10-21": {
+   "tempF": 56.1,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-10-22": {
+   "tempF": 65,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-10-23": {
+   "tempF": 56.2,
+   "code": 0,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-10-24": {
+   "tempF": 58.6,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-07-24": {
+   "tempF": 81.3,
+   "code": 1,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-07-25": {
+   "tempF": 79.2,
+   "code": 0,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-07-26": {
+   "tempF": 75.3,
+   "code": 0,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-07-27": {
+   "tempF": 80.3,
+   "code": 2,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-07-28": {
+   "tempF": 85.2,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "hot"
+  },
+  "2026-07-29": {
+   "tempF": 70.2,
+   "code": 63,
+   "precipMm": 8.6,
+   "condition": "rain"
+  },
+  "2026-07-30": {
+   "tempF": 71.3,
+   "code": 45,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-07-31": {
+   "tempF": 76.8,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-08-01": {
+   "tempF": 84.8,
+   "code": 45,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-08-02": {
+   "tempF": 86.5,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "hot"
+  },
+  "2026-08-03": {
+   "tempF": 77.8,
+   "code": 65,
+   "precipMm": 16.4,
+   "condition": "rain"
+  },
+  "2026-08-04": {
+   "tempF": 88,
+   "code": 0,
+   "precipMm": 0,
+   "condition": "hot"
+  },
+  "2026-08-05": {
+   "tempF": 88.8,
+   "code": 2,
+   "precipMm": 0,
+   "condition": "hot"
+  },
+  "2026-08-06": {
+   "tempF": 91.1,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "hot"
+  },
+  "2026-08-07": {
+   "tempF": 94.7,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "hot"
+  },
+  "2026-08-08": {
+   "tempF": 91.8,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "hot"
+  },
+  "2026-08-09": {
+   "tempF": 90.9,
+   "code": 1,
+   "precipMm": 0,
+   "condition": "hot"
+  },
+  "2026-08-10": {
+   "tempF": 84.9,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-08-11": {
+   "tempF": 87.2,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "hot"
+  },
+  "2026-08-12": {
+   "tempF": 85.1,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "hot"
+  },
+  "2026-08-13": {
+   "tempF": 86.2,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "hot"
+  },
+  "2026-08-14": {
+   "tempF": 83.5,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-08-15": {
+   "tempF": 78.7,
+   "code": 3,
+   "precipMm": 0,
+   "condition": "normal"
+  },
+  "2026-08-16": {
+   "tempF": 80.5,
+   "code": 2,
+   "precipMm": 0,
+   "condition": "normal"
+  }
+ }
+}

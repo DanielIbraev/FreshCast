@@ -1,5 +1,5 @@
-// Simulated kitchen used for (1) seeding Marco's demo history and (2) the
-// accuracy backtest. The "true world" below is hidden from the model: its
+// Simulated kitchen used for (1) seeding the demo histories and (2) the
+// accuracy backtest. Weather is Boston's real recorded weather where we have it. The "true world" below is hidden from the model: its
 // priors in prediction.ts are deliberately different, and the learning layer
 // has to discover the gap from waste logs alone.
 
@@ -9,6 +9,11 @@ import { KitchenShape, shapeOf, isOpen } from "./kitchens";
 import { DEMO_PROFILE } from "./profile";
 import { usualPrepKg } from "./prediction";
 import { describe } from "./weather";
+import history from "./history-weather.json";
+
+// Real daily weather in Boston for recent dates (scripts/fetch-history-weather.ts).
+// Nights inside that window replay on the weather that actually happened.
+const REAL = (history as unknown as { days: Record<string, { tempF: number; condition: WeatherCondition; precipMm: number }> }).days;
 
 // Seeded RNG (mulberry32) so every run produces the same kitchen.
 export function rng(seed: number): () => number {
@@ -50,6 +55,7 @@ export interface SimDay {
   expectedCovers: number; // same as usualCovers: no reservation feed is assumed
   actualCovers: number; // who actually showed up (the register knows this at close)
   event: NearbyEvent;
+  realWeather: boolean; // true when this night uses Boston's recorded weather
   trueUsual: Record<string, number>; // waste if prepped as usual (kg), with noise
   trueMean: Record<string, number>; // same, without noise, knowing who actually came
   trueMeanAtPrep: Record<string, number>; // oracle at 8am: knows the hidden parameters, not tonight's guests or noise
@@ -70,11 +76,15 @@ export function simulateDays(ingredients: Ingredient[], start: Date, numDays: nu
     const d = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i);
     const dow = d.getDay();
     // Draw the same random numbers every day so open/closed days don't shift the sequence.
-    const tempF = MONTH_HIGH[d.getMonth()] + gauss(r) * 6;
+    const simTemp = MONTH_HIGH[d.getMonth()] + gauss(r) * 6;
     const wet = r() < 0.3;
     const stormy = r() < 0.12;
-    const condition: WeatherCondition = wet ? (stormy ? "storm" : "rain") : tempF >= 85 ? "hot" : tempF <= 32 ? "cold" : "normal";
-    const event = !wet && r() < 0.08 ? EVENTS.game : EVENTS.none;
+    const eventDraw = r();
+    const real = REAL[localISO(d)];
+    const tempF = real ? real.tempF : simTemp;
+    const condition: WeatherCondition = real ? real.condition : wet ? (stormy ? "storm" : "rain") : tempF >= 85 ? "hot" : tempF <= 32 ? "cold" : "normal";
+    const rainy = condition === "rain" || condition === "storm";
+    const event = !rainy && eventDraw < 0.08 ? EVENTS.game : EVENTS.none;
     const drift = gauss(r);
     const noise = ingredients.map(() => gauss(r));
     if (!isOpen(kitchen, dow)) continue;
@@ -108,7 +118,8 @@ export function simulateDays(ingredients: Ingredient[], start: Date, numDays: nu
     days.push({
       date: localISO(d),
       dateObj: d,
-      weather: { date: localISO(d), tempF, condition, precipProb: wet ? 75 : 10, description: describe(condition, tempF) },
+      weather: { date: localISO(d), tempF, condition, precipProb: rainy ? 75 : 10, description: describe(condition, tempF) },
+      realWeather: !!real,
       usualCovers: usual,
       expectedCovers: usual,
       actualCovers: Math.round(trueCovers),
