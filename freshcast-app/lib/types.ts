@@ -102,6 +102,7 @@ export interface PredictionInput {
   date: Date;
   event: NearbyEvent;
   cuisineType: CuisineType;
+  learned?: Learned;
 }
 
 export interface IngredientPrediction {
