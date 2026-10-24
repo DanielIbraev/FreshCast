@@ -128,8 +128,8 @@ From each restaurant's simulated history (`runBacktest`, seed 7, plan starts on 
 Conversions: 1 meal = 1.2 lb of food (Feeding America). About 0.4 kg CO₂ per mile and 4.6 t CO₂ per car per year (EPA). CO₂e factors are farm-to-retail emissions from Poore & Nemecek (2018), *Science*, via Our World in Data: the embodied emissions of food that didn't need to be bought.
 
 ## What's real vs. simulated
-- **Real:** the prediction engine, the learning layer, the 80% ranges, live Open-Meteo weather, OpenStreetMap search in setup, Supabase storage with row-level security, the sales-CSV importer, and the benchmark code.
-- **Simulated:** all three restaurants and their histories, and the benchmark kitchens. Each simulated kitchen has hidden habits the model never reads; it has to learn them from close-outs.
+- **Real:** the prediction engine, the learning layer, the 80% ranges, live Open-Meteo weather, Boston's recorded weather for the last 92 days (used by the simulated histories and the benchmark), OpenStreetMap search in setup, Supabase storage with row-level security, the sales-CSV importer, and the benchmark code.
+- **Simulated:** all three restaurants, their guests, habits and waste, and the benchmark kitchens. Each simulated kitchen has hidden habits the model never reads; it has to learn them from close-outs.
 - **Not built:** reservation or POS integrations, accounts, multi-location. The next step after the hackathon is testing in a real kitchen to measure real accuracy.
 
 ## Security
