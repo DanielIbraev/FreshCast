@@ -67,7 +67,7 @@ export default function OrdersPage() {
       <Card>
         <div className="mb-3 grid grid-cols-[220px_1fr_90px_90px_220px] gap-4 px-2 text-[11px] uppercase tracking-wider text-text-muted">
           <span>Ingredient</span>
-          <span>Usual vs. recommended</span>
+          <span>Money kept by prepping less</span>
           <span className="text-right">Prep</span>
           <span className="text-right">Saved</span>
           <span>Main reason</span>
