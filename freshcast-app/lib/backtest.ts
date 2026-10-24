@@ -32,9 +32,9 @@ export interface BacktestResult {
 export const VERSIONS = [
   { id: "v0", name: "Rule of thumb", detail: "Flat 8% of prep, every day", priors: [] as string[], learning: 0 },
   { id: "v1", name: "+ Covers & weekday", detail: "Reservations and day-of-week priors", priors: ["demand", "dayOfWeek"], learning: 0 },
-  { id: "v2", name: "+ Weather, season, events", detail: "Open-Meteo, calendar, events feed", priors: ["demand", "dayOfWeek", "weather", "season", "holiday", "event", "cuisine"], learning: 0 },
-  { id: "v3", name: "+ Kitchen calibration", detail: "Learns each ingredient from your logs", priors: ["demand", "dayOfWeek", "weather", "season", "holiday", "event", "cuisine"], learning: 1 },
-  { id: "v4", name: "+ Weekday, weather & recency learning", detail: "Learns your busy days, how rain hits you, and last week", priors: ["demand", "dayOfWeek", "weather", "season", "holiday", "event", "cuisine"], learning: 2 },
+  { id: "v2", name: "+ Weather, season, events", detail: "Open-Meteo, calendar, events feed", priors: ["demand", "dayOfWeek", "weather", "season", "holiday", "event", "shelfLife"], learning: 0 },
+  { id: "v3", name: "+ Kitchen calibration", detail: "Learns each ingredient from your logs", priors: ["demand", "dayOfWeek", "weather", "season", "holiday", "event", "shelfLife"], learning: 1 },
+  { id: "v4", name: "+ Weekday, weather & recency learning", detail: "Learns your busy days, how rain hits you, and last week", priors: ["demand", "dayOfWeek", "weather", "season", "holiday", "event", "shelfLife"], learning: 2 },
 ] as const;
 
 export interface VersionResult {

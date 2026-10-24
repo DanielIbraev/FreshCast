@@ -3,12 +3,24 @@ import type { Learned } from "./learning";
 
 export type CuisineType =
   | "italian"
-  | "french"
-  | "sushi"
-  | "seafood"
+  | "pizza"
+  | "american"
   | "burger"
+  | "bbq"
+  | "mexican"
+  | "chinese"
+  | "sushi"
+  | "thai"
+  | "indian"
+  | "mediterranean"
+  | "french"
+  | "seafood"
+  | "cafe_bakery"
   | "fast_casual"
+  | "vegetarian"
   | "fine_dining";
+
+export type ServiceStyle = "breakfast_lunch" | "lunch" | "dinner" | "all_day";
 
 export type Category = "produce" | "meat" | "seafood" | "dairy" | "bakery" | "dry";
 
@@ -74,7 +86,7 @@ export type SignalKey =
   | "season"
   | "holiday"
   | "event"
-  | "cuisine"
+  | "shelfLife"
   | "recency"
   | "calibration";
 

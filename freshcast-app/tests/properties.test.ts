@@ -13,7 +13,7 @@ const RUNS = { numRuns: 200 };
 
 const arbCategory = fc.constantFrom<Category>("produce", "meat", "seafood", "dairy", "bakery", "dry");
 const arbCondition = fc.constantFrom<WeatherCondition>("rain", "storm", "hot", "cold", "normal");
-const arbCuisine = fc.constantFrom<CuisineType>("italian", "french", "sushi", "seafood", "burger", "fast_casual", "fine_dining");
+const arbCuisine = fc.constantFrom<CuisineType>("italian", "pizza", "mexican", "sushi", "cafe_bakery", "fast_casual", "fine_dining");
 const arbIngredient = fc.record({
   id: fc.constant("x"),
   name: fc.constant("X"),

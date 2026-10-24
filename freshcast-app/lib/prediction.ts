@@ -4,7 +4,7 @@
 //   1. Priors: seven signals with industry-baseline multipliers (works on day 1)
 //   2. Learning: corrections fitted to this kitchen's own waste logs (lib/learning.ts)
 
-import { PredictionInput, IngredientPrediction, CuisineType, DayWeather, NearbyEvent, SignalFactor } from "./types";
+import { PredictionInput, IngredientPrediction, DayWeather, NearbyEvent, SignalFactor } from "./types";
 import { NO_LEARNING } from "./learning";
 
 // Index 0 = Sunday ... 6 = Saturday
@@ -12,15 +12,15 @@ const DAY_OF_WEEK_FACTOR = [0.9, 1.22, 1.18, 1.05, 1.0, 0.88, 0.82];
 const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const SEASONAL_FACTOR = [1.15, 1.15, 1.0, 1.0, 0.95, 0.95, 0.92, 0.92, 1.05, 1.05, 1.2, 1.2];
 const MONTH_NAMES = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-const CUISINE_FACTOR: Record<CuisineType, number> = {
-  italian: 1.0,
-  french: 1.0,
-  sushi: 1.15,
-  seafood: 1.15,
-  burger: 0.85,
-  fast_casual: 0.85,
-  fine_dining: 1.25,
-};
+// Perishability. Food that has to be thrown out tomorrow is far more likely to
+// be wasted than food that keeps for a week. Set per ingredient by the owner.
+export function shelfLifeFactor(days: number): number {
+  if (days <= 1) return 1.2;
+  if (days <= 2) return 1.1;
+  if (days <= 4) return 1.0;
+  if (days <= 7) return 0.9;
+  return 0.8;
+}
 
 // Share of a normal day's prep that ends up in the bin with no forecasting.
 export const BASE_WASTE_FRACTION = 0.08;
@@ -86,7 +86,13 @@ export function computeSignals(input: PredictionInput): SignalFactor[] {
     { key: "season", label: "Season", source: "Calendar", detail: MONTH_NAMES[date.getMonth()], value: SEASONAL_FACTOR[date.getMonth()] },
     { key: "holiday", label: "Holiday", source: "Holiday calendar", detail: hol.name || "None", value: hol.value },
     { key: "event", label: "Nearby events", source: "Events feed", detail: event.type === "none" ? "None within 1 mi" : event.name, value: eventFactor(event) },
-    { key: "cuisine", label: "Cuisine profile", source: "Set at onboarding", detail: input.cuisineType.replace("_", " "), value: CUISINE_FACTOR[input.cuisineType] },
+    {
+      key: "shelfLife",
+      label: "Shelf life",
+      source: "Set when the item was added",
+      detail: `${input.ingredient.shelfLifeDays} day${input.ingredient.shelfLifeDays === 1 ? "" : "s"} once prepped`,
+      value: shelfLifeFactor(input.ingredient.shelfLifeDays),
+    },
     {
       key: "recency",
       label: "Last week, same day",
