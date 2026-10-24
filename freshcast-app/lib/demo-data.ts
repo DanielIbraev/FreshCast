@@ -15,10 +15,10 @@ export const AVG_COVERS = 52;
 
 export const EVENTS: Record<EventType, NearbyEvent> = {
   none: { type: "none", name: "", distanceMiles: 0 },
-  game: { type: "game", name: "Celtics at TD Garden", distanceMiles: 0.6 },
-  concert: { type: "concert", name: "Concert at TD Garden", distanceMiles: 0.6 },
+  game: { type: "game", name: "Home game at the arena", distanceMiles: 0.6 },
+  concert: { type: "concert", name: "Arena concert", distanceMiles: 0.6 },
   festival: { type: "festival", name: "North End Feast", distanceMiles: 0.2 },
-  graduation: { type: "graduation", name: "Suffolk commencement", distanceMiles: 0.8 },
+  graduation: { type: "graduation", name: "University commencement", distanceMiles: 0.8 },
 };
 
 // Expected covers by weekday, as a reservation integration would report them.

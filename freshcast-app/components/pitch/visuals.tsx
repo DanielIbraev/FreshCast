@@ -150,9 +150,8 @@ export function Matrix() {
       <span className="absolute -bottom-10 left-1/2 -translate-x-1/2 text-lg text-text-muted">Software only</span>
       <span className="absolute -left-4 top-1/2 -translate-x-full -translate-y-1/2 text-right text-lg text-text-muted">Measures waste<br />after the bin</span>
       <span className="absolute -right-4 top-1/2 -translate-y-1/2 translate-x-full text-lg text-text-muted">Prevents it<br />before prep</span>
-      {dot("Winnow", 22, 22, false, 0.1)}
-      {dot("Leanpath", 34, 34, false, 0.2)}
-      {dot("Orbisk", 16, 38, false, 0.3)}
+      {dot("Camera trackers", 22, 22, false, 0.1)}
+      {dot("Smart scales", 38, 36, false, 0.2)}
       {dot("Spreadsheets & gut feel", 28, 74, false, 0.4)}
       {dot("FreshCast", 76, 74, true, 0.7)}
     </div>

@@ -53,7 +53,7 @@ export function GuestPattern({ coversByDay, source, onImport }: { coversByDay: n
           ? `Learned from ${result.days} days of sales (${result.firstDate} to ${result.lastDate})${result.guestColumn ? `, "${result.guestColumn}" column` : ", one guest per ticket"}. File stayed on this device.`
           : source === "pos-import"
             ? "From your sales export."
-            : "Typical weekly pattern. Upload a sales export to use your real numbers."}
+            : "Typical weekly pattern. Upload a POS sales export to use your real numbers."}
       </p>
       {error && <p className="mt-2 text-xs text-waste">{error}</p>}
 
@@ -63,7 +63,7 @@ export function GuestPattern({ coversByDay, source, onImport }: { coversByDay: n
           onClick={() => input.current?.click()}
           className="flex items-center gap-2 rounded-md border border-border bg-canvas px-3 py-1.5 text-xs text-text-primary transition-colors duration-150 hover:border-good"
         >
-          <Upload className="h-3.5 w-3.5" /> Upload Square / Toast CSV
+          <Upload className="h-3.5 w-3.5" /> Upload POS sales export (CSV)
         </button>
         <button
           type="button"

@@ -65,8 +65,8 @@ export const S10Audience = () => (
       <p className="mt-4 font-display text-[40px] font-700 leading-tight text-text-primary">Owner who still works the line</p>
       <ul className="mt-6 space-y-3 text-2xl text-text-secondary">
         <li>30–80 seats, cooks fresh every day</li>
-        <li>Already on Square or Toast</li>
-        <li>Orders from Restaurant Depot on Mondays</li>
+        <li>Already uses a cloud POS</li>
+        <li>Orders from a wholesaler every Monday</li>
       </ul>
       <p className="mt-6 flex items-center gap-2 text-2xl text-text-primary">
         <MapPin className="h-6 w-6 text-good" /> North End & South End, Boston
@@ -86,7 +86,7 @@ export const S11Business = ({ saved }: { saved: number }) => (
 
 export const S12Competition = () => (
   <div className="flex h-full flex-col justify-between">
-    <Line>Everyone else weighs the trash. We stop it being made.</Line>
+    <Line>Hardware trackers weigh the trash. We stop it being made.</Line>
     <div className="flex justify-center pb-6">
       <Matrix />
     </div>
