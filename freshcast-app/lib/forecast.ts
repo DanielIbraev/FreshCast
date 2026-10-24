@@ -15,11 +15,31 @@ interface ForecastOptions {
   date: Date;
   cuisineType: CuisineType;
   avgCovers: number;
+  usualCovers: number; // usual guests for this weekday; 0 = closed
+  open: boolean;
+  guestsSource?: "usual" | "what-if";
+  coversSource?: "default" | "pos-import";
 }
 
 const round = (n: number) => Math.round(n * 100) / 100;
 
 export function buildDayForecast(opts: ForecastOptions): DayPrediction {
+  if (!opts.open || opts.usualCovers <= 0) {
+    // Closed: nothing is prepped, so nothing is forecast or saved.
+    return {
+      date: opts.weather.date,
+      closed: true,
+      usualCovers: 0,
+      expectedCovers: 0,
+      weather: opts.weather,
+      event: opts.event,
+      ingredients: [],
+      totalWasteCost: 0,
+      totalReducedCost: 0,
+      totalSavings: 0,
+      totalCo2Prevented: 0,
+    };
+  }
   const ingredients = opts.ingredients
     .map((ingredient) => {
       const input = {
@@ -31,6 +51,9 @@ export function buildDayForecast(opts: ForecastOptions): DayPrediction {
         date: opts.date,
         event: opts.event,
         cuisineType: opts.cuisineType,
+        usualCovers: opts.usualCovers,
+        guestsSource: opts.guestsSource,
+        coversSource: opts.coversSource,
       };
       const learned = learn(opts.observations, ingredient.id, opts.weather.date, opts.weather.condition);
       return { ...predictIngredientWaste({ ...input, learned }), priorKg: Math.round(priorWasteKg(input) * 1000) / 1000 };
@@ -43,6 +66,7 @@ export function buildDayForecast(opts: ForecastOptions): DayPrediction {
 
   return {
     date: opts.weather.date,
+    usualCovers: opts.usualCovers,
     expectedCovers: opts.expectedCovers,
     weather: opts.weather,
     event: opts.event,

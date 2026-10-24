@@ -9,7 +9,7 @@ import { DayPrediction } from "./types";
 export interface Residuals {
   byIngredient: Map<string, number[]>;
   pooled: number[];
-  byDay: number[]; // residual of the day's summed forecast vs summed actual
+  byDay: number[]; // residual of the day's total forecast cost vs total actual cost
 }
 
 export interface Range {
@@ -35,12 +35,13 @@ function bounds(xs: number[], level: number): { lo: number; hi: number } {
   return { lo: quantile(s, tail), hi: quantile(s, 1 - tail) };
 }
 
-export function residuals(obs: Observation[]): Residuals {
+// costPerKg weights the day total by dollars, so it matches the $ range it's applied to.
+export function residuals(obs: Observation[], costPerKg: Map<string, number> = new Map()): Residuals {
   const byIngredient = new Map<string, number[]>();
   const pooled: number[] = [];
   const days = new Map<string, { f: number; a: number }>();
   for (const o of obs) {
-    if (!(o.rawKg > 0) || !(o.usualKg > 0)) continue;
+    if (o.censored || !(o.rawKg > 0) || !(o.usualKg > 0)) continue;
     const f = o.morningKg ?? (() => {
       const L = learn(obs, o.ingredientId, o.date, o.condition); // learn() only sees earlier dates
       return o.rawKg * L.calibration * L.weekday * L.weather * L.recency;
@@ -50,8 +51,9 @@ export function residuals(obs: Observation[]): Residuals {
     pooled.push(r);
     (byIngredient.get(o.ingredientId) ?? byIngredient.set(o.ingredientId, []).get(o.ingredientId)!).push(r);
     const d = days.get(o.date) ?? { f: 0, a: 0 };
-    d.f += f;
-    d.a += o.usualKg;
+    const c = costPerKg.get(o.ingredientId) ?? 1;
+    d.f += f * c;
+    d.a += o.usualKg * c;
     days.set(o.date, d);
   }
   const byDay = Array.from(days.values()).filter((d) => d.f > 0 && d.a > 0).map((d) => Math.log(d.a / d.f));

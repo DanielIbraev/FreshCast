@@ -8,7 +8,7 @@ import { localISO } from "./demo-data";
 export interface DayTotal {
   date: string;
   wasteCost: number; // what actually went in the bin ($)
-  savedCost: number; // what the plan kept out of the bin ($)
+  savedCost: number; // what the plan kept out of the bin ($), only on nights it's provable
   savedCo2: number;
   savedKg: number;
   onPlan: boolean;
@@ -22,9 +22,13 @@ export function dailyTotals(obs: DailyObservation[], ingredients: Ingredient[]):
     if (!ing) continue;
     const d = days.get(o.date) ?? { date: o.date, wasteCost: 0, savedCost: 0, savedCo2: 0, savedKg: 0, onPlan: false };
     d.wasteCost += o.loggedKg * ing.costPerKg;
-    d.savedCost += o.cutKg * ing.costPerKg;
-    d.savedCo2 += o.cutKg * ing.co2PerKg;
-    d.savedKg += o.cutKg;
+    // Savings = food the plan didn't prep that would otherwise have been
+    // binned. If the item sold out (logged 0 after a cut), we can't tell how
+    // much of the cut was really waste, so that night counts as $0 saved.
+    const provable = o.cutKg > 0 && o.loggedKg > 0 ? o.cutKg : 0;
+    d.savedCost += provable * ing.costPerKg;
+    d.savedCo2 += provable * ing.co2PerKg;
+    d.savedKg += provable;
     d.onPlan ||= o.cutKg > 0;
     days.set(o.date, d);
   }
@@ -35,13 +39,15 @@ export interface Summary {
   savedLast30: number;
   co2Last30: number;
   kgLast30: number; // food not bought, prepped, or binned
-  monthlyBefore: number | null; // avg daily waste before the plan x 30
-  monthlyNow: number | null; // avg daily waste, last 14 days x 30
+  monthlyBefore: number | null; // avg waste per open day before the plan x open days per month (not season-adjusted)
+  monthlyNow: number | null; // same, last 14 open days on the plan
   planStart: string | null;
   daysLogged: number;
 }
 
-export function summarize(totals: DayTotal[]): Summary {
+// openPerWeek: days the restaurant opens each week, to turn per-day into per-month.
+export function summarize(totals: DayTotal[], openPerWeek = 7): Summary {
+  const perMonth = (openPerWeek * 365) / 7 / 12;
   const cutoff = new Date();
   cutoff.setDate(cutoff.getDate() - 30);
   const since = localISO(cutoff);
@@ -53,8 +59,8 @@ export function summarize(totals: DayTotal[]): Summary {
     savedLast30: last30.reduce((s, t) => s + t.savedCost, 0),
     co2Last30: last30.reduce((s, t) => s + t.savedCo2, 0),
     kgLast30: last30.reduce((s, t) => s + t.savedKg, 0),
-    monthlyBefore: before.length >= 5 ? avg(before) * 30 : null,
-    monthlyNow: recent.length >= 5 ? avg(recent) * 30 : null,
+    monthlyBefore: before.length >= 5 ? avg(before) * perMonth : null,
+    monthlyNow: recent.length >= 5 ? avg(recent) * perMonth : null,
     planStart: totals.find((t) => t.onPlan)?.date ?? null,
     daysLogged: totals.length,
   };

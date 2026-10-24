@@ -9,6 +9,10 @@ export interface Observation {
   usualKg: number; // observed: logged waste + amount the plan cut from prep
   condition: string; // weather that day
   morningKg?: number; // the forecast the kitchen actually saw that morning, if known
+  // Logged 0 after the plan cut prep: the item sold out, so usualKg is only an
+  // upper bound. Still used for learning (it can only pull the forecast down,
+  // never too far), but never scored and never used for ranges.
+  censored?: boolean;
 }
 
 export interface Learned {

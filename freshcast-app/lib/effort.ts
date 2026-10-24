@@ -3,10 +3,15 @@
 // every ingredient, logged or not.
 
 import { Ingredient } from "./types";
-import { AVG_COVERS, DEMO_RESTAURANT } from "./demo-data";
 import { priorWasteKg, REDUCTION_RATE } from "./prediction";
 import { learn, accuracy, Observation, NO_LEARNING } from "./learning";
 import { simulateDays, rng } from "./sim";
+import { simInput } from "./backtest";
+import { KitchenShape, shapeOf } from "./kitchens";
+import { DEMO_PROFILE } from "./profile";
+
+const startOf = (end: Date, weeks: number) => new Date(end.getFullYear(), end.getMonth(), end.getDate() - weeks * 7);
+const WARMUP = 14;
 
 export interface EffortPlan {
   id: string;
@@ -48,7 +53,7 @@ export interface EffortResult {
   minutes: number;
 }
 
-export function runEffort(ingredients: Ingredient[], seeds = [7, 11, 23, 31, 42], weeks = 12): EffortResult[] {
+export function runEffort(ingredients: Ingredient[], seeds = [7, 11, 23, 31, 42], weeks = 12, kitchen: KitchenShape = shapeOf(DEMO_PROFILE)): EffortResult[] {
   const byValue = [...ingredients].sort((a, b) => b.costPerKg * b.baselinePrepKg - a.costPerKg * a.baselinePrepKg).map((i) => i.id);
 
   return PLANS.map((plan) => {
@@ -57,28 +62,29 @@ export function runEffort(ingredients: Ingredient[], seeds = [7, 11, 23, 31, 42]
     const scores = seeds.map((seed) => {
       const r = rng(seed * 101);
       const g = () => Math.sqrt(-2 * Math.log(Math.max(r(), 1e-9))) * Math.cos(2 * Math.PI * r());
-      const end = new Date();
-      const days = simulateDays(ingredients, new Date(end.getFullYear(), end.getMonth(), end.getDate() - weeks * 7), weeks * 7, seed);
+      const days = simulateDays(ingredients, startOf(new Date(), weeks), weeks * 7, seed, kitchen);
+      const warm = Math.round((WARMUP * days.length) / (weeks * 7));
       const obs: Observation[] = [];
       const pairs: { predicted: number; actual: number }[] = [];
 
       days.forEach((day, i) => {
         const tonight: Observation[] = [];
         for (const ing of ingredients) {
-          const input = { ingredient: ing, expectedCovers: day.expectedCovers, avgCovers: AVG_COVERS, weather: day.weather, weatherSource: "live" as const, date: day.dateObj, event: day.event, cuisineType: DEMO_RESTAURANT.cuisineType };
+          const input = simInput(ing, day, kitchen);
           const raw = priorWasteKg(input);
           const L = obs.length ? learn(obs, ing.id, day.date, day.weather.condition) : NO_LEARNING;
           const forecast = raw * L.calibration * L.weekday * L.weather * L.recency;
           const actual = day.trueUsual[ing.id];
-          if (i >= 14) pairs.push({ predicted: forecast, actual });
+          if (i >= warm) pairs.push({ predicted: forecast, actual });
 
           if (!plan.nights.includes(day.dateObj.getDay()) || !logged.has(ing.id)) continue;
           const cut = forecast * REDUCTION_RATE;
-          const binned = Math.max(0, actual - cut) * Math.exp(noise * g() - (noise * noise) / 2);
+          const trueBinned = Math.max(0, actual - cut);
+          const binned = trueBinned * Math.exp(noise * g() - (noise * noise) / 2);
           // With the real guest count, the prior is recomputed for who actually came,
           // so a busy walk-in night isn't mistaken for a kitchen habit.
-          const priorKg = plan.posGuests ? priorWasteKg({ ...input, expectedCovers: day.actualCovers }) : raw;
-          tonight.push({ date: day.date, ingredientId: ing.id, rawKg: priorKg, usualKg: binned + cut, condition: day.weather.condition });
+          const priorKg = plan.posGuests ? priorWasteKg(simInput(ing, day, kitchen, day.actualCovers)) : raw;
+          tonight.push({ date: day.date, ingredientId: ing.id, rawKg: priorKg, usualKg: binned + cut, condition: day.weather.condition, censored: trueBinned === 0 });
         }
         obs.push(...tonight);
       });
@@ -91,15 +97,21 @@ export function runEffort(ingredients: Ingredient[], seeds = [7, 11, 23, 31, 42]
 // The owner's own best guess: he remembers exactly what was wasted on the same
 // weekday for the last 4 weeks and preps to that average. A generous baseline,
 // since no owner actually knows those numbers without logging.
-export function ownerBaseline(ingredients: Ingredient[], seeds = [7, 11, 23, 31, 42], weeks = 12): number {
+export function ownerBaseline(ingredients: Ingredient[], seeds = [7, 11, 23, 31, 42], weeks = 12, kitchen: KitchenShape = shapeOf(DEMO_PROFILE)): number {
   const scores = seeds.map((seed) => {
-    const end = new Date();
-    const days = simulateDays(ingredients, new Date(end.getFullYear(), end.getMonth(), end.getDate() - weeks * 7), weeks * 7, seed);
+    const days = simulateDays(ingredients, startOf(new Date(), weeks), weeks * 7, seed, kitchen);
+    const warm = Math.round((WARMUP * days.length) / (weeks * 7));
+    const byDate = new Map(days.map((d) => [d.date, d]));
+    const back = (d: Date, k: number) => {
+      const x = new Date(d.getFullYear(), d.getMonth(), d.getDate() - k);
+      return byDate.get(`${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, "0")}-${String(x.getDate()).padStart(2, "0")}`);
+    };
     const pairs: { predicted: number; actual: number }[] = [];
     days.forEach((day, i) => {
-      if (i < 14) return;
+      if (i < warm) return;
       for (const ing of ingredients) {
-        const prev = [7, 14, 21, 28].filter((k) => i - k >= 0).map((k) => days[i - k].trueUsual[ing.id]);
+        const prev = [7, 14, 21, 28].map((k) => back(day.dateObj, k)).filter((d): d is NonNullable<typeof d> => !!d).map((d) => d.trueUsual[ing.id]);
+        if (!prev.length) continue;
         pairs.push({ predicted: prev.reduce((s, x) => s + x, 0) / prev.length, actual: day.trueUsual[ing.id] });
       }
     });

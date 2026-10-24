@@ -80,6 +80,7 @@ export function toLearningObs(obs: DailyObservation[]): Observation[] {
     usualKg: o.loggedKg + o.cutKg,
     condition: o.weather,
     morningKg: o.cutKg > 0 ? o.cutKg / REDUCTION_RATE : undefined,
+    censored: o.loggedKg === 0 && o.cutKg > 0,
   }));
 }
 
