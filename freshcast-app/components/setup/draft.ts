@@ -8,14 +8,15 @@ import { Profile, averageOpen, weeklyShape } from "@/lib/profile";
 
 export type AutoField = "name" | "address" | "cuisine" | "service" | "openDays";
 
+// Shape returned by GET /api/places.
 export interface PlaceResult {
-  osmId: string;
+  osmId: string; // "node/4418911292"
   name: string;
   address: string;
-  place: string;
+  place: string; // "North End, Boston"
   lat: number;
   lng: number;
-  osmType: string;
+  osmType: string; // the amenity: restaurant, cafe, fast_food, bakery...
   cuisineTag: string | null;
   cuisineType: CuisineType;
   openingHours: string | null;
