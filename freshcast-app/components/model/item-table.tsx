@@ -21,18 +21,20 @@ function headlineFor(items: ItemRecord[]) {
   const top = items[0];
   const flagged = items.filter((i) => i.status === "over" || i.status === "under");
   const learning = items.filter((i) => i.status === "learning");
+  const onTarget = items.length - flagged.length - learning.length;
   const lead = top && top.wasteCostLast28 > 0 ? `${top.name} cost the most: ${usd(top.wasteCostLast28)} in the bin over 4 weeks. ` : "";
-  if (flagged.length) return `${lead}${flagged.length} of ${items.length} items are off by more than 15%`;
-  if (learning.length === items.length) return `${lead}Every item is still learning (fewer than 10 scored nights)`;
-  if (learning.length) return `${lead}${items.length - learning.length} items on target, ${learning.length} still learning`;
-  return `${lead}All ${items.length} items are within 15% on average`;
+  if (flagged.length) return `${lead}${flagged.length} of ${items.length} logged items are off by more than 15%`;
+  if (!onTarget) return `${lead}Every logged item is still learning (fewer than 10 scored nights)`;
+  if (learning.length) return `${lead}${onTarget} items on target, ${learning.length} still learning`;
+  return `${lead}All ${items.length} logged items are within 15% on average`;
 }
 
-const th = "px-3 py-2.5 text-left text-[11px] font-500 uppercase tracking-wider text-text-muted";
+const th = "whitespace-nowrap px-3 py-2.5 text-left text-[11px] font-500 uppercase tracking-wider text-text-muted";
 const td = "px-3 py-3 tabular-nums";
 
 export function ItemTable({ items }: { items: ItemRecord[] }) {
-  const rows = [...items].sort((a, b) => b.wasteCostLast28 - a.wasteCostLast28);
+  const rows = items.filter((i) => i.nights > 0).sort((a, b) => b.wasteCostLast28 - a.wasteCostLast28);
+  const unlogged = items.filter((i) => i.nights === 0);
   return (
     <Card className="p-0">
       <div className="px-6 pb-4 pt-6">
@@ -59,10 +61,10 @@ export function ItemTable({ items }: { items: ItemRecord[] }) {
               const bigBias = i.bias !== null && Math.abs(i.bias) > 0.15;
               return (
                 <tr key={i.id} className="transition-colors duration-150 hover:bg-surface-hover">
-                  <th scope="row" className="py-3 pl-6 pr-3 text-left font-500 text-text-primary">{i.name}</th>
+                  <th scope="row" className="whitespace-nowrap py-3 pl-6 pr-3 text-left font-500 text-text-primary">{i.name}</th>
                   <td className={cn(td, "text-right text-text-secondary")}>{i.nights}</td>
                   <td className={cn(td, "text-right font-600 text-text-primary")}>{pct(i.accuracy, 1)}</td>
-                  <td className={cn(td, bigBias ? "text-caution" : "text-text-secondary")}>{biasText(i.bias)}</td>
+                  <td className={cn(td, "whitespace-nowrap", bigBias ? "text-caution" : "text-text-secondary")}>{biasText(i.bias)}</td>
                   <td className={cn(td, "text-right text-text-secondary")}>{pct(i.rangeHit)}</td>
                   <td className={cn(td, "text-right", i.soldOut >= 3 ? "text-caution" : "text-text-secondary")}>{i.soldOut}</td>
                   <td className={cn(td, "text-right font-600 text-text-primary")}>{usd(i.wasteCostLast28)}</td>
@@ -72,6 +74,19 @@ export function ItemTable({ items }: { items: ItemRecord[] }) {
                 </tr>
               );
             })}
+            {unlogged.length > 0 && (
+              <tr>
+                <th scope="row" className="py-3 pl-6 pr-3 text-left font-500 text-text-muted">
+                  Not logged yet ({unlogged.length})
+                </th>
+                <td colSpan={6} className="px-3 py-3 text-[13px] text-text-muted">
+                  {unlogged.map((i) => i.name).join(", ")}. Forecast from priors until a close-out includes them.
+                </td>
+                <td className="py-3 pl-3 pr-6">
+                  <span className={cn("inline-flex whitespace-nowrap rounded-md border px-2 py-0.5 text-xs font-500", STATUS.learning.cls)}>No data</span>
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
