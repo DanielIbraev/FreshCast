@@ -49,9 +49,12 @@ export interface ItemRecord {
 }
 
 export interface Action {
-  kind: "log-more" | "bias" | "sold-out" | "guests" | "keep-going";
+  kind: "log-more" | "bias" | "sold-out" | "guests" | "keep-going" | "improved" | "weakest" | "weekday" | "weather";
   text: string;
   itemId?: string;
+  lead?: string; // the item or day the line is about, shown first in bold
+  link?: "log" | "kitchen"; // where to act on it, if anywhere
+  ok?: boolean; // a check that came back clean (no pattern found)
 }
 
 export interface TrackRecord {
