@@ -78,14 +78,14 @@ p {
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--color-canvas);
+  background: rgb(var(--color-canvas));
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--color-border);
+  background: rgb(var(--color-border));
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-border-hover);
+  background: rgb(var(--color-border-hover));
 }
 
 @layer utilities {
