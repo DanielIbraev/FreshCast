@@ -15,6 +15,8 @@ export interface PrepItem {
 
 // One ingredient on the wall screen. The whole row is the tap target: tap to
 // mark it prepped, tap again to undo.
+// Hallmark waiver, 39b (control height): the row button is ~160px tall on
+// purpose. A cook with wet or gloved hands taps it from arm's length.
 export function PrepRow({ item, done, onToggle, t }: { item: PrepItem; done: boolean; onToggle: () => void; t: ScreenStrings }) {
   const changed = item.lessKg > 0;
   return (
