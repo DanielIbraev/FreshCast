@@ -49,7 +49,7 @@ freshcast-app/
     backtest.ts       → walk-forward benchmark, model versions v0–v4, 80% coverage
     effort.ts         → staff effort vs. accuracy; owner's-best-guess baseline
     history.ts        → dashboard money/CO₂e figures from stored close-outs
-    track-record.ts   → per-restaurant Model accuracy (leak-free)
+    track-record.ts   → per-restaurant Model accuracy (leak-free) and "What would improve accuracy" (buildActions)
     benchmarks.json   → output of `npm run bench`
     db.ts, store.tsx  → data access and app state
     pos-import.ts, opening-hours.ts, i18n.ts, weather.ts, categories.ts, staples.ts
