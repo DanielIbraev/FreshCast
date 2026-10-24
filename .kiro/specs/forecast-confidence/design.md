@@ -45,6 +45,10 @@ Each property is a requirement turned into a universally-quantified statement, c
 | P9 | Accuracy is in [0, 1], and equals 1 exactly when every forecast matches | metric sanity |
 | P10 | Any table of fields (commas, quotes, newlines) survives CSV write → `parseCsv` | importer robustness |
 | P11 | Every date the importer accepts is a real calendar date | Req 4.1 |
+| P12 | A closed day never forecasts waste, savings or a prep cut | added after the model audit |
+| P13 | Sold-out (censored) nights never feed the confidence ranges | added after the model audit; keeps upper-bound nights out of the residuals |
+
+P12 and P13 were not part of the original design. They were added after a subagent audit found that closed days were forecast with waste and that sold-out nights could skew the ranges.
 
 ## Error handling
 - Non-positive forecast or actual: residual skipped (log undefined).
