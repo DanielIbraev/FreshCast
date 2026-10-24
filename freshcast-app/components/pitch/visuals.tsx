@@ -2,7 +2,7 @@
 
 // Drawn-in-code visuals for the deck. One visual per slide, no stock photos.
 import { motion } from "framer-motion";
-import { ArrowRight, Moon, Sun, Trash2, Utensils } from "lucide-react";
+import { Trash2 } from "lucide-react";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -82,47 +82,25 @@ export function PrepCard({ rows, day }: { rows: { name: string; usual: number; r
 }
 
 // The daily loop: forecast in the morning, one-minute log at night.
+// The daily loop, shown with real screenshots of the app (public/deck, captured
+// from the running app), not icons.
 export function Loop() {
   const steps = [
-    { icon: Sun, t: "6 AM", d: "Forecast + prep list" },
-    { icon: Utensils, t: "Service", d: "Cook as normal" },
-    { icon: Moon, t: "Close", d: "1-minute bin log" },
+    { src: "/deck/forecast.webp", t: "6 AM", d: "Forecast for every ingredient", alt: "FreshCast forecast screen: a week of waste forecasts and per-ingredient bars" },
+    { src: "/deck/prep.webp", t: "Before service", d: "A smaller prep list", alt: "Prep and order list: usual prep crossed out, recommended prep in green" },
+    { src: "/deck/log.webp", t: "Close", d: "Two taps per item in the bin", alt: "Log waste screen: ingredient tiles, today's log and the close-out" },
   ];
   return (
-    <div className="flex items-center gap-6">
+    <div className="grid grid-cols-3 gap-8">
       {steps.map((s, i) => (
-        <div key={s.t} className="flex items-center gap-6">
-          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.2, ease }} className="flex w-[250px] flex-col items-center rounded-2xl border border-border bg-surface px-6 py-8">
-            <s.icon className="h-12 w-12 text-good" strokeWidth={1.75} />
-            <p className="mt-5 font-display text-3xl font-700 text-text-primary">{s.t}</p>
-            <p className="mt-2 text-xl text-text-secondary">{s.d}</p>
-          </motion.div>
-          {i < steps.length - 1 && <ArrowRight className="h-8 w-8 text-text-muted" />}
-        </div>
-      ))}
-    </div>
-  );
-}
-
-// Two bars: the owner's own best guess vs. FreshCast.
-export function VersusBars({ owner, us }: { owner: number; us: number }) {
-  const w = (v: number) => `${((v - 0.5) / 0.5) * 100}%`;
-  const rows = [
-    { label: "Owner's best guess", v: owner, c: "#3B4A61", t: "text-text-secondary" },
-    { label: "FreshCast", v: us, c: "#10B981", t: "text-good" },
-  ];
-  return (
-    <div className="w-[1000px] space-y-8">
-      {rows.map((r, i) => (
-        <div key={r.label}>
-          <div className="mb-3 flex items-baseline justify-between">
-            <span className={`text-2xl ${r.t}`}>{r.label}</span>
-            <span className={`font-display text-4xl font-800 tabular-nums ${r.t}`}>{Math.round(r.v * 100)}%</span>
-          </div>
-          <div className="h-10 rounded-lg bg-surface">
-            <motion.div className="h-full rounded-lg" style={{ background: r.c }} initial={{ width: 0 }} animate={{ width: w(r.v) }} transition={{ duration: 0.9, delay: i * 0.3, ease }} />
-          </div>
-        </div>
+        <motion.figure key={s.t} initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 + i * 0.25, duration: 0.45, ease }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={s.src} alt={s.alt} className="aspect-[4/3] w-full rounded-xl border border-border object-cover object-top" />
+          <figcaption className="mt-5">
+            <p className="font-display text-[30px] font-700 text-text-primary">{s.t}</p>
+            <p className="mt-1 text-[22px] text-text-secondary">{s.d}</p>
+          </figcaption>
+        </motion.figure>
       ))}
     </div>
   );
@@ -154,24 +132,6 @@ export function Matrix() {
       {dot("Smart scales", 38, 36, false, 0.2)}
       {dot("Spreadsheets & gut feel", 28, 74, false, 0.4)}
       {dot("FreshCast", 76, 74, true, 0.7)}
-    </div>
-  );
-}
-
-// Monthly savings vs. the subscription price.
-export function SavingsBar({ saved, price }: { saved: number; price: number }) {
-  return (
-    <div className="w-[1000px] space-y-6">
-      {[
-        { l: "Food he no longer throws out", v: saved, c: "#10B981" },
-        { l: "FreshCast", v: price, c: "#3B4A61" },
-      ].map((r, i) => (
-        <div key={r.l} className="flex items-center gap-6">
-          <span className="w-[380px] text-2xl text-text-secondary">{r.l}</span>
-          <motion.div className="h-14 rounded-lg" style={{ background: r.c }} initial={{ width: 0 }} animate={{ width: `${(r.v / saved) * 520}px` }} transition={{ duration: 0.9, delay: i * 0.3, ease }} />
-          <span className="font-display text-4xl font-800 tabular-nums text-text-primary">${Math.round(r.v)}<span className="text-xl text-text-muted">/mo</span></span>
-        </div>
-      ))}
     </div>
   );
 }

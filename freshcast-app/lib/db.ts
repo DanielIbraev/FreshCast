@@ -144,19 +144,6 @@ export async function verifyAdmin(): Promise<boolean> {
   return !error && data === true;
 }
 
-export interface PilotSignup {
-  name: string;
-  restaurant: string;
-  email: string;
-  city?: string;
-  note?: string;
-}
-export async function insertSignup(s: PilotSignup): Promise<boolean> {
-  const supabase = getSupabase();
-  if (!supabase) return false;
-  return !(await supabase.from("pilot_signups").insert(s)).error;
-}
-
 // One local copy per restaurant, so a visitor's own setup never overwrites the demo.
 const localKey = (profileId: string) => `freshcast:v3:data:${profileId}`; // v2: per-weekday prep model
 export function loadLocal(profileId: string): Snapshot | null {

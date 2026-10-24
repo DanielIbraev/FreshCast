@@ -76,7 +76,7 @@ export const S3Guess = () => (
     <h2 className="font-display text-[96px] font-800 leading-[1.0] tracking-tight text-text-primary">
       Every morning,
       <br />
-      a cook <span className="text-waste">guesses.</span>
+      a cook guesses.
     </h2>
   </div>
 );
@@ -95,12 +95,9 @@ export const S4Solution = ({ rows, day }: { rows: { name: string; usual: number;
 );
 
 export const S5Loop = () => (
-  <div className="flex h-full flex-col justify-center gap-16">
-    <Line>
-      No hardware. <span className="text-good">One minute a night.</span>
-    </Line>
+  <div className="flex h-full flex-col justify-between">
+    <Line sub="It reads the live weather, the usual guests and the calendar, and learns the kitchen from each close-out.">No hardware. About a minute a night.</Line>
     <Loop />
-    <p className="text-[26px] text-text-secondary">It reads the live weather, your usual guests, and the calendar. Every night it learns that kitchen a little better.</p>
   </div>
 );
 

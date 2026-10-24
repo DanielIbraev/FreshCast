@@ -9,7 +9,7 @@ import { parseLocalDate } from "@/lib/demo-data";
 import bench from "@/lib/benchmarks.json";
 import { S6bHow, S7Kitchens, S13Roadmap } from "@/components/pitch/deck-model";
 import { S0Brand, S1Hook, S2Country, S3Guess, S4Solution, S5Loop, S6Demo } from "@/components/pitch/deck-story";
-import { S7bTrust, S8Impact, S9Scale, S10Audience, S11Business, S12Competition, S12bKiro, S13Team, S14Ask } from "@/components/pitch/deck-proof";
+import { S7bTrust, S8Impact, S9Scale, S10Audience, S12Competition, S12bKiro, S13Team, S14Try } from "@/components/pitch/deck-proof";
 
 // Slides render at 1600x900 and scale to fit, so a laptop, projector, and a
 // screen recording all look identical.
@@ -23,7 +23,7 @@ function Deck() {
   const [scale, setScale] = useState(1);
   const [presenting, setPresenting] = useState(false);
   const [idle, setIdle] = useState(false);
-  // cam: shrink slides toward the top-right so a webcam fits bottom-left.
+  // cam: shrink slides slightly (still centred) so a webcam fits bottom-right.
   // video: the recorded cut (Higgsfield intro replaces the hook, a screen
   // recording replaces the demo slide).
   const [cam, setCam] = useState(false);
@@ -35,7 +35,6 @@ function Deck() {
   const kgYear = (sum.kgLast30 * 365) / 30;
   const co2Year = (sum.co2Last30 * 365) / 30 / 1000;
   const meals = (kgYear * LB_PER_KG) / 1.2;
-  const savedMonthly = (sum.savedLast30 * 365) / 30 / 12;
 
   const tomorrow = week[0];
   const prepRows = (tomorrow?.ingredients ?? []).slice(0, 4).map((p) => ({ name: p.ingredient.name, usual: Math.round(p.usualPrepKg * 10) / 10, rec: p.recommendedPrepKg }));
@@ -54,12 +53,11 @@ function Deck() {
     <S8Impact key={8} kgYear={kgYear} co2Year={co2Year} meals={meals} />,
     <S9Scale key={9} co2Year={co2Year} meals={meals} />,
     <S10Audience key={10} />,
-    <S11Business key={11} saved={savedMonthly} />,
     <S12Competition key={12} />,
     <S13Roadmap key={121} />,
     <S12bKiro key={120} />,
     <S13Team key={13} />,
-    <S14Ask key={14} />,
+    <S14Try key={14} />,
   ];
   // Video cut: brand frame, then problem → ask, without the hook or demo cue.
   const slides = videoCut ? [<S0Brand key={0} />, ...all.filter((_, n) => n !== 0 && n !== 5)] : all;
@@ -115,7 +113,7 @@ function Deck() {
   return (
     <div className="fixed inset-0 flex items-center justify-center overflow-hidden bg-canvas" style={{ cursor: presenting && idle ? "none" : "default" }}>
       <div style={{ width: W, height: H, transform: `scale(${scale})` }} className="relative shrink-0 px-[110px] py-[90px]" onClick={() => go(1)}>
-        <div className="h-full" style={cam ? { transform: "scale(0.8)", transformOrigin: "top right" } : undefined}>
+        <div className="h-full" style={cam ? { transform: "scale(0.86)", transformOrigin: "top center" } : undefined}>
         <AnimatePresence mode="wait">
           <motion.div
             key={i}
@@ -130,8 +128,9 @@ function Deck() {
         </AnimatePresence>
         </div>
         {cam && (
-          // Webcam frame: 230px circle, 40px from the left and bottom edges of the 1600x900 slide.
-          <div className="pointer-events-none absolute bottom-[40px] left-[40px] h-[230px] w-[230px] rounded-full border-[3px] border-good/70" />
+          // Webcam frame: 180px circle, 30px from the right and bottom edges of the
+          // 1600x900 slide, in the corner the 0.86 scale frees up. Content stays centred.
+          <div className="pointer-events-none absolute bottom-[30px] right-[30px] h-[180px] w-[180px] rounded-full border-2 border-border" />
         )}
         {!presenting && (
           <div className="absolute bottom-8 left-[110px] right-[110px] flex gap-1.5" onClick={(e) => e.stopPropagation()}>

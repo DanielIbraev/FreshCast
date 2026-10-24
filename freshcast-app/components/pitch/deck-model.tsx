@@ -110,7 +110,7 @@ export const S7Kitchens = () => {
           <span>100% accurate</span>
         </div>
       </div>
-      <Source>Simulated kitchens, 12 weeks, 5 random seeds each, walk-forward. Accuracy = 1 − weighted absolute error. Real-world accuracy is what the pilot measures.</Source>
+      <Source>Simulated kitchens, 12 weeks, 5 random seeds each, walk-forward. Accuracy = 1 − weighted absolute error. Real-world accuracy needs a real kitchen.</Source>
     </div>
   );
 };
@@ -118,7 +118,7 @@ export const S7Kitchens = () => {
 export const S13Roadmap = () => {
   const cols: [string, string, string[]][] = [
     ["Built today", "text-good", ["Forecast + prep list for any restaurant", "Two-tap logging, English and Español", "Setup from an OpenStreetMap search", "Accuracy page that shows its own misses"]],
-    ["Next 60 days", "text-data", ["3 Boston pilots", "Measure real accuracy against a scale", "Sold-out button for the close-out"]],
+    ["Next", "text-data", ["Run it in one real kitchen", "Measure real accuracy against a scale", "Sold-out button for the close-out"]],
     ["After that", "text-text-secondary", ["Guest counts straight from the POS", "Order list sent to the supplier", "Multi-location groups"]],
   ];
   return (

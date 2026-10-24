@@ -1,20 +1,10 @@
-// Slides 7-14: proof, environmental impact, audience, business, competition, team, ask.
+// Proof, environmental impact, audience, competition, Kiro, team, try it.
 import { Car, Leaf, MapPin, Utensils } from "lucide-react";
 import { Line, Source, Broll } from "./deck-story";
-import { VersusBars, Matrix, SavingsBar } from "./visuals";
+import { Matrix } from "./visuals";
 import { QRCodeSVG } from "qrcode.react";
 import { Mark } from "@/components/brand/mark";
 import { SITE_URL } from "@/lib/site";
-
-export const S7Proof = ({ owner, us }: { owner: number; us: number }) => (
-  <div className="relative flex h-full flex-col justify-between">
-    <Line>
-      Better than the owner&apos;s own gut. <span className="text-good">{Math.round((1 - (1 - us) / (1 - owner)) * 100)}% fewer misses.</span>
-    </Line>
-    <VersusBars owner={owner} us={us} />
-    <Source>12-week walk-forward test on a simulated kitchen, 5 random seeds. Owner baseline: remembers exactly what was wasted the last 4 same weekdays.</Source>
-  </div>
-);
 
 function Big({ icon: Icon, value, label }: { icon: typeof Leaf; value: string; label: string }) {
   return (
@@ -61,7 +51,7 @@ export const S10Audience = () => (
       <Line sub="70% of US restaurants are single-location. Nobody builds waste tools for them.">412,498 independent restaurants.</Line>
     </div>
     <div className="w-[600px] rounded-2xl border border-border bg-surface p-9">
-      <p className="text-lg uppercase tracking-[0.15em] text-good">First customer</p>
+      <p className="text-[22px] font-600 text-good">Who it&apos;s for</p>
       <p className="mt-4 font-display text-[40px] font-700 leading-tight text-text-primary">Owner who still works the line</p>
       <ul className="mt-6 space-y-3 text-2xl text-text-secondary">
         <li>30–80 seats, cooks fresh every day</li>
@@ -73,15 +63,6 @@ export const S10Audience = () => (
         <MapPin className="h-6 w-6 text-good" /> North End & South End, Boston
       </p>
     </div>
-  </div>
-);
-
-export const S11Business = ({ saved }: { saved: number }) => (
-  <div className="flex h-full flex-col justify-center gap-16">
-    <Line sub="Monthly subscription. No hardware to ship, install, or repair.">
-      $49 a month. <span className="text-good">Pays for itself in {(() => { const d = Math.max(1, Math.round(49 / (saved / 30))); return `${d} day${d === 1 ? "" : "s"}`; })()}.</span>
-    </Line>
-    <SavingsBar saved={saved} price={49} />
   </div>
 );
 
@@ -104,7 +85,7 @@ export const S13Team = () => (
       <ul className="mt-8 space-y-5 text-[30px] leading-snug text-text-secondary">
         <li>Worked at a small cafe. Watched the bin fill up every night.</li>
         <li>Built FreshCast end to end today: model, app, database.</li>
-        <li>Next: in restaurants, talking to owners, selling it myself.</li>
+        <li>Next: run it in a real kitchen and measure it against a scale.</li>
       </ul>
       <p className="mt-10 flex items-center gap-3 text-[22px] text-text-muted">
         <span className="rounded-md border border-border px-2.5 py-1 font-display text-lg font-700 text-text-primary">Kiro</span>
@@ -114,26 +95,27 @@ export const S13Team = () => (
   </div>
 );
 
-export const S14Ask = () => (
+// Closing card: where judges can test it. The rules require a working link.
+export const S14Try = () => (
   <div className="flex h-full items-center justify-between gap-16">
     <div className="max-w-[820px]">
-      <p className="mb-8 text-[30px] text-text-muted">One ask:</p>
-      <h2 className="font-display text-[84px] font-800 leading-[1.02] tracking-tight text-text-primary">
-        Introduce me to one <span className="text-good">restaurant owner.</span>
-      </h2>
-      <p className="mt-10 text-[30px] text-text-secondary">Goal: 3 Boston pilots by December.</p>
-      <div className="mt-14 flex items-center gap-4">
-        <Mark size={48} />
-        <span className="font-display text-3xl font-700 text-text-primary">FreshCast</span>
-        <span className="ml-4 text-2xl text-text-muted">github.com/DanielIbraev/FreshCast</span>
+      <div className="mb-10 flex items-center gap-4">
+        <Mark size={56} />
+        <span className="font-display text-4xl font-700 text-text-primary">FreshCast</span>
       </div>
+      <h2 className="font-display text-[84px] font-700 leading-[1.02] tracking-tight text-text-primary">Try it on your phone.</h2>
+      <p className="mt-8 text-[30px] leading-snug text-text-secondary">No login. Switch between the three demo kitchens, or set up any restaurant from a map search.</p>
+      <dl className="mt-12 grid grid-cols-[150px_1fr] gap-y-3 text-[24px]">
+        <dt className="text-text-muted">Live app</dt>
+        <dd className="text-text-primary">{SITE_URL.replace("https://", "")}</dd>
+        <dt className="text-text-muted">Code</dt>
+        <dd className="text-text-primary">github.com/DanielIbraev/FreshCast</dd>
+        <dt className="text-text-muted">Track</dt>
+        <dd className="text-text-primary">Climate Tech</dd>
+      </dl>
     </div>
-    <div className="flex shrink-0 flex-col items-center">
-      <div className="rounded-2xl bg-white p-5">
-        <QRCodeSVG value={`${SITE_URL}/pilot`} size={300} level="M" bgColor="#FFFFFF" fgColor="#0F1117" />
-      </div>
-      <p className="mt-5 text-[26px] font-600 text-text-primary">Scan to sign up a kitchen</p>
-      <p className="mt-1 text-xl text-text-muted">{SITE_URL.replace("https://", "")}/pilot</p>
+    <div className="shrink-0 rounded-2xl bg-white p-6">
+      <QRCodeSVG value={`${SITE_URL}/dashboard`} size={320} level="M" bgColor="#FFFFFF" fgColor="#0F1117" />
     </div>
   </div>
 );

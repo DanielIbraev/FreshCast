@@ -12,7 +12,7 @@ function Notes() {
     ["Usual guests, no reservations.", "The forecast uses the kitchen's usual guest count for that weekday. There is no reservation feed, so a surprise rush is a miss."],
     ["Hidden truth.", "Each simulated kitchen has habits the model is never told: an item that is always over-prepped, a slow weekday, rain that hits harder than average."],
     ["Best possible (oracle).", "Knows the simulator's hidden parameters, but not tonight's guest count or the random noise. No forecaster can beat it on average."],
-    ["Scope.", "1 simulated kitchen per restaurant × 5 random seeds, 12 weeks, scored on weeks 3–12. Accuracy in a real kitchen is untested until a pilot."],
+    ["Scope.", "1 simulated kitchen per restaurant × 5 random seeds, 12 weeks, scored on weeks 3–12. Accuracy in a real kitchen is untested until it runs in one."],
   ];
   return (
     <ul className="space-y-3 text-[13px] leading-relaxed text-text-secondary">

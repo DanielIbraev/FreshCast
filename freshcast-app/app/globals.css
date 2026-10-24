@@ -25,6 +25,13 @@ body {
   transition: none;
 }
 
+/* No one-word last lines on headings. */
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
 /* Thin scrollbar that matches the dark surface */
 ::-webkit-scrollbar {
   width: 8px;

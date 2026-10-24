@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { ArrowDown, Check, Database, Leaf, Radio, Sparkles } from "lucide-react";
 import { Card, CardLabel } from "@/components/ui/card";
 import { Counter } from "@/components/ui/counter";
-import { WasteTrend } from "@/components/charts/waste-trend";
+import { WeeklyBin, weeklyBin } from "@/components/charts/weekly-bin";
 import { WeekStrip } from "@/components/dashboard/week-strip";
 import { ScenarioBar } from "@/components/dashboard/scenario-bar";
 import { IngredientBars } from "@/components/dashboard/ingredient-bars";
@@ -21,12 +21,12 @@ export default function DashboardPage() {
   const [focusId, setFocusId] = useState<string | null>(null);
   const totals = useMemo(() => dailyTotals(observations, ingredients), [observations, ingredients]);
   const sum = useMemo(() => summarize(totals, profile.openDays.filter(Boolean).length), [totals, profile.openDays]);
-  // 7-day rolling average: daily waste is noisy, the trend is the story
-  const trend = totals.map((t, i) => {
-    const win = totals.slice(Math.max(0, i - 6), i + 1);
-    return { date: t.date, wasteCost: Math.round(win.reduce((s, x) => s + x.wasteCost, 0) / win.length) };
-  });
-  const drop = sum.monthlyBefore && sum.monthlyNow ? Math.round((1 - sum.monthlyNow / sum.monthlyBefore) * 100) : null;
+  const weeks = useMemo(() => weeklyBin(totals), [totals]);
+  const before = weeks.filter((w) => !w.onPlan);
+  const after = weeks.filter((w) => w.onPlan).slice(-2);
+  const avgOf = (xs: typeof weeks) => (xs.length ? xs.reduce((s, w) => s + w.cost, 0) / xs.length : null);
+  const beforeWk = before.length ? avgOf(before) : null;
+  const nowWk = after.length ? avgOf(after) : null;
 
   const focus = selected?.ingredients.find((i) => i.ingredient.id === focusId) ?? selected?.ingredients[0];
   const dateLabel = selected
@@ -125,41 +125,45 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-[1.6fr_1fr]">
         <Card>
-          <h2 className="font-display text-lg font-600 text-text-primary">What actually went in the bin</h2>
-          <p className="mb-4 mt-0.5 text-sm text-text-secondary">
-            7-day average of {totals.length} nightly close-outs{drop !== null ? `. Down ${drop}% since the kitchen started prepping to the plan.` : "."}
-          </p>
-          <WasteTrend data={trend} adoptionDate={sum.planStart} />
-        </Card>
-        <Card className="flex flex-col">
-          <CardLabel>Monthly waste</CardLabel>
-          {sum.monthlyBefore && sum.monthlyNow ? (
+          <h2 className="font-display text-lg font-600 text-text-primary">Food thrown out each week</h2>
+          {beforeWk !== null && nowWk !== null ? (
             <>
-              <div className="mt-4 flex items-end justify-between">
+              <div className="mt-4 flex flex-wrap items-end gap-x-8 gap-y-3">
                 <div>
-                  <p className="text-xs text-text-muted">Before the plan</p>
-                  <p className="font-display text-3xl font-700 tabular-nums text-waste line-through decoration-2">{formatCurrency(sum.monthlyBefore)}</p>
+                  <p className="text-xs text-text-muted">Before FreshCast</p>
+                  <p className="font-display text-3xl font-700 tabular-nums text-waste">{formatCurrency(beforeWk)}<span className="text-base font-500 text-text-muted"> a week</span></p>
                 </div>
                 <ArrowDown className="mb-2 h-5 w-5 -rotate-90 text-text-muted" />
-                <div className="text-right">
-                  <p className="text-xs text-text-muted">Last 14 days</p>
-                  <p className="font-display text-3xl font-700 tabular-nums text-good">{formatCurrency(sum.monthlyNow)}</p>
+                <div>
+                  <p className="text-xs text-text-muted">Last 2 weeks, prepping to plan</p>
+                  <p className="font-display text-3xl font-700 tabular-nums text-good">{formatCurrency(nowWk)}<span className="text-base font-500 text-text-muted"> a week</span></p>
                 </div>
+                <p className="mb-1 rounded-md border border-good/40 px-2 py-0.5 text-sm font-600 tabular-nums text-good">{Math.round((1 - nowWk / beforeWk) * 100)}% less</p>
               </div>
-              <div className="mt-5 space-y-2">
-                <div className="h-2.5 w-full rounded-full bg-waste/80" />
-                <div className="h-2.5 rounded-full bg-good" style={{ width: `${(sum.monthlyNow / sum.monthlyBefore) * 100}%` }} />
-                <p className="text-xs text-text-muted">{drop}% less food in the bin, from {sum.daysLogged} nights of logs. Not adjusted for season.</p>
+              <div className="mt-5">
+                <WeeklyBin weeks={weeks} />
               </div>
-              <div className="mt-auto border-t border-border pt-4">
-                <p className="text-xs text-text-muted">Saved per year at the last 30 days' rate</p>
-                <p className="font-display text-[40px] font-700 leading-none tabular-nums text-good">{formatCurrency(yearly)}</p>
-                <p className="mt-2 text-xs text-text-muted">FreshCast costs $588/year. That&apos;s a {Math.round(yearly / 588)}x return.</p>
-              </div>
+              <p className="mt-2 flex flex-wrap gap-x-5 gap-y-1 text-xs text-text-muted">
+                <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm bg-waste" /> Prepping as usual</span>
+                <span className="flex items-center gap-1.5"><span className="h-2.5 w-2.5 rounded-sm bg-good" /> Prepping to the FreshCast plan</span>
+                <span>Dollars of food that went in the bin, from {sum.daysLogged} nightly close-outs.</span>
+              </p>
             </>
           ) : (
-            <p className="mt-4 text-sm text-text-muted">Log waste for a week to see your before and after.</p>
+            <p className="mt-3 text-sm text-text-muted">Close out a few weeks of service and the before and after shows up here.</p>
           )}
+        </Card>
+        <Card className="flex flex-col">
+          <CardLabel>Kept out of the bin</CardLabel>
+          <p className="mt-3 font-display text-[44px] font-700 leading-none tabular-nums text-good">
+            <Counter value={Math.round(yearly)} prefix="$" />
+          </p>
+          <p className="mt-2 text-sm text-text-secondary">a year, at the last 30 days&apos; rate</p>
+          <div className="mt-auto space-y-2 border-t border-border pt-4 text-sm">
+            <p className="flex justify-between gap-3"><span className="text-text-muted">Last 30 days</span><span className="font-600 tabular-nums text-text-primary">{formatCurrency(sum.savedLast30)}</span></p>
+            <p className="flex justify-between gap-3"><span className="text-text-muted">Food not bought</span><span className="font-600 tabular-nums text-text-primary">{Math.round(sum.kgLast30)} kg</span></p>
+            <p className="text-xs leading-relaxed text-text-muted">Counts only nights where the cut was provably waste, not nights an item sold out.</p>
+          </div>
         </Card>
       </div>
     </div>
