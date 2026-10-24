@@ -12,7 +12,7 @@ export const shortDate = (iso: string) => {
   return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 };
 
-export const axisTick = { fill: "#64748B", fontSize: 11 };
+export const axisTick = { fill: "#8291A7", fontSize: 11 };
 export const tooltipStyle = { background: "#1A1D27", border: "1px solid #2D3748", borderRadius: 8, color: "#E2E8F0", fontSize: 12 };
 
 export type Bench = (typeof bench.byRestaurant)["marcos-trattoria"];

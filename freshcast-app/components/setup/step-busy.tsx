@@ -48,7 +48,7 @@ export function StepBusy({ d, errors, update }: { d: Draft; errors: Errors; upda
                 >
                   <span className="text-[11px] text-text-muted">{DAY_SHORT[i]}</span>
                   {closed ? (
-                    <span className="text-[10px] uppercase tracking-wide text-text-muted">Closed</span>
+                    <span className="text-[11px] text-text-muted">Closed</span>
                   ) : (
                     <span className="flex flex-1 flex-col justify-end gap-1">
                       <span className="mx-auto w-full max-w-[28px] rounded-sm bg-data/70 transition-[height] duration-300 motion-reduce:transition-none" style={{ height: `${Math.max(4, (c / max) * 48)}px` }} />

@@ -66,14 +66,14 @@ export default function LogWastePage() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <Card>
           <CardLabel>{s.thrown}</CardLabel>
-          <p className="mt-2 font-display text-[44px] font-800 leading-none tabular-nums text-waste">
+          <p className="mt-2 font-display text-[44px] font-700 leading-none tabular-nums text-waste">
             <Counter value={totalCost} prefix="$" decimals={2} />
           </p>
           <p className="mt-2 text-xs text-text-muted">{s.entries(totalKg.toFixed(2), todays.length)}</p>
         </Card>
         <Card>
           <CardLabel>{s.co2}</CardLabel>
-          <p className="mt-2 font-display text-[44px] font-800 leading-none tabular-nums text-waste">
+          <p className="mt-2 font-display text-[44px] font-700 leading-none tabular-nums text-waste">
             <Counter value={totalCo2} suffix="kg" decimals={1} />
           </p>
           <p className="mt-2 text-xs text-text-muted">{s.miles(Math.round(totalCo2 / 0.4))}</p>
@@ -172,7 +172,7 @@ export default function LogWastePage() {
                   <span className="flex items-center gap-3">
                     <span className="w-16 whitespace-nowrap text-xs tabular-nums text-text-muted">{new Date(l.loggedAt).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}</span>
                     <span className="text-sm text-text-primary">{ing?.name ?? s.removed}</span>
-                    <span className="rounded px-1.5 py-0.5 text-[10px]" style={{ color: WASTE_REASONS[l.reason].color, background: `${WASTE_REASONS[l.reason].color}1A` }}>
+                    <span className="rounded px-1.5 py-0.5 text-[11px]" style={{ color: WASTE_REASONS[l.reason].color, background: `${WASTE_REASONS[l.reason].color}1A` }}>
                       {s.reasons[l.reason]}
                     </span>
                   </span>

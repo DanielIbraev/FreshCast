@@ -21,7 +21,7 @@ export function Card({
 
 export function CardLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="text-xs uppercase tracking-widest text-text-muted">
+    <p className="text-[13px] font-500 text-text-secondary">
       {children}
     </p>
   );

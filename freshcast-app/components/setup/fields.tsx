@@ -10,7 +10,7 @@ export const errorCls = "border-waste focus:border-waste";
 
 export function AutoChip() {
   return (
-    <span className="inline-flex items-center gap-1 rounded border border-data/40 px-1.5 py-px text-[10px] font-500 text-data">
+    <span className="inline-flex items-center gap-1 rounded border border-data/40 px-1.5 py-px text-[11px] font-500 text-data">
       <MapPinned className="h-3 w-3" aria-hidden /> Filled in from OpenStreetMap
     </span>
   );

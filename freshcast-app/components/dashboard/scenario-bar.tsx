@@ -32,7 +32,7 @@ export function ScenarioBar() {
 
   return (
     <div className="flex flex-wrap items-center gap-x-6 gap-y-3 rounded-lg border border-border bg-surface px-4 py-3">
-      <span className="flex items-center gap-2 text-xs font-600 uppercase tracking-wider text-text-muted">
+      <span className="flex items-center gap-2 text-xs font-600 text-text-muted">
         <SlidersHorizontal className="h-3.5 w-3.5" /> What if
       </span>
 

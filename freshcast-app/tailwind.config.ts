@@ -15,7 +15,7 @@ const config: Config = {
         border: "#2D3748",
         "text-primary": "#E2E8F0",
         "text-secondary": "#94A3B8",
-        "text-muted": "#64748B",
+        "text-muted": "#8291A7", // 5.2:1 on surface (Hallmark contrast floor)
         // emerald = good/savings, red = waste, amber = medium risk
         good: "#10B981",
         "good-dim": "#0E9668",

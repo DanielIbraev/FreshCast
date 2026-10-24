@@ -30,7 +30,7 @@ function Num({ id, label, value, unit, onChange, bad, disabled }: { id: string; 
           onChange={(e) => onChange(e.target.value)}
           className={cn(cell, "pr-7", bad && "border-waste focus:border-waste")}
         />
-        <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-text-muted">{unit}</span>
+        <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[11px] text-text-muted">{unit}</span>
       </span>
     </label>
   );

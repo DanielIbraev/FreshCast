@@ -60,7 +60,7 @@ export default function DashboardPage() {
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <Card>
               <CardLabel>Waste at risk</CardLabel>
-              <p className={cn("mt-2 font-display text-[44px] font-800 leading-none tracking-tight tabular-nums", applied ? "text-good" : "text-waste")}>
+              <p className={cn("mt-2 font-display text-[44px] font-700 leading-none tracking-tight tabular-nums", applied ? "text-good" : "text-waste")}>
                 <Counter value={applied ? selected.totalReducedCost : selected.totalWasteCost} prefix="$" />
               </p>
               <p className="mt-2 text-xs text-text-muted">
@@ -70,7 +70,7 @@ export default function DashboardPage() {
             </Card>
             <Card>
               <CardLabel>Plan saves you</CardLabel>
-              <p className="mt-2 font-display text-[44px] font-800 leading-none tracking-tight tabular-nums text-good">
+              <p className="mt-2 font-display text-[44px] font-700 leading-none tracking-tight tabular-nums text-good">
                 <Counter value={selected.totalSavings} prefix="$" />
               </p>
               <p className="mt-2 text-xs text-text-muted">
@@ -79,7 +79,7 @@ export default function DashboardPage() {
             </Card>
             <Card>
               <CardLabel>Saved, last 30 days</CardLabel>
-              <p className="mt-2 font-display text-[44px] font-800 leading-none tracking-tight tabular-nums text-text-primary">
+              <p className="mt-2 font-display text-[44px] font-700 leading-none tracking-tight tabular-nums text-text-primary">
                 <Counter value={sum.savedLast30} prefix="$" />
               </p>
               <p className="mt-2 flex items-center gap-1.5 text-xs text-text-muted">
@@ -153,7 +153,7 @@ export default function DashboardPage() {
               </div>
               <div className="mt-auto border-t border-border pt-4">
                 <p className="text-xs text-text-muted">Saved per year at the last 30 days' rate</p>
-                <p className="font-display text-[40px] font-800 leading-none tabular-nums text-good">{formatCurrency(yearly)}</p>
+                <p className="font-display text-[40px] font-700 leading-none tabular-nums text-good">{formatCurrency(yearly)}</p>
                 <p className="mt-2 text-xs text-text-muted">FreshCast costs $588/year. That&apos;s a {Math.round(yearly / 588)}x return.</p>
               </div>
             </>

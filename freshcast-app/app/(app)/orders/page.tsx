@@ -50,23 +50,23 @@ export default function OrdersPage() {
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <Card>
           <CardLabel>Spend if you prep as usual</CardLabel>
-          <p className="mt-2 font-display text-[40px] font-800 leading-none tabular-nums text-text-secondary line-through decoration-2">{formatCurrency(usualSpend)}</p>
+          <p className="mt-2 font-display text-[40px] font-700 leading-none tabular-nums text-text-secondary line-through decoration-2">{formatCurrency(usualSpend)}</p>
         </Card>
         <Card>
           <CardLabel>Spend on FreshCast plan</CardLabel>
-          <p className="mt-2 font-display text-[40px] font-800 leading-none tabular-nums text-good">{formatCurrency(recSpend)}</p>
+          <p className="mt-2 font-display text-[40px] font-700 leading-none tabular-nums text-good">{formatCurrency(recSpend)}</p>
           <p className="mt-2 text-xs text-text-muted">{formatCurrency(usualSpend - recSpend)} less, {cutKg.toFixed(1)}kg less food bought</p>
         </Card>
         <Card>
           <CardLabel>CO₂e not bought</CardLabel>
-          <p className="mt-2 font-display text-[40px] font-800 leading-none tabular-nums text-good">{selected.totalCo2Prevented.toFixed(1)}kg</p>
+          <p className="mt-2 font-display text-[40px] font-700 leading-none tabular-nums text-good">{selected.totalCo2Prevented.toFixed(1)}kg</p>
           <p className="mt-2 text-xs text-text-muted">embodied in food not bought, this service</p>
         </Card>
       </div>
 
       <Card className="overflow-x-auto">
         <div className="min-w-[760px]">
-        <div className="mb-3 grid grid-cols-[220px_1fr_90px_90px_220px] gap-4 px-2 text-[11px] uppercase tracking-wider text-text-muted">
+        <div className="mb-3 grid grid-cols-[220px_1fr_90px_90px_220px] gap-4 px-2 text-[11px] text-text-muted">
           <span>Ingredient</span>
           <span>Money kept by prepping less</span>
           <span className="text-right">Prep</span>

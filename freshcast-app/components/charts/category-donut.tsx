@@ -33,7 +33,7 @@ export function CategoryDonut({ ingredients }: { ingredients: Ingredient[] }) {
         </ResponsiveContainer>
         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
           <span className="font-display text-xl font-700 tabular-nums text-text-primary">{formatCurrency(total)}</span>
-          <span className="text-[10px] text-text-muted">per day</span>
+          <span className="text-[11px] text-text-muted">per day</span>
         </div>
       </div>
       <ul className="grid min-w-0 flex-1 grid-cols-[auto_minmax(0,1fr)_auto_36px] items-center gap-x-3 gap-y-2 text-xs">

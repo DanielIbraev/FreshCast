@@ -24,8 +24,8 @@ export function WasteTrend({ data, adoptionDate }: WasteTrendProps) {
               <stop offset="100%" stopColor="#10B981" stopOpacity={0} />
             </linearGradient>
           </defs>
-          <XAxis dataKey="date" tick={{ fill: "#64748B", fontSize: 11 }} tickFormatter={short} interval={Math.max(1, Math.floor(data.length / 6))} axisLine={{ stroke: "#2D3748" }} tickLine={false} />
-          <YAxis tick={{ fill: "#64748B", fontSize: 11 }} tickFormatter={(v: number) => `$${v}`} axisLine={false} tickLine={false} width={48} />
+          <XAxis dataKey="date" tick={{ fill: "#8291A7", fontSize: 11 }} tickFormatter={short} interval={Math.max(1, Math.floor(data.length / 6))} axisLine={{ stroke: "#2D3748" }} tickLine={false} />
+          <YAxis tick={{ fill: "#8291A7", fontSize: 11 }} tickFormatter={(v: number) => `$${v}`} axisLine={false} tickLine={false} width={48} />
           <Tooltip
             contentStyle={{ background: "#1A1D27", border: "1px solid #2D3748", borderRadius: "8px", color: "#E2E8F0", fontSize: 12 }}
             labelStyle={{ color: "#94A3B8" }}

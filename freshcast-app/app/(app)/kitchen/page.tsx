@@ -62,12 +62,12 @@ export default function KitchenPage() {
           <div className="grid grid-cols-2 gap-6">
             <div>
               <CardLabel>Prepped every morning</CardLabel>
-              <p className="mt-2 font-display text-[40px] font-800 leading-none tabular-nums text-text-primary">{formatCurrency(prepValue)}</p>
+              <p className="mt-2 font-display text-[40px] font-700 leading-none tabular-nums text-text-primary">{formatCurrency(prepValue)}</p>
               <p className="mt-2 text-xs text-text-muted">across {ingredients.length} ingredients</p>
             </div>
             <div>
               <CardLabel>Use within 2 days</CardLabel>
-              <p className="mt-2 font-display text-[40px] font-800 leading-none tabular-nums text-waste">{perishable.length}</p>
+              <p className="mt-2 font-display text-[40px] font-700 leading-none tabular-nums text-waste">{perishable.length}</p>
               <p className="mt-2 text-xs text-text-muted">{learning > 0 ? `${learning} still learning from your logs` : "All items calibrated"}</p>
             </div>
           </div>

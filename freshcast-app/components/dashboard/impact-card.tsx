@@ -35,7 +35,7 @@ export function ImpactCard({ sum }: { sum: Summary }) {
           {items.map(({ icon: Icon, value, suffix, label }) => (
             <div key={label}>
               <Icon className="h-5 w-5 text-good" strokeWidth={2} />
-              <p className="mt-2 font-display text-[32px] font-800 leading-none tabular-nums text-text-primary">
+              <p className="mt-2 font-display text-[32px] font-700 leading-none tabular-nums text-text-primary">
                 <Counter value={Math.round(value)} suffix={suffix} />
               </p>
               <p className="mt-1.5 text-xs text-text-secondary">{label}</p>

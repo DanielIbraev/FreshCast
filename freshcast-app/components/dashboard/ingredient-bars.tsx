@@ -35,7 +35,7 @@ export function IngredientBars({ items, applied, selectedId, onSelect }: Props) 
                 <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: CATEGORIES[item.ingredient.category].color }} />
                 <span className="truncate text-sm text-text-primary">{item.ingredient.name}</span>
                 {learning && (
-                  <span className="shrink-0 rounded border border-data/40 px-1 text-[10px] text-data">learning</span>
+                  <span className="shrink-0 rounded border border-data/40 px-1 text-[11px] text-data">learning</span>
                 )}
               </span>
               <div className="relative h-7 overflow-hidden rounded bg-canvas">

@@ -23,7 +23,7 @@ export function Kpis({ tr, bench }: { tr: TrackRecord; bench: Bench | null }) {
       <Card className="sm:col-span-2 xl:col-span-1">
         <CardLabel>Accuracy, last 4 weeks</CardLabel>
         <div className="mt-2 flex flex-wrap items-end gap-x-3 gap-y-1">
-          <p className="font-display text-[52px] font-800 leading-none tracking-tight tabular-nums text-text-primary">{pct(tr.lastFourWeeks, 1)}</p>
+          <p className="font-display text-[52px] font-700 leading-none tracking-tight tabular-nums text-text-primary">{pct(tr.lastFourWeeks, 1)}</p>
           {delta !== null && (
             <span className={cn("mb-1 inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-xs font-600 tabular-nums", delta >= 0 ? "border-good/40 text-good" : "border-caution/40 text-caution")}>
               {delta >= 0 ? <ArrowUpRight className="h-3.5 w-3.5" /> : <ArrowDownRight className="h-3.5 w-3.5" />}

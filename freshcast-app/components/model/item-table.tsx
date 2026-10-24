@@ -29,7 +29,7 @@ function headlineFor(items: ItemRecord[]) {
   return `${lead}All ${items.length} logged items are within 15% on average`;
 }
 
-const th = "whitespace-nowrap px-3 py-2.5 text-left text-[11px] font-500 uppercase tracking-wider text-text-muted";
+const th = "whitespace-nowrap px-3 py-2.5 text-left text-[11px] font-500 text-text-muted";
 const td = "px-3 py-3 tabular-nums";
 
 export function ItemTable({ items }: { items: ItemRecord[] }) {
