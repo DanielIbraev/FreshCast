@@ -28,6 +28,13 @@ Kiro dispatched subagents in parallel for:
 4. **A math and sources audit of the model.**
 5. These docs, checked line by line against the code.
 
+A later batch ran three subagents at once on separate parts of the app while the main session moved the simulated histories onto real recorded weather:
+- The front page (`/`, `components/landing/`) and the README screenshots in `docs/screenshots/`.
+- The kitchen screen (`/screen`, `components/screen/`): a big-type prep list for a wall tablet, English and Español, tap to mark done.
+- The Model page's "What would improve accuracy" (`buildActions` in `lib/track-record.ts`): specific findings from each kitchen's close-outs instead of generic tips, plus the day-1 milestone view.
+
+A final subagent pass updated these docs against the code and re-ran the impact numbers.
+
 The audit was the most valuable. It found real problems, and each was fixed in code:
 - **Closed days were forecast with maximum waste.** Closed days now have no forecast, no prep cut and no savings (property P12), and the simulator produces no rows for them.
 - **All demo restaurants shared one history.** Each restaurant now has its own menu, hidden habits, weather and simulated history (`lib/kitchens.ts`).
