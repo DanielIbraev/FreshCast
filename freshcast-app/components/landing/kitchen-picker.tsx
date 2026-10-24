@@ -13,13 +13,14 @@ export function KitchenPicker() {
   return (
     <nav aria-label="Open a demo kitchen" className="mt-9">
       <ul className="grid gap-3 sm:grid-cols-3">
-        {DEMO_PROFILES.map((p) => {
+        {DEMO_PROFILES.map((p, index) => {
           const { icon: Icon, fact } = EXTRA[p.id] ?? { icon: UtensilsCrossed, fact: "" };
+          const delay = index === 0 ? "[--card-delay:250ms]" : index === 1 ? "[--card-delay:330ms]" : "[--card-delay:410ms]";
           return (
             <li key={p.id} className="min-w-0">
               <Link
                 href={`/dashboard?r=${p.id}`}
-                className="group relative flex h-full flex-row items-center gap-3 rounded-md border border-border bg-surface p-4 transition-colors duration-150 hover:border-good hover:bg-surface-hover sm:flex-col sm:items-start"
+                className={`landing-kitchen-card group relative flex h-full flex-row items-center gap-3 rounded-md border border-border bg-surface p-3.5 transition-colors duration-150 hover:border-good hover:bg-surface-hover active:translate-y-px sm:flex-col sm:items-start sm:p-4 ${delay}`}
               >
                 <Icon className="h-5 w-5 shrink-0 text-good" strokeWidth={2} aria-hidden />
                 <ArrowRight
