@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FreshCast Pitch Deck</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#0A0C12; color:#E2E8F0; font-family:-apple-system,'Inter',sans-serif; }
+
+.deck { width:100%; }
+.slide { width:100%; aspect-ratio:16/9; display:none; align-items:center; justify-content:center; position:relative; overflow:hidden; padding:48px 64px; flex-direction:column; }
+.slide.active { display:flex; }
+
+/* Nav */
+.nav { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); display:flex; align-items:center; gap:12px; background:#13151F; border:1px solid #1E2235; border-radius:40px; padding:10px 20px; z-index:100; }
+.nav-dot { width:6px; height:6px; border-radius:50%; background:#1E2235; cursor:pointer; transition:all 0.2s; }
+.nav-dot.active { background:#10B981; width:20px; border-radius:3px; }
+.prev, .next { background:none; border:1px solid #1E2235; color:#64748B; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:12px; }
+.prev:hover, .next:hover { border-color:#10B981; color:#10B981; }
+.slide-counter { font-size:11px; color:#4A5568; }
+
+/* Slide 1 — Title */
+.s1 { background:radial-gradient(ellipse at 60% 50%, #0D2B1F 0%, #0A0C12 60%); text-align:center; }
+.s1-eyebrow { font-size:12px; color:#10B981; letter-spacing:2px; text-transform:uppercase; margin-bottom:16px; }
+.s1-title { font-size:64px; font-weight:800; letter-spacing:-3px; line-height:1; margin-bottom:16px; }
+.s1-title span { color:#10B981; }
+.s1-sub { font-size:18px; color:#64748B; font-weight:400; max-width:500px; margin:0 auto 32px; line-height:1.5; }
+.s1-stat { display:inline-flex; align-items:center; gap:8px; background:#0D2B1F; border:1px solid #10B981; border-radius:40px; padding:8px 20px; font-size:13px; color:#10B981; }
+
+/* Slide 2 — Problem */
+.s2 { background:#0A0C12; flex-direction:column; align-items:flex-start; justify-content:center; }
+.slide-label { font-size:11px; color:#4A5568; text-transform:uppercase; letter-spacing:2px; margin-bottom:16px; }
+.big-stat { font-size:80px; font-weight:800; letter-spacing:-4px; color:#EF4444; line-height:1; }
+.big-sub { font-size:20px; color:#94A3B8; margin-top:8px; margin-bottom:32px; }
+.stat-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; width:100%; }
+.stat-box { background:#13151F; border:1px solid #1E2235; border-radius:10px; padding:20px; }
+.stat-box-num { font-size:32px; font-weight:700; color:#EF4444; letter-spacing:-1px; }
+.stat-box-label { font-size:12px; color:#64748B; margin-top:4px; }
+.stat-box-source { font-size:10px; color:#374151; margin-top:4px; font-style:italic; }
+
+/* Slide 3 — Tension */
+.s3 { background:#0A0C12; }
+.tension-grid { display:grid; grid-template-columns:1fr 1fr; gap:32px; width:100%; }
+.tension-left { }
+.tension-title { font-size:13px; color:#4A5568; text-transform:uppercase; letter-spacing:1px; margin-bottom:16px; }
+.tension-item { display:flex; align-items:flex-start; gap:12px; margin-bottom:16px; }
+.tension-x { width:20px; height:20px; background:#2D0F0F; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:10px; color:#EF4444; flex-shrink:0; margin-top:2px; }
+.tension-check { width:20px; height:20px; background:#0D2B1F; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:10px; color:#10B981; flex-shrink:0; margin-top:2px; }
+.tension-text { font-size:14px; color:#94A3B8; line-height:1.5; }
+.tension-text strong { color:#E2E8F0; }
+.divider-v { width:1px; background:#1E2235; }
+
+/* Slide 4 — Solution */
+.s4 { background:#0A0C12; }
+.solution-left { flex:1; }
+.solution-right { flex:1; display:flex; align-items:center; justify-content:center; }
+.solution-row { display:flex; gap:40px; width:100%; align-items:center; }
+.pill { display:inline-flex; align-items:center; gap:6px; background:#0D2B1F; border:1px solid #10B981; border-radius:40px; padding:6px 14px; font-size:12px; color:#10B981; margin-bottom:12px; }
+.solution-headline { font-size:40px; font-weight:800; letter-spacing:-2px; line-height:1.1; margin-bottom:16px; }
+.solution-headline span { color:#10B981; }
+.solution-desc { font-size:15px; color:#64748B; line-height:1.6; max-width:380px; }
+.signal-list { display:flex; flex-direction:column; gap:8px; }
+.signal-item { display:flex; align-items:center; gap:10px; background:#13151F; border:1px solid #1E2235; border-radius:8px; padding:10px 14px; }
+.signal-icon { font-size:16px; }
+.signal-text { font-size:12px; color:#94A3B8; }
+.signal-badge { margin-left:auto; font-size:10px; color:#10B981; background:#0D2B1F; padding:2px 8px; border-radius:4px; }
+
+/* Slide 5 — Demo placeholder */
+.s5 { background:#0A0C12; text-align:center; }
+.demo-frame { width:75%; border:2px solid #10B981; border-radius:12px; overflow:hidden; background:#13151F; padding:0; }
+.demo-bar { background:#1A1D27; padding:10px 16px; display:flex; align-items:center; gap:8px; border-bottom:1px solid #1E2235; }
+.demo-dot { width:8px; height:8px; border-radius:50%; }
+.demo-content { padding:20px; text-align:left; }
+.demo-label { font-size:11px; color:#4A5568; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
+.demo-bars { display:flex; flex-direction:column; gap:8px; }
+.demo-bar-row { display:flex; align-items:center; gap:8px; }
+.demo-ing { font-size:11px; color:#64748B; width:70px; }
+.demo-track { flex:1; background:#0A0C12; border-radius:2px; height:4px; }
+.demo-fill { height:100%; border-radius:2px; }
+.demo-val { font-size:11px; width:40px; text-align:right; }
+
+/* Slide 6 — Before/After */
+.s6 { background:#0A0C12; }
+.ba-grid { display:grid; grid-template-columns:1fr 1fr; gap:0; width:100%; }
+.ba-before { background:#2D0F0F; border:1px solid #EF444430; border-radius:10px 0 0 10px; padding:32px; }
+.ba-after { background:#0D2B1F; border:1px solid #10B98130; border-radius:0 10px 10px 0; padding:32px; }
+.ba-label { font-size:11px; text-transform:uppercase; letter-spacing:1px; margin-bottom:20px; }
+.ba-label-red { color:#EF4444; }
+.ba-label-grn { color:#10B981; }
+.ba-num { font-size:48px; font-weight:800; letter-spacing:-2px; line-height:1; margin-bottom:8px; }
+.ba-desc { font-size:13px; opacity:0.6; line-height:1.5; }
+.ba-arrow { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); width:40px; height:40px; background:#10B981; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:16px; color:#0F1117; z-index:10; }
+
+/* Slide 7 — Market */
+.s7 { background:#0A0C12; }
+.market-row { display:flex; gap:24px; width:100%; margin-top:24px; }
+.market-box { flex:1; background:#13151F; border:1px solid #1E2235; border-radius:10px; padding:24px; }
+.market-num { font-size:40px; font-weight:800; letter-spacing:-2px; color:#10B981; }
+.market-label { font-size:12px; color:#64748B; margin-top:4px; }
+
+/* Slide 8 — Team -->
+.s8 { background:#0A0C12; text-align:center; }
+.team-card { background:#13151F; border:1px solid #1E2235; border-radius:12px; padding:32px 40px; max-width:500px; }
+.team-avatar { width:56px; height:56px; background:#0D2B1F; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:24px; margin:0 auto 16px; }
+.team-name { font-size:20px; font-weight:700; margin-bottom:4px; }
+.team-role { font-size:13px; color:#10B981; margin-bottom:16px; }
+.team-bio { font-size:13px; color:#64748B; line-height:1.6; }
+</style>
+</head>
+<body>
+
+<div class="deck">
+
+<!-- SLIDE 1: Title -->
+<div class="slide s1 active" id="slide-1">
+  <div class="s1-eyebrow">Hackachusetts 2026 · Energy & Climate Tech</div>
+  <div class="s1-title">Fresh<span>Cast</span></div>
+  <div class="s1-sub">AI that forecasts food waste before it hits the trash — no hardware, no installation, 5-minute setup</div>
+  <div class="s1-stat">🌿 Saving independent restaurants $17,000/year</div>
+</div>
+
+<!-- SLIDE 2: Problem -->
+<div class="slide s2" id="slide-2">
+  <div class="slide-label">The Problem</div>
+  <div class="big-stat">$162B</div>
+  <div class="big-sub">wasted in US restaurants every year</div>
+  <div class="stat-grid">
+    <div class="stat-box">
+      <div class="stat-box-num">3–5%</div>
+      <div class="stat-box-label">Average restaurant profit margin</div>
+      <div class="stat-box-source">GoFoodService 2026</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-box-num">$20,800</div>
+      <div class="stat-box-label">Lost per restaurant per year to waste</div>
+      <div class="stat-box-source">Alto-Shaam Research</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-box-num">8–10%</div>
+      <div class="stat-box-label">Of global greenhouse gas emissions</div>
+      <div class="stat-box-source">UNFCCC / FAO 2024</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 3: Why existing solutions fail -->
+<div class="slide s3" id="slide-3">
+  <div style="width:100%">
+    <div class="slide-label">The Gap</div>
+    <div style="font-size:32px;font-weight:800;letter-spacing:-1.5px;margin-bottom:24px">Every solution ignores <span style="color:#EF4444">500,000</span> restaurants</div>
+    <div class="tension-grid">
+      <div class="tension-left">
+        <div class="tension-title" style="color:#EF4444">Winnow / Leanpath / Orbisk</div>
+        <div class="tension-item"><div class="tension-x">✕</div><div class="tension-text"><strong>$3,000–8,000</strong> hardware upfront</div></div>
+        <div class="tension-item"><div class="tension-x">✕</div><div class="tension-text"><strong>Multi-site contracts</strong> — single restaurants can't qualify</div></div>
+        <div class="tension-item"><div class="tension-x">✕</div><div class="tension-text"><strong>Reactive</strong> — measures waste after it's already in the trash</div></div>
+        <div class="tension-item"><div class="tension-x">✕</div><div class="tension-text"><strong>Technician installation</strong> — weeks of setup</div></div>
+      </div>
+      <div class="divider-v"></div>
+      <div>
+        <div class="tension-title" style="color:#10B981">FreshCast</div>
+        <div class="tension-item"><div class="tension-check">✓</div><div class="tension-text"><strong>Software only</strong> — zero hardware</div></div>
+        <div class="tension-item"><div class="tension-check">✓</div><div class="tension-text"><strong>Single restaurant</strong> — built for independent owners</div></div>
+        <div class="tension-item"><div class="tension-check">✓</div><div class="tension-text"><strong>Proactive</strong> — prevents waste before prep begins</div></div>
+        <div class="tension-item"><div class="tension-check">✓</div><div class="tension-text"><strong>5-minute setup</strong> — works on existing tablet</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 4: Solution + signals -->
+<div class="slide s4" id="slide-4">
+  <div class="solution-row">
+    <div class="solution-left">
+      <div class="pill">🧠 9 automatic signals</div>
+      <div class="solution-headline">Waste predicted.<br><span>Before it happens.</span></div>
+      <div class="solution-desc">FreshCast pulls weather, nearby events, reservation counts, and 6 more signals automatically. Set up once in 5 minutes. The model gets smarter every week.</div>
+    </div>
+    <div class="solution-right">
+      <div class="signal-list">
+        <div class="signal-item"><div class="signal-icon">🌧</div><div class="signal-text">Weather forecast</div><div class="signal-badge">Auto</div></div>
+        <div class="signal-item"><div class="signal-icon">📅</div><div class="signal-text">Day of week + season</div><div class="signal-badge">Auto</div></div>
+        <div class="signal-item"><div class="signal-icon">🎵</div><div class="signal-text">Nearby events (Ticketmaster)</div><div class="signal-badge">Auto</div></div>
+        <div class="signal-item"><div class="signal-icon">📋</div><div class="signal-text">Reservations (OpenTable/Toast)</div><div class="signal-badge">Auto</div></div>
+        <div class="signal-item"><div class="signal-icon">🏛</div><div class="signal-text">Public holidays</div><div class="signal-badge">Auto</div></div>
+        <div class="signal-item"><div class="signal-icon">📈</div><div class="signal-text">Your own waste history</div><div class="signal-badge">Learns</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 5: Live Demo placeholder -->
+<div class="slide s5" id="slide-5">
+  <div style="margin-bottom:16px;width:100%;text-align:left">
+    <div class="slide-label">Live Demo</div>
+    <div style="font-size:28px;font-weight:700;letter-spacing:-1px">Meet Marco. He just saved $53 tonight.</div>
+  </div>
+  <div class="demo-frame">
+    <div class="demo-bar">
+      <div class="demo-dot" style="background:#EF4444"></div>
+      <div class="demo-dot" style="background:#F59E0B"></div>
+      <div class="demo-dot" style="background:#10B981"></div>
+      <span style="font-size:11px;color:#4A5568;margin-left:8px">freshcast.app · Marco's Trattoria · Tomorrow's Forecast</span>
+    </div>
+    <div class="demo-content">
+      <div class="demo-label">Ingredient Risk — 45 covers · 🌧 Rainy · Tuesday</div>
+      <div class="demo-bars">
+        <div class="demo-bar-row"><div class="demo-ing">Arugula</div><div class="demo-track"><div class="demo-fill" style="width:88%;background:#10B981"></div></div><div class="demo-val" style="color:#10B981">1.2 kg</div></div>
+        <div class="demo-bar-row"><div class="demo-ing">Salmon</div><div class="demo-track"><div class="demo-fill" style="width:28%;background:#10B981"></div></div><div class="demo-val" style="color:#10B981">0.7 kg</div></div>
+        <div class="demo-bar-row"><div class="demo-ing">Bread rolls</div><div class="demo-track"><div class="demo-fill" style="width:18%;background:#10B981"></div></div><div class="demo-val" style="color:#10B981">5 pcs</div></div>
+        <div class="demo-bar-row"><div class="demo-ing">Mozzarella</div><div class="demo-track"><div class="demo-fill" style="width:14%;background:#10B981"></div></div><div class="demo-val" style="color:#10B981">0.4 kg</div></div>
+      </div>
+      <div style="margin-top:12px;padding-top:12px;border-top:1px solid #1E2235;display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:11px;color:#4A5568">Projected waste after recommendations</span>
+        <span style="font-size:18px;font-weight:700;color:#10B981;letter-spacing:-0.5px">$31 <span style="font-size:11px;font-weight:400;color:#4A5568">vs $84 without</span></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 6: Before/After -->
+<div class="slide s6" id="slide-6">
+  <div style="width:100%">
+    <div class="slide-label" style="margin-bottom:24px">Results</div>
+    <div style="position:relative">
+      <div class="ba-grid">
+        <div class="ba-before">
+          <div class="ba-label ba-label-red">Before FreshCast</div>
+          <div class="ba-num" style="color:#EF4444">$1,800</div>
+          <div class="ba-desc" style="color:#94A3B8">wasted per month<br>No visibility. No predictions.<br>Just guessing every Sunday night.</div>
+        </div>
+        <div class="ba-after">
+          <div class="ba-label ba-label-grn">After FreshCast</div>
+          <div class="ba-num" style="color:#10B981">$340</div>
+          <div class="ba-desc" style="color:#94A3B8">wasted per month<br>$1,460 saved every month.<br><strong style="color:#10B981">$17,520 saved per year.</strong></div>
+        </div>
+      </div>
+      <div class="ba-arrow">→</div>
+    </div>
+    <div style="margin-top:20px;text-align:center;font-size:14px;color:#64748B">FreshCast costs <strong style="color:#E2E8F0">$49/month</strong>. ROI: <strong style="color:#10B981">35×</strong></div>
+  </div>
+</div>
+
+<!-- SLIDE 7: Market -->
+<div class="slide s7" id="slide-7">
+  <div style="width:100%">
+    <div class="slide-label">Market Opportunity</div>
+    <div style="font-size:32px;font-weight:800;letter-spacing:-1.5px;margin-bottom:8px">The market everyone else ignored</div>
+    <div style="font-size:15px;color:#64748B;margin-bottom:24px">70% of US restaurants are independent single-unit operators — with zero tools built for them</div>
+    <div class="market-row">
+      <div class="market-box">
+        <div class="market-num">500K</div>
+        <div class="market-label">Independent US restaurants</div>
+      </div>
+      <div class="market-box">
+        <div class="market-num">$49</div>
+        <div class="market-label">Per month per restaurant</div>
+      </div>
+      <div class="market-box">
+        <div class="market-num">$29M</div>
+        <div class="market-label">ARR at 1% market penetration</div>
+      </div>
+      <div class="market-box">
+        <div class="market-num">35×</div>
+        <div class="market-label">Return on investment for owner</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 8: Team -->
+<div class="slide s8" id="slide-8">
+  <div class="slide-label">Builder</div>
+  <div class="team-card">
+    <div class="team-avatar">👤</div>
+    <div class="team-name">[Your Name]</div>
+    <div class="team-role">Builder · Hackachusetts 2026</div>
+    <div class="team-bio">From Springfield, MA — one of the highest poverty-rate cities in Massachusetts. I've seen firsthand what razor-thin margins look like for independent restaurant owners in my community. Every existing tool either costs thousands in hardware or targets chains. I built FreshCast for the owners that everyone else ignored.</div>
+  </div>
+  <div style="margin-top:24px;font-size:24px;font-weight:800;letter-spacing:-1px;color:#10B981">FreshCast</div>
+  <div style="font-size:13px;color:#4A5568;margin-top:4px">freshcast.app · github.com/DanielIbraev/Hackachusetts</div>
+</div>
+
+</div>
+
+<!-- NAV -->
+<div class="nav">
+  <button class="prev" onclick="changeSlide(-1)">←</button>
+  <div id="dots"></div>
+  <button class="next" onclick="changeSlide(1)">→</button>
+  <span class="slide-counter" id="counter">1 / 8</span>
+</div>
+
+<script>
+const total = 8;
+let current = 1;
+const dotsEl = document.getElementById('dots');
+
+// Build dots
+for(let i=1;i<=total;i++){
+  const d = document.createElement('div');
+  d.className = 'nav-dot' + (i===1?' active':'');
+  d.onclick = () => goTo(i);
+  dotsEl.appendChild(d);
+}
+
+function goTo(n) {
+  document.getElementById('slide-'+current).classList.remove('active');
+  document.querySelectorAll('.nav-dot')[current-1].classList.remove('active');
+  current = n;
+  document.getElementById('slide-'+current).classList.add('active');
+  document.querySelectorAll('.nav-dot')[current-1].classList.add('active');
+  document.getElementById('counter').textContent = current + ' / ' + total;
+}
+
+function changeSlide(dir) {
+  const next = Math.min(Math.max(current+dir,1),total);
+  goTo(next);
+}
+
+document.addEventListener('keydown', e => {
+  if(e.key==='ArrowRight') changeSlide(1);
+  if(e.key==='ArrowLeft') changeSlide(-1);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FreshCast UI</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#0F1117; color:#E2E8F0; font-family:-apple-system,'Inter',sans-serif; display:flex; min-height:100vh; }
+
+/* Sidebar */
+.sidebar { width:220px; background:#13151F; border-right:1px solid #1E2235; padding:20px 0; flex-shrink:0; display:flex; flex-direction:column; }
+.logo { padding:0 20px 24px; font-size:18px; font-weight:700; letter-spacing:-0.5px; }
+.logo span { color:#10B981; }
+.logo em { color:#E2E8F0; font-style:normal; }
+.nav-section { padding:0 12px; margin-bottom:4px; }
+.nav-label { font-size:10px; color:#4A5568; text-transform:uppercase; letter-spacing:1.2px; padding:0 8px; margin-bottom:6px; }
+.nav-item { display:flex; align-items:center; gap:10px; padding:8px 10px; border-radius:6px; font-size:13px; color:#64748B; cursor:pointer; margin-bottom:2px; transition:all 0.15s; }
+.nav-item:hover { background:#1A1D27; color:#94A3B8; }
+.nav-item.active { background:#0D2B1F; color:#10B981; font-weight:500; }
+.nav-icon { width:16px; height:16px; opacity:0.7; }
+.sidebar-bottom { margin-top:auto; padding:16px 12px; border-top:1px solid #1E2235; }
+.restaurant-badge { display:flex; align-items:center; gap:10px; padding:8px 10px; border-radius:8px; background:#1A1D27; }
+.restaurant-avatar { width:28px; height:28px; background:#0D2B1F; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:12px; color:#10B981; font-weight:700; }
+.restaurant-name { font-size:12px; font-weight:500; color:#E2E8F0; }
+.restaurant-sub { font-size:10px; color:#4A5568; }
+
+/* Main */
+.main { flex:1; overflow:hidden; display:flex; flex-direction:column; }
+.topbar { padding:16px 24px; border-bottom:1px solid #1E2235; display:flex; align-items:center; justify-content:space-between; background:#0F1117; }
+.page-title { font-size:15px; font-weight:600; color:#E2E8F0; }
+.topbar-right { display:flex; align-items:center; gap:12px; }
+.weather-chip { display:flex; align-items:center; gap:6px; background:#1A1D27; border:1px solid #1E2235; padding:6px 12px; border-radius:6px; font-size:12px; color:#94A3B8; }
+.weather-dot { width:6px; height:6px; background:#60A5FA; border-radius:50%; }
+.event-chip { display:flex; align-items:center; gap:6px; background:#1A1020; border:1px solid #4C1D95; padding:6px 12px; border-radius:6px; font-size:12px; color:#A78BFA; }
+
+/* Content */
+.content { padding:20px 24px; overflow-y:auto; flex:1; }
+
+/* Stat row */
+.stat-row { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:16px; }
+.stat-card { background:#13151F; border:1px solid #1E2235; border-radius:10px; padding:16px; }
+.stat-label { font-size:10px; color:#4A5568; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px; }
+.stat-val { font-size:26px; font-weight:700; letter-spacing:-1px; line-height:1; }
+.stat-change { font-size:11px; margin-top:6px; display:flex; align-items:center; gap:4px; }
+.up { color:#EF4444; }
+.down { color:#10B981; }
+.neutral { color:#4A5568; }
+
+/* Forecast card */
+.forecast-card { background:#13151F; border:1px solid #1E2235; border-radius:10px; padding:20px; margin-bottom:16px; }
+.forecast-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:16px; }
+.forecast-title { font-size:12px; color:#4A5568; text-transform:uppercase; letter-spacing:1px; margin-bottom:4px; }
+.forecast-sub { font-size:13px; color:#64748B; }
+.forecast-amount { text-align:right; }
+.forecast-label-sm { font-size:10px; color:#4A5568; margin-bottom:2px; }
+.amount-red { font-size:30px; font-weight:700; color:#EF4444; letter-spacing:-1px; }
+.amount-green { font-size:30px; font-weight:700; color:#10B981; letter-spacing:-1px; transition:color 0.8s; }
+
+/* Ingredient bars */
+.ingredient-row { display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+.ing-name { font-size:13px; color:#94A3B8; width:110px; flex-shrink:0; }
+.bar-track { flex:1; background:#0A0C14; border-radius:3px; height:6px; overflow:hidden; }
+.bar { height:100%; border-radius:3px; transition:width 1.2s cubic-bezier(.4,0,.2,1), background 0.8s; }
+.bar-red { background:#EF4444; }
+.bar-grn { background:#10B981; }
+.ing-kg { font-size:12px; width:50px; text-align:right; flex-shrink:0; }
+.ing-save { font-size:12px; color:#10B981; width:56px; text-align:right; flex-shrink:0; }
+.ing-reason { font-size:11px; color:#374151; width:180px; flex-shrink:0; font-style:italic; }
+
+/* CTA */
+.cta-btn { width:100%; background:#10B981; color:#0F1117; font-size:13px; font-weight:600; padding:11px; border-radius:7px; border:none; cursor:pointer; margin-top:16px; transition:background 0.2s; letter-spacing:0.2px; }
+.cta-btn:hover { background:#059669; }
+.cta-btn:disabled { background:#0D2B1F; color:#10B981; border:1px solid #10B981; cursor:default; }
+
+/* Two col */
+.two-col { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:16px; }
+
+/* Chart placeholder */
+.chart-card { background:#13151F; border:1px solid #1E2235; border-radius:10px; padding:20px; }
+.chart-title { font-size:12px; color:#4A5568; text-transform:uppercase; letter-spacing:1px; margin-bottom:4px; }
+.chart-headline { font-size:14px; font-weight:600; color:#E2E8F0; margin-bottom:16px; }
+.chart-bars { display:flex; align-items:flex-end; gap:6px; height:80px; }
+.chart-bar { flex:1; border-radius:3px 3px 0 0; transition:height 0.8s; }
+.chart-labels { display:flex; gap:6px; margin-top:6px; }
+.chart-label { flex:1; font-size:9px; color:#374151; text-align:center; }
+
+/* Log grid */
+.log-card { background:#13151F; border:1px solid #1E2235; border-radius:10px; padding:20px; }
+.log-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:12px; }
+.log-item { background:#0A0C14; border:1px solid #1E2235; border-radius:8px; padding:12px 6px; text-align:center; cursor:pointer; transition:border-color 0.15s; }
+.log-item:hover { border-color:#10B981; }
+.log-emoji { font-size:20px; display:block; margin-bottom:4px; }
+.log-name { font-size:10px; color:#4A5568; }
+
+/* Screens nav */
+.screen-nav { display:flex; gap:4px; margin-bottom:20px; background:#13151F; border:1px solid #1E2235; border-radius:8px; padding:4px; width:fit-content; }
+.screen-btn { padding:6px 14px; border-radius:5px; font-size:12px; color:#4A5568; cursor:pointer; border:none; background:transparent; transition:all 0.15s; }
+.screen-btn.active { background:#1A1D27; color:#E2E8F0; }
+
+/* Screen panels */
+.screen { display:none; }
+.screen.active { display:block; }
+
+/* Order screen */
+.order-table { width:100%; border-collapse:collapse; }
+.order-table th { font-size:10px; color:#4A5568; text-transform:uppercase; letter-spacing:1px; padding:8px 12px; text-align:left; border-bottom:1px solid #1E2235; }
+.order-table td { font-size:13px; color:#94A3B8; padding:10px 12px; border-bottom:1px solid #0A0C14; }
+.order-table td:first-child { color:#E2E8F0; }
+.cut { color:#10B981; font-size:11px; background:#0D2B1F; padding:2px 6px; border-radius:4px; }
+.same { color:#4A5568; font-size:11px; }
+.save-cell { color:#10B981; font-weight:600; }
+.order-footer { display:flex; justify-content:space-between; align-items:center; margin-top:16px; padding-top:16px; border-top:1px solid #1E2235; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="logo"><span>Fresh</span><em>Cast</em></div>
+
+  <div class="nav-section">
+    <div class="nav-label">Overview</div>
+    <div class="nav-item active">
+      <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1" stroke-width="1.5"/><rect x="14" y="3" width="7" height="7" rx="1" stroke-width="1.5"/><rect x="3" y="14" width="7" height="7" rx="1" stroke-width="1.5"/><rect x="14" y="14" width="7" height="7" rx="1" stroke-width="1.5"/></svg>
+      Dashboard
+    </div>
+    <div class="nav-item">
+      <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 12h18M3 6h18M3 18h18" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Forecast
+    </div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Operations</div>
+    <div class="nav-item">
+      <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke-width="1.5"/><path d="M12 7v5l3 3" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Log Waste
+    </div>
+    <div class="nav-item">
+      <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Smart Order
+    </div>
+  </div>
+
+  <div class="nav-section">
+    <div class="nav-label">Insights</div>
+    <div class="nav-item">
+      <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      History
+    </div>
+    <div class="nav-item">
+      <svg class="nav-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke-width="1.5"/><path d="M12 8v4l2 2" stroke-width="1.5" stroke-linecap="round"/></svg>
+      Reports
+    </div>
+  </div>
+
+  <div class="sidebar-bottom">
+    <div class="restaurant-badge">
+      <div class="restaurant-avatar">M</div>
+      <div>
+        <div class="restaurant-name">Marco's Trattoria</div>
+        <div class="restaurant-sub">Boston, MA · Italian</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="page-title">Tomorrow's Forecast</div>
+    <div class="topbar-right">
+      <div class="weather-chip"><div class="weather-dot"></div>🌧 58°F · Rainy · Tomorrow</div>
+      <div class="event-chip">🎵 TD Garden nearby · +footfall</div>
+    </div>
+  </div>
+
+  <div class="content">
+    <!-- Screen nav -->
+    <div class="screen-nav">
+      <button class="screen-btn active" onclick="switchScreen('dashboard',this)">Dashboard</button>
+      <button class="screen-btn" onclick="switchScreen('log',this)">Log Waste</button>
+      <button class="screen-btn" onclick="switchScreen('order',this)">Smart Order</button>
+    </div>
+
+    <!-- DASHBOARD SCREEN -->
+    <div class="screen active" id="screen-dashboard">
+
+      <!-- Stat row -->
+      <div class="stat-row">
+        <div class="stat-card">
+          <div class="stat-label">Predicted Waste</div>
+          <div class="stat-val up" id="main-waste">$84</div>
+          <div class="stat-change up">↑ High risk today</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Saved This Month</div>
+          <div class="stat-val down">$1,240</div>
+          <div class="stat-change down">↓ 34% vs last month</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">CO₂ Prevented</div>
+          <div class="stat-val" style="color:#60A5FA" id="co2-stat">48 kg</div>
+          <div class="stat-change neutral">≈ 2 trees planted</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Model Accuracy</div>
+          <div class="stat-val down">89%</div>
+          <div class="stat-change down">↑ Improving weekly</div>
+        </div>
+      </div>
+
+      <!-- Forecast + chart -->
+      <div class="two-col">
+        <!-- Forecast card -->
+        <div class="forecast-card">
+          <div class="forecast-header">
+            <div>
+              <div class="forecast-title">Ingredient Risk Forecast</div>
+              <div class="forecast-sub">45 covers · Rainy Tuesday · Italian</div>
+            </div>
+            <div class="forecast-amount">
+              <div class="forecast-label-sm">Without action</div>
+              <div class="amount-red" id="forecast-total">$84</div>
+            </div>
+          </div>
+
+          <div class="ingredient-row">
+            <div class="ing-name">Arugula</div>
+            <div class="bar-track"><div class="bar bar-red" id="b1" style="width:88%"></div></div>
+            <div class="ing-kg up" id="k1">3.8 kg</div>
+            <div class="ing-save">save $14</div>
+            <div class="ing-reason">Rain → salad orders drop</div>
+          </div>
+          <div class="ingredient-row">
+            <div class="ing-name">Salmon</div>
+            <div class="bar-track"><div class="bar bar-red" id="b2" style="width:72%"></div></div>
+            <div class="ing-kg up" id="k2">2.1 kg</div>
+            <div class="ing-save">save $22</div>
+            <div class="ing-reason">Tue pattern +18%</div>
+          </div>
+          <div class="ingredient-row">
+            <div class="ing-name">Bread rolls</div>
+            <div class="bar-track"><div class="bar bar-red" id="b3" style="width:54%"></div></div>
+            <div class="ing-kg up" id="k3">14 pcs</div>
+            <div class="ing-save">save $8</div>
+            <div class="ing-reason">Lower walk-in expected</div>
+          </div>
+          <div class="ingredient-row">
+            <div class="ing-name">Mozzarella</div>
+            <div class="bar-track"><div class="bar bar-red" id="b4" style="width:44%"></div></div>
+            <div class="ing-kg up" id="k4">1.1 kg</div>
+            <div class="ing-save">save $18</div>
+            <div class="ing-reason">Last Tue: +1.2kg actual</div>
+          </div>
+          <div class="ingredient-row">
+            <div class="ing-name">Basil</div>
+            <div class="bar-track"><div class="bar bar-grn" style="width:12%"></div></div>
+            <div class="ing-kg neutral">0.2 kg</div>
+            <div class="ing-save" style="color:#4A5568">on track</div>
+            <div class="ing-reason">Within baseline</div>
+          </div>
+
+          <button class="cta-btn" id="apply-btn" onclick="applyRecs()">⚡ Apply Recommendations — Save $53 Tomorrow</button>
+        </div>
+
+        <!-- Weekly trend chart -->
+        <div class="chart-card">
+          <div class="chart-title">7-Day Waste Trend</div>
+          <div class="chart-headline">Waste down 34% since using FreshCast</div>
+          <div class="chart-bars">
+            <div class="chart-bar" style="height:72%;background:#EF4444;opacity:0.7"></div>
+            <div class="chart-bar" style="height:68%;background:#EF4444;opacity:0.7"></div>
+            <div class="chart-bar" style="height:74%;background:#EF4444;opacity:0.7"></div>
+            <div class="chart-bar" style="height:52%;background:#F59E0B;opacity:0.8"></div>
+            <div class="chart-bar" style="height:44%;background:#F59E0B;opacity:0.8"></div>
+            <div class="chart-bar" style="height:32%;background:#10B981;opacity:0.9"></div>
+            <div class="chart-bar" style="height:28%;background:#10B981"></div>
+          </div>
+          <div class="chart-labels">
+            <div class="chart-label">Mon</div>
+            <div class="chart-label">Tue</div>
+            <div class="chart-label">Wed</div>
+            <div class="chart-label">Thu</div>
+            <div class="chart-label">Fri</div>
+            <div class="chart-label">Sat</div>
+            <div class="chart-label" style="color:#10B981">Sun</div>
+          </div>
+
+          <div style="margin-top:20px;padding-top:16px;border-top:1px solid #1E2235">
+            <div style="font-size:10px;color:#4A5568;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px">This Month</div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+              <span style="font-size:12px;color:#64748B">Total waste prevented</span>
+              <span style="font-size:12px;color:#10B981;font-weight:600">$1,240</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+              <span style="font-size:12px;color:#64748B">CO₂ prevented</span>
+              <span style="font-size:12px;color:#60A5FA;font-weight:600">48 kg</span>
+            </div>
+            <div style="display:flex;justify-content:space-between">
+              <span style="font-size:12px;color:#64748B">Prediction accuracy</span>
+              <span style="font-size:12px;color:#E2E8F0;font-weight:600">89%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOG WASTE SCREEN -->
+    <div class="screen" id="screen-log">
+      <div class="log-card">
+        <div class="chart-title">Log Waste</div>
+        <div class="chart-headline">What are you throwing away?</div>
+        <div class="log-grid">
+          <div class="log-item" onclick="logWaste(this,'Arugula')"><span class="log-emoji">🥗</span><div class="log-name">Arugula</div></div>
+          <div class="log-item" onclick="logWaste(this,'Salmon')"><span class="log-emoji">🐟</span><div class="log-name">Salmon</div></div>
+          <div class="log-item" onclick="logWaste(this,'Bread')"><span class="log-emoji">🍞</span><div class="log-name">Bread</div></div>
+          <div class="log-item" onclick="logWaste(this,'Mozz.')"><span class="log-emoji">🧀</span><div class="log-name">Mozz.</div></div>
+          <div class="log-item" onclick="logWaste(this,'Tomato')"><span class="log-emoji">🍅</span><div class="log-name">Tomato</div></div>
+          <div class="log-item" onclick="logWaste(this,'Steak')"><span class="log-emoji">🥩</span><div class="log-name">Steak</div></div>
+          <div class="log-item" onclick="logWaste(this,'Basil')"><span class="log-emoji">🌿</span><div class="log-name">Basil</div></div>
+          <div class="log-item" style="border-style:dashed"><span class="log-emoji">＋</span><div class="log-name">Custom</div></div>
+        </div>
+      </div>
+
+      <div id="size-picker" style="display:none;margin-top:12px">
+        <div class="log-card">
+          <div class="chart-headline" id="size-title">How much Arugula?</div>
+          <div style="display:flex;gap:8px;margin-top:12px">
+            <button onclick="confirmLog('Small · ~0.3kg')" style="flex:1;padding:14px;background:#0A0C14;border:1px solid #1E2235;border-radius:8px;color:#94A3B8;font-size:13px;cursor:pointer">Small<br><span style="font-size:10px;color:#4A5568">~0.3 kg</span></button>
+            <button onclick="confirmLog('Medium · ~0.8kg')" style="flex:1;padding:14px;background:#0A0C14;border:1px solid #1E2235;border-radius:8px;color:#94A3B8;font-size:13px;cursor:pointer">Medium<br><span style="font-size:10px;color:#4A5568">~0.8 kg</span></button>
+            <button onclick="confirmLog('Large · ~1.5kg')" style="flex:1;padding:14px;background:#0A0C14;border:1px solid #1E2235;border-radius:8px;color:#94A3B8;font-size:13px;cursor:pointer">Large<br><span style="font-size:10px;color:#4A5568">~1.5 kg</span></button>
+          </div>
+        </div>
+      </div>
+
+      <div id="log-confirm" style="display:none;margin-top:12px">
+        <div class="log-card" style="border-color:#10B981">
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="width:32px;height:32px;background:#0D2B1F;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#10B981;font-size:16px">✓</div>
+            <div>
+              <div style="font-size:13px;font-weight:500;color:#E2E8F0" id="confirm-text">Logged: Arugula · Medium</div>
+              <div style="font-size:11px;color:#4A5568">+0.8 kg · +0.4 kg CO₂ · Dashboard updated</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SMART ORDER SCREEN -->
+    <div class="screen" id="screen-order">
+      <div class="chart-card">
+        <div class="chart-title">Smart Order</div>
+        <div class="chart-headline">Next delivery recommendation — based on 3 weeks of your data</div>
+        <table class="order-table">
+          <thead>
+            <tr>
+              <th>Ingredient</th>
+              <th>Usual Order</th>
+              <th>FreshCast Suggests</th>
+              <th>Change</th>
+              <th>Projected Saving</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Arugula</td><td>8 kg</td><td>5 kg</td><td><span class="cut">↓ Cut 3kg</span></td><td class="save-cell">$11</td></tr>
+            <tr><td>Salmon (fillet)</td><td>5 kg</td><td>3.5 kg</td><td><span class="cut">↓ Cut 1.5kg</span></td><td class="save-cell">$22</td></tr>
+            <tr><td>Bread rolls</td><td>120 pcs</td><td>90 pcs</td><td><span class="cut">↓ Cut 30</span></td><td class="save-cell">$8</td></tr>
+            <tr><td>Mozzarella</td><td>4 kg</td><td>4 kg</td><td><span class="same">No change</span></td><td class="save-cell" style="color:#4A5568">—</td></tr>
+            <tr><td>Cherry tomatoes</td><td>3 kg</td><td>2 kg</td><td><span class="cut">↓ Cut 1kg</span></td><td class="save-cell">$4</td></tr>
+            <tr><td>Basil (fresh)</td><td>0.5 kg</td><td>0.5 kg</td><td><span class="same">No change</span></td><td class="save-cell" style="color:#4A5568">—</td></tr>
+          </tbody>
+        </table>
+        <div class="order-footer">
+          <div>
+            <div style="font-size:11px;color:#4A5568;margin-bottom:2px">Projected weekly waste</div>
+            <div style="font-size:22px;font-weight:700;color:#10B981;letter-spacing:-0.5px">$45 <span style="font-size:12px;font-weight:400;color:#4A5568">vs $296 before FreshCast</span></div>
+          </div>
+          <button style="background:#10B981;color:#0F1117;font-size:12px;font-weight:600;padding:10px 20px;border-radius:7px;border:none;cursor:pointer">Export Order List →</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+let applied = false;
+let selectedItem = '';
+
+function switchScreen(id, btn) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.screen-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+  btn.classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+}
+
+function applyRecs() {
+  if(applied) return;
+  applied = true;
+  const bars = ['b1','b2','b3','b4'];
+  const widths = ['32%','26%','18%','14%'];
+  bars.forEach((id,i) => {
+    const el = document.getElementById(id);
+    el.classList.remove('bar-red');
+    el.classList.add('bar-grn');
+    el.style.width = widths[i];
+  });
+  document.querySelectorAll('.ing-kg.up').forEach(el => {
+    el.classList.remove('up');
+    el.classList.add('down');
+  });
+  document.getElementById('forecast-total').textContent = '$31';
+  document.getElementById('forecast-total').style.color = '#10B981';
+  document.getElementById('main-waste').textContent = '$31';
+  document.getElementById('main-waste').classList.remove('up');
+  document.getElementById('main-waste').classList.add('down');
+  const btn = document.getElementById('apply-btn');
+  btn.textContent = '✅ Recommendations Applied — $53 Saved';
+  btn.disabled = true;
+}
+
+function logWaste(el, name) {
+  selectedItem = name;
+  document.getElementById('size-title').textContent = 'How much ' + name + '?';
+  document.getElementById('size-picker').style.display = 'block';
+  document.getElementById('log-confirm').style.display = 'none';
+  document.querySelectorAll('.log-item').forEach(i => i.style.borderColor = '');
+  el.style.borderColor = '#10B981';
+}
+
+function confirmLog(size) {
+  document.getElementById('size-picker').style.display = 'none';
+  document.getElementById('log-confirm').style.display = 'block';
+  document.getElementById('confirm-text').textContent = 'Logged: ' + selectedItem + ' · ' + size;
+  // Update CO2 counter
+  const co2 = document.getElementById('co2-stat');
+  const current = parseFloat(co2.textContent);
+  co2.textContent = (current + 0.4).toFixed(1) + ' kg';
+}
+</script>
+</body>
+</html>
