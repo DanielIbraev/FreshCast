@@ -53,7 +53,7 @@ export function WasteTrend({ data }: WasteTrendProps) {
               color: "#E2E8F0",
             }}
             labelStyle={{ color: "#94A3B8" }}
-            formatter={(v: number) => [`$${v}`, "Daily waste"]}
+            formatter={(v) => [`$${v}`, "Daily waste"]}
           />
           {adoptionDate && (
             <ReferenceLine
