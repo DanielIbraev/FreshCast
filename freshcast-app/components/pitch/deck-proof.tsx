@@ -1,5 +1,5 @@
 // Proof, environmental impact, audience, competition, Kiro, team, try it.
-import { Car, Leaf, MapPin, Utensils } from "lucide-react";
+import { Car, Leaf, Utensils } from "lucide-react";
 import { Line, Source, Broll } from "./deck-story";
 import { Matrix } from "./visuals";
 import { QRCodeSVG } from "qrcode.react";
@@ -48,20 +48,15 @@ export const S9Scale = ({ co2Year, meals }: { co2Year: number; meals: number }) 
 export const S10Audience = () => (
   <div className="flex h-full items-center justify-between gap-16">
     <div className="max-w-[640px]">
-      <Line sub="70% of US restaurants are single-location. Nobody builds waste tools for them.">412,498 independent restaurants.</Line>
+      <Line sub="70% of US restaurants are single-location. Waste tools with cameras and scales are built for chains.">412,498 independent restaurants.</Line>
     </div>
     <div className="w-[600px] rounded-2xl border border-border bg-surface p-9">
-      <p className="text-[22px] font-600 text-good">Who it&apos;s for</p>
-      <p className="mt-4 font-display text-[40px] font-700 leading-tight text-text-primary">Owner who still works the line</p>
-      <ul className="mt-6 space-y-3 text-2xl text-text-secondary">
-        <li>30–80 seats, cooks fresh every day</li>
-        <li>Already uses a cloud POS</li>
-        <li>Staff log in English or Español, on any phone</li>
-        <li>Orders from a wholesaler every Monday</li>
+      <p className="text-[22px] font-600 text-good">Who benefits</p>
+      <ul className="mt-6 space-y-4 text-[26px] leading-snug text-text-secondary">
+        <li><span className="text-text-primary">Owners</span> on 3–5% margins who can&apos;t buy hardware</li>
+        <li><span className="text-text-primary">Closing staff</span>, in English or Español, on the phone they have</li>
+        <li><span className="text-text-primary">Everyone else</span>: less food rotting into methane</li>
       </ul>
-      <p className="mt-6 flex items-center gap-2 text-2xl text-text-primary">
-        <MapPin className="h-6 w-6 text-good" /> North End & South End, Boston
-      </p>
     </div>
   </div>
 );
@@ -89,7 +84,7 @@ export const S13Team = () => (
       </ul>
       <p className="mt-10 flex items-center gap-3 text-[22px] text-text-muted">
         <span className="rounded-md border border-border px-2.5 py-1 font-display text-lg font-700 text-text-primary">Kiro</span>
-        Built solo in one day: steering rules, auto-push hooks, MCP, and a secured Supabase backend.
+        Built solo in one day, entirely in Kiro: plan, code, tests, docs and this deck.
       </p>
     </div>
   </div>
@@ -145,30 +140,33 @@ export const S7bTrust = ({ coverage }: { coverage: number }) => {
   );
 };
 
-// Implementation: how Kiro was used.
+// Implementation: Kiro did all of it. No brand names besides Kiro on screen
+// (the video rules ban third-party trademarks).
 export const S12bKiro = () => {
   const tiles: [string, string, string][] = [
-    ["Spec", "requirements → design → tasks", "Forecast confidence ranges"],
-    ["PBT", "13 correctness properties", "Found 2 bugs unit tests missed"],
-    ["Hooks", "200+ auto-pushed commits", "Tests + model re-score on save"],
-    ["Steering", "7 docs incl. anti-AI-slop", "Every screen built against them"],
-    ["MCP", "PowerPoint server + web research", "Backup deck, sourced stats"],
+    ["Plan", "Idea, research, sourced stats", "Web search inside Kiro, 7 steering docs"],
+    ["Spec", "Requirements → design → tasks", "Confidence ranges: 73% → 81% coverage"],
+    ["Build", "Every line of code", "Model, app, database, 60 tests"],
+    ["Check", "13 property tests, a subagent audit", "Found 2 bugs and 5 model errors"],
+    ["Ship", "3 hooks, 200+ auto-pushed commits", "Tests and re-scoring on every save"],
+    ["Pitch", "This deck and the video plan", "Design skill checked every slide"],
   ];
   return (
-    <div className="flex h-full flex-col justify-center gap-14">
+    <div className="flex h-full flex-col justify-center gap-12">
       <div className="flex items-center gap-6">
-        <span className="rounded-xl border-2 border-text-primary px-5 py-2 font-display text-[44px] font-800 tracking-tight text-text-primary">Kiro</span>
-        <Line>One builder. Kiro as the team.</Line>
+        <span className="rounded-xl border-2 border-text-primary px-5 py-2 font-display text-[44px] font-700 tracking-tight text-text-primary">Kiro</span>
+        <Line>One builder. One tool. All of it.</Line>
       </div>
-      <div className="grid grid-cols-5 gap-6">
+      <div className="grid grid-cols-3 gap-6">
         {tiles.map(([h, a, b]) => (
           <div key={h} className="rounded-2xl border border-border bg-surface p-7">
-            <p className="font-display text-[40px] font-800 text-good">{h}</p>
-            <p className="mt-4 text-[22px] leading-snug text-text-primary">{a}</p>
-            <p className="mt-2 text-[18px] leading-snug text-text-muted">{b}</p>
+            <p className="font-display text-[36px] font-700 text-good">{h}</p>
+            <p className="mt-3 text-[24px] leading-snug text-text-primary">{a}</p>
+            <p className="mt-2 text-[19px] leading-snug text-text-muted">{b}</p>
           </div>
         ))}
       </div>
+      <p className="text-[24px] text-text-secondary">No second chatbot for ideas, no other coding assistant. Planning, code, tests, docs and this deck were all done in Kiro.</p>
     </div>
   );
 };
