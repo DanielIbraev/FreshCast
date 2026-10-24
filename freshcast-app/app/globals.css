@@ -237,8 +237,8 @@ p {
 /* Open menus (selects, the restaurant switcher) must sit above later page
    sections. Each staggered section keeps a stacking context from its entrance
    animation, so lift the section that holds the open or focused control. */
-.fc-page > :only-child > :focus-within,
-.fc-page > :only-child > :has([aria-expanded="true"]) {
+:is(.fc-stagger, .fc-page > :only-child) > :focus-within,
+:is(.fc-stagger, .fc-page > :only-child) > :has([aria-expanded="true"]) {
   position: relative;
   z-index: 30;
 }
