@@ -96,6 +96,7 @@ export function reason(lang: Lang, s: SignalFactor, ctx: { date: Date; condition
         ? `${up ? "More" : "Less"} left over last ${weekday("en", ctx.date)}`
         : `${up ? "Sobró más" : "Sobró menos"} el ${weekday("es", ctx.date)} pasado`;
     case "calibration":
-      return en ? (up ? "Often left over" : "Often runs out") : up ? "Suele sobrar" : "Suele acabarse";
+      // Calibration < 1 means less is left over than the priors expect, not that it runs out.
+      return en ? (up ? "Often left over" : "Less left over than usual") : up ? "Suele sobrar" : "Sobra menos de lo normal";
   }
 }
