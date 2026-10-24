@@ -10,7 +10,7 @@ export function LandingFooter() {
         <div>
           <div className="flex items-center gap-2.5">
             <Mark size={24} />
-            <span className="font-display text-base font-600 text-text-primary">FreshCast</span>
+            <span className="font-display text-base font-700 text-text-primary">FreshCast</span>
           </div>
           <p className="mt-3 text-sm leading-relaxed text-text-muted">
             Restaurants are fictional; histories are simulated; weather is live.

@@ -119,7 +119,7 @@ function buildActions(items: ItemRecord[], scored: Scored[], dates: string[], pr
     if (weak.scored < 10) out.push({ kind: "weakest", itemId: weak.id, lead: weak.name, link: "log", text: `${at}, but it needs more nights: ${weak.scored} scored so far.` });
     else if (weak.soldOut >= 3) out.push({ kind: "weakest", itemId: weak.id, lead: weak.name, link: "kitchen", text: `${at}. It logged zero after a cut on ${weak.soldOut} nights, so it may be selling out. Raise its usual prep if it ran out during service.` });
     else if (weak.bias !== null && Math.abs(weak.bias) >= 0.08) out.push({ kind: "weakest", itemId: weak.id, lead: weak.name, link: "kitchen", text: `${at}. Its forecast runs ${pctOf(weak.bias)}% ${weak.bias > 0 ? "high" : "low"}; calibration is catching up.` });
-    else out.push({ kind: "weakest", itemId: weak.id, lead: weak.name, text: `${at}. Its misses go both ways (average within ${Math.max(1, pctOf(weak.bias ?? 0))}%), so they are night-to-night swings, not a wrong setting.` });
+    else out.push({ kind: "weakest", itemId: weak.id, lead: weak.name, text: `${at}. On average its forecast lands within ${Math.max(1, pctOf(weak.bias ?? 0))}% of actual, so the misses are night-to-night swings, not a wrong setting.` });
   }
 
   for (const i of items.filter((x) => x.id !== weak?.id && x.soldOut >= 3).sort((a, b) => b.soldOut - a.soldOut).slice(0, 2))
@@ -136,7 +136,7 @@ function buildActions(items: ItemRecord[], scored: Scored[], dates: string[], pr
   const later: Action[] = [];
   if (dayHit) out.push({ kind: "weekday", lead: dayHit.name, text: `run ${pctOf(dayHit.pct)}% ${dir(dayHit.pct)} the forecast over the last 8 weeks (${dayHit.n} nights). The weekday correction is learning it.` });
   else if (days.length >= 3 && dayMax && Math.abs(dayMax.pct) <= 0.1)
-    later.push({ kind: "weekday", ok: true, text: `No weekday runs more than 10% off the forecast over the last 8 weeks. The largest gap is ${dayMax.name} at ${pctOf(dayMax.pct)}% ${dir(dayMax.pct)}.` });
+    later.push({ kind: "weekday", ok: true, text: `No weekday runs more than 10% off the forecast over the last 8 weeks. The largest gap is ${dayMax.name}, ${pctOf(dayMax.pct)}% ${dir(dayMax.pct)}.` });
 
   const rain = effect(nights.filter((n) => RAINY.has(n.cond)).map((n) => n.r));
   const dry = effect(nights.filter((n) => !RAINY.has(n.cond)).map((n) => n.r));
@@ -157,7 +157,7 @@ function buildActions(items: ItemRecord[], scored: Scored[], dates: string[], pr
   });
   const best = gains.sort((a, b) => b.to - b.from - (a.to - a.from))[0];
   if (best && best.to - best.from >= 0.05)
-    out.push({ kind: "improved", itemId: best.i.id, lead: best.i.name, text: `${Math.round(best.from * 100)}% → ${Math.round(best.to * 100)}% since its first two weeks of scoring, the biggest gain on the menu.` });
+    out.push({ kind: "improved", itemId: best.i.id, lead: best.i.name, text: `rose from ${Math.round(best.from * 100)}% to ${Math.round(best.to * 100)}% accuracy since its first two weeks of scoring, the biggest gain on the menu.` });
 
   out.push(...later);
   if (!out.length) out.push({ kind: "keep-going", text: "Every item is within 15% on average. Keep logging nightly to hold it there." });

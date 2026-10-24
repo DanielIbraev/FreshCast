@@ -25,7 +25,7 @@ export default function Home() {
       </header>
 
       <main>
-        <section className="mx-auto grid max-w-6xl gap-10 px-5 pb-16 pt-6 sm:px-8 lg:grid-cols-[minmax(0,1.08fr)_minmax(0,1fr)] lg:items-center lg:gap-12 lg:pb-24 lg:pt-10">
+        <section className="mx-auto grid max-w-6xl gap-10 px-5 pb-16 pt-6 sm:px-8 lg:grid-cols-[minmax(0,1.08fr)_minmax(0,1fr)] lg:min-h-[calc(100svh-4rem)] lg:items-center lg:gap-12 lg:py-10">
           <div className="min-w-0">
             <h1 className="font-display text-[2.6rem] font-700 leading-[1.05] text-text-primary [overflow-wrap:break-word] sm:text-6xl">
               Prep less food. Throw less away.

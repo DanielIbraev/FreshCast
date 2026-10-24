@@ -17,12 +17,12 @@ export function Accuracy() {
     <section aria-labelledby="accuracy" className="border-t border-border bg-surface/40">
       <div className="mx-auto grid max-w-6xl gap-10 px-5 py-16 sm:px-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16 lg:py-20">
         <div className="min-w-0">
-          <h2 id="accuracy" className="font-display text-3xl font-700 leading-tight text-text-primary">
+          <h2 id="accuracy" className="font-display text-4xl font-700 lg:text-5xl leading-tight text-text-primary">
             How close it gets
           </h2>
           <p className="mt-3 text-base leading-relaxed text-text-secondary">
-            Each demo kitchen is simulated, with hidden habits the model never reads. {weeks} weeks, {bench.seeds.length}{" "}
-            seeds, scored only on nights it hadn&apos;t seen. Real accuracy needs a real kitchen.
+            Simulated kitchens with hidden habits the model never reads. {weeks} weeks, {bench.seeds.length} seeds,
+            scored on unseen nights. Real accuracy needs a real kitchen.
           </p>
         </div>
 
@@ -48,8 +48,8 @@ export function Accuracy() {
             </tbody>
           </table>
           <p className="mt-4 text-sm leading-relaxed text-text-muted">
-            Accuracy is 1 − WAPE by kilograms. The owner remembers the last 4 same weekdays exactly. The ceiling knows
-            the hidden habits but not tonight&apos;s guests.
+            Accuracy is 1 − WAPE by kg. The owner recalls the last 4 same weekdays exactly. The ceiling knows the
+            hidden habits, not tonight&apos;s guests.
           </p>
         </div>
       </div>
