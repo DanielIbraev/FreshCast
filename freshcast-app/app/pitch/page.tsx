@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, MotionConfig, motion } from "framer-motion";
-import { Maximize } from "lucide-react";
 import { StoreProvider, useStore } from "@/lib/store";
 import { dailyTotals, summarize } from "@/lib/history";
 import { parseLocalDate } from "@/lib/demo-data";
@@ -120,7 +119,6 @@ function Deck() {
     };
   }, [go, togglePresent]);
 
-  const chrome = !presenting || !idle;
 
   return (
     <div className="fixed inset-0 flex items-center justify-center overflow-hidden bg-canvas" style={{ cursor: presenting && idle ? "none" : "default" }}>
