@@ -158,16 +158,6 @@ function Deck() {
           </div>
         )}
       </div>
-      {chrome && (
-        <button
-          onClick={togglePresent}
-          className="fixed right-5 top-5 flex items-center gap-2 rounded-md border border-border bg-surface px-3 py-1.5 text-xs text-text-secondary transition-colors hover:text-text-primary"
-        >
-          <Maximize className="h-3.5 w-3.5" />
-          {presenting ? "Exit (F)" : "Present (F)"}
-          <span className="ml-1 tabular-nums text-text-muted">{i + 1}/{slides.length}</span>
-        </button>
-      )}
     </div>
   );
 }
