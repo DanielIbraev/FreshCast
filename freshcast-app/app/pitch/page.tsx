@@ -59,8 +59,12 @@ function Deck() {
     <S13Team key={13} />,
     <S14Try key={14} />,
   ];
-  // Video cut: brand frame, then problem → ask, without the hook or demo cue.
-  const slides = videoCut ? [<S0Brand key={0} />, ...all.filter((_, n) => n !== 0 && n !== 5)] : all;
+  // Video cut (?cut=video): the 2-minute recorded pitch. Opens on the brand
+  // frame the intro clip ends on, skips the live-room hook and demo cue (the
+  // screen recording goes between Solution and How), and keeps one slide per
+  // judging point: problem, solution, how, proof, impact, who, why us, Kiro, try it.
+  const VIDEO_KEYS = ["2", "4", "61", "7", "8", "9", "10", "12", "120", "14"];
+  const slides = videoCut ? [<S0Brand key={0} />, ...all.filter((el) => VIDEO_KEYS.includes(String(el.key)))] : all;
   const go = useCallback((d: number) => setI((x) => Math.min(slides.length - 1, Math.max(0, x + d))), [slides.length]);
 
   const togglePresent = useCallback(() => {
