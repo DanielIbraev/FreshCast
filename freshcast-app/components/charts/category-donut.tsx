@@ -25,7 +25,7 @@ export function CategoryDonut({ ingredients }: { ingredients: Ingredient[] }) {
                 <Cell key={d.key} fill={d.color} />
               ))}
             </Pie>
-            <Tooltip
+            <Tooltip itemStyle={{ color: "#E2E8F0" }}
               contentStyle={{ background: "#1A1D27", border: "1px solid #2D3748", borderRadius: 8, color: "#E2E8F0", fontSize: 12 }}
               formatter={(v) => formatCurrency(Number(v))}
             />

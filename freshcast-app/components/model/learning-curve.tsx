@@ -18,7 +18,7 @@ export function LearningCurve({ weeks }: { weeks: WeekResult[] }) {
         <LineChart data={data} margin={{ top: 8, right: 16, left: -12, bottom: 0 }}>
           <XAxis dataKey="week" tick={{ fill: "#8291A7", fontSize: 11 }} axisLine={{ stroke: "#2D3748" }} tickLine={false} />
           <YAxis domain={[50, 100]} tick={{ fill: "#8291A7", fontSize: 11 }} tickFormatter={(v: number) => `${v}%`} axisLine={false} tickLine={false} />
-          <Tooltip
+          <Tooltip itemStyle={{ color: "#E2E8F0" }}
             contentStyle={{ background: "#1A1D27", border: "1px solid #2D3748", borderRadius: 8, color: "#E2E8F0", fontSize: 12 }}
             formatter={(v) => `${v}%`}
           />

@@ -54,7 +54,7 @@ export function WeeklyBin({ weeks }: { weeks: Week[] }) {
         <BarChart data={weeks} margin={{ top: 8, right: 8, left: -8, bottom: 0 }} barCategoryGap="22%">
           <XAxis dataKey="label" tick={{ fill: "#8291A7", fontSize: 11 }} axisLine={{ stroke: "#2D3748" }} tickLine={false} interval={0} />
           <YAxis tick={{ fill: "#8291A7", fontSize: 11 }} tickFormatter={(v: number) => `$${v}`} axisLine={false} tickLine={false} width={52} />
-          <Tooltip
+          <Tooltip itemStyle={{ color: "#E2E8F0" }}
             cursor={{ fill: "#222634" }}
             contentStyle={{ background: "#1A1D27", border: "1px solid #2D3748", borderRadius: 8, color: "#E2E8F0", fontSize: 12 }}
             labelFormatter={(l) => `Week of ${l}`}

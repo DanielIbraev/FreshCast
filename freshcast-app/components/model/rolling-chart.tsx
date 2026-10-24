@@ -66,7 +66,7 @@ export function RollingChart({ rolling, planStart, ceiling }: { rolling: Rolling
             <LineChart data={data} margin={{ top: 22, right: 12, left: -8, bottom: 0 }}>
               <XAxis dataKey="date" tick={axisTick} tickFormatter={shortDate} interval={Math.max(0, Math.floor(data.length / 6))} axisLine={{ stroke: "#2D3748" }} tickLine={false} minTickGap={16} />
               <YAxis domain={[lo, hi]} ticks={ticks} interval={0} tick={axisTick} tickFormatter={(v: number) => `${v}%`} axisLine={false} tickLine={false} width={52} />
-              <Tooltip contentStyle={tooltipStyle} labelStyle={{ color: "#94A3B8" }} labelFormatter={(d) => `7 nights to ${shortDate(String(d))}`} formatter={(v) => [`${v}%`, "Accuracy"]} />
+              <Tooltip itemStyle={{ color: "#E2E8F0" }} contentStyle={tooltipStyle} labelStyle={{ color: "#94A3B8" }} labelFormatter={(d) => `7 nights to ${shortDate(String(d))}`} formatter={(v) => [`${v}%`, "Accuracy"]} />
               {markPlan && (
                 <ReferenceLine
                   x={planStart!}
