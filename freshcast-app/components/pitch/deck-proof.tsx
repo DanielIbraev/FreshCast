@@ -77,9 +77,9 @@ export const S12Competition = () => (
 export const S7bTrust = ({ coverage }: { coverage: number }) => {
   const tiles: [string, string, string][] = [
     [`${Math.round(coverage * 100)}%`, "of simulated nights land inside the 80% range", "Calibrated uncertainty, not a guess"],
-    [String(TESTS), `automated tests, ${PROPERTIES} property-based`, "Caught 2 real bugs before launch"],
+    [String(TESTS), `tests, ${PROPERTIES} of them property-based`, "Caught 2 real bugs before launch"],
     ["0", "writes allowed from the public", "Postgres row-level security"],
-    ["9", "signals per forecast, 1 live feed", "Live weather, usual guests, calendar, your logs"],
+    ["9", "signals per forecast, 1 live feed", "Live weather, guests, calendar, your logs"],
   ];
   return (
     <div className="relative flex h-full flex-col justify-between">
@@ -87,9 +87,9 @@ export const S7bTrust = ({ coverage }: { coverage: number }) => {
       <div className="grid grid-cols-2 gap-6">
         {tiles.map(([v, l, s]) => (
           <div key={l} className="flex items-center gap-8 rounded-2xl border border-border bg-surface px-8 py-7">
-            <p className="w-[170px] shrink-0 font-display text-[80px] font-800 leading-none tracking-tight tabular-nums text-good">{v}</p>
+            <p className="w-[190px] shrink-0 font-display text-[80px] font-800 leading-none tracking-tight tabular-nums text-good">{v}</p>
             <div>
-              <p className="text-[26px] leading-snug text-text-primary">{l}</p>
+              <p className="text-[24px] leading-snug text-text-primary">{l}</p>
               <p className="mt-2 text-[20px] leading-snug text-text-muted">{s}</p>
             </div>
           </div>

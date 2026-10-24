@@ -52,7 +52,7 @@ export const S13Team = () => (
       <p className="font-display text-[64px] font-700 leading-tight text-text-primary">Daniel Ibraev</p>
       <ul className="mt-8 space-y-5 text-[30px] leading-snug text-text-secondary">
         <li>Worked at a small cafe. Watched the bin fill up every night.</li>
-        <li>Built FreshCast end to end at this hackathon: model, app, database.</li>
+        <li>Built the model, app and database at this hackathon.</li>
         <li>Next: run it in a real kitchen and measure it against a scale.</li>
       </ul>
       <p className="mt-10 flex items-center gap-3 text-[22px] text-text-muted">
