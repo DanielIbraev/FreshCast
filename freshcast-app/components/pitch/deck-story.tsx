@@ -13,8 +13,8 @@ export function Line({ children, sub }: { children: React.ReactNode; sub?: React
   );
 }
 
-// Sources sit bottom-right, where the 0.86 cam scale keeps them clear of the
-// webcam circle.
+// Sources sit bottom-right, where the 0.86 uniform cam scale keeps them clear
+// of the square camera crop.
 export function Source({ children }: { children: React.ReactNode }) {
   return <p className="ml-auto text-right text-base text-text-muted">{children}</p>;
 }
