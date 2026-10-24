@@ -50,7 +50,7 @@ export default function ModelPage() {
           <CardLabel>FreshCast today (v4)</CardLabel>
           <p className="mt-2 font-display text-[44px] font-800 leading-none tabular-nums text-good">{pct(vLast)}</p>
           <p className="mt-2 text-xs text-text-muted">
-            {bench ? `${((1 - vLast!) / (1 - v0!)).toFixed(2)}x the error of guessing, ${(bench.ceiling * 100).toFixed(0)}% is the ceiling` : "Running benchmark"}
+            {bench ? `Cuts forecast error ${Math.round((1 - (1 - vLast!) / (1 - v0!)) * 100)}% vs. guessing. Ceiling is ${(bench.ceiling * 100).toFixed(0)}%.` : "Running benchmark"}
           </p>
         </Card>
         <Card>

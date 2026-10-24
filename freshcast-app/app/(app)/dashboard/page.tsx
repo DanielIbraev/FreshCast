@@ -20,7 +20,11 @@ export default function DashboardPage() {
   const [focusId, setFocusId] = useState<string | null>(null);
   const totals = useMemo(() => dailyTotals(observations, ingredients), [observations, ingredients]);
   const sum = useMemo(() => summarize(totals), [totals]);
-  const trend = totals.slice(-56).map((t) => ({ date: t.date, wasteCost: Math.round(t.wasteCost) }));
+  // 7-day rolling average: daily waste is noisy, the trend is the story
+  const trend = totals.map((t, i) => {
+    const win = totals.slice(Math.max(0, i - 6), i + 1);
+    return { date: t.date, wasteCost: Math.round(win.reduce((s, x) => s + x.wasteCost, 0) / win.length) };
+  });
   const drop = sum.monthlyBefore && sum.monthlyNow ? Math.round((1 - sum.monthlyNow / sum.monthlyBefore) * 100) : null;
 
   const focus = selected?.ingredients.find((i) => i.ingredient.id === focusId) ?? selected?.ingredients[0];

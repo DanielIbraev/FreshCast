@@ -37,24 +37,6 @@ export const DEMO_INGREDIENTS: Ingredient[] = [
   { id: "focaccia", name: "Focaccia", category: "bakery", costPerKg: 3.5, baselinePrepKg: 12, shelfLifeDays: 1, co2PerKg: 1.3 },
 ];
 
-export const DEMO_RUNNING_TOTALS = {
-  savedThisMonth: 1240,
-  co2PreventedKg: 48,
-  wasteBeforeMonthly: 1800,
-  wasteAfterMonthly: 340,
-};
-
-// 21 days of waste cost: high before FreshCast, falling after day 7.
-export function generateWasteHistory(): { date: string; wasteCost: number }[] {
-  const trend = [92, 88, 101, 85, 79, 64, 58, 71, 66, 68, 59, 52, 44, 41, 48, 43, 45, 38, 34, 31, 29];
-  const today = new Date();
-  return trend.map((wasteCost, i) => {
-    const d = new Date(today);
-    d.setDate(today.getDate() - (21 - i));
-    return { date: localISO(d), wasteCost };
-  });
-}
-
 // A few logs from earlier today so the log screen and charts aren't empty.
 export function seedTodayLogs(): WasteLog[] {
   const seed: [string, number, WasteReason, number][] = [
