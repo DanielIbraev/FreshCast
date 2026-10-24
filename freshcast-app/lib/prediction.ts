@@ -131,5 +131,6 @@ export function predictIngredientWaste(input: PredictionInput): IngredientPredic
 
 // Prior-only forecast of "prep as usual" waste. Learning compares logs to this.
 export function priorWasteKg(input: Omit<PredictionInput, "learned">): number {
-  return predictIngredientWaste({ ...input, learned: NO_LEARNING }).predictedWasteKg;
+  const signals = computeSignals({ ...input, learned: NO_LEARNING });
+  return input.ingredient.baselinePrepKg * BASE_WASTE_FRACTION * signals.reduce((a, s) => a * s.value, 1);
 }
