@@ -11,7 +11,7 @@
 
 ### What to cut if time is short
 - Onboarding flow → hardcode Marco's restaurant, skip setup
-- Multiple restaurants → one restaurant is fine for the demo
+- Multiple restaurants → built (3 demo restaurants); don't add more
 - Auth/login → can be a simple hardcoded demo login
 - Mobile responsive → desktop only is fine
 - Error states → happy path only, demo data never errors
