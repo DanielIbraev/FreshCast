@@ -9,20 +9,20 @@ const config: Config = {
     extend: {
       colors: {
         // FreshCast design tokens are declared in app/globals.css.
-        canvas: "var(--color-canvas)",
-        surface: "var(--color-surface)",
-        "surface-hover": "var(--color-surface-hover)",
-        border: "var(--color-border)",
-        "text-primary": "var(--color-text-primary)",
-        "text-secondary": "var(--color-text-secondary)",
-        "text-muted": "var(--color-text-muted)",
+        canvas: "rgb(var(--color-canvas) / <alpha-value>)",
+        surface: "rgb(var(--color-surface) / <alpha-value>)",
+        "surface-hover": "rgb(var(--color-surface-hover) / <alpha-value>)",
+        border: "rgb(var(--color-border) / <alpha-value>)",
+        "text-primary": "rgb(var(--color-text-primary) / <alpha-value>)",
+        "text-secondary": "rgb(var(--color-text-secondary) / <alpha-value>)",
+        "text-muted": "rgb(var(--color-text-muted) / <alpha-value>)",
         // Emerald = good/savings, red = waste, amber = medium risk.
-        good: "var(--color-good)",
-        "good-dim": "var(--color-good-dim)",
-        waste: "var(--color-waste)",
-        "waste-dim": "var(--color-waste-dim)",
-        caution: "var(--color-caution)",
-        data: "var(--color-data)",
+        good: "rgb(var(--color-good) / <alpha-value>)",
+        "good-dim": "rgb(var(--color-good-dim) / <alpha-value>)",
+        waste: "rgb(var(--color-waste) / <alpha-value>)",
+        "waste-dim": "rgb(var(--color-waste-dim) / <alpha-value>)",
+        caution: "rgb(var(--color-caution) / <alpha-value>)",
+        data: "rgb(var(--color-data) / <alpha-value>)",
       },
       fontFamily: {
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],
