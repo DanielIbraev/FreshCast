@@ -44,7 +44,8 @@ freshcast-app/
     forecast.ts       → builds a day's forecast; closed days return no forecast
     kitchens.ts       → the 3 demo kitchens: menus, CO₂e factors, hidden simulated habits
     profile.ts        → restaurant profiles (guests by weekday, open days, location)
-    sim.ts            → seeded kitchen simulator (hidden "true world")
+    sim.ts            → seeded kitchen simulator (hidden "true world"); replays real Boston weather where recorded
+    history-weather.json → Boston's recorded daily weather, last 92 days (Open-Meteo), read by sim.ts
     backtest.ts       → walk-forward benchmark, model versions v0–v4, 80% coverage
     effort.ts         → staff effort vs. accuracy; owner's-best-guess baseline
     history.ts        → dashboard money/CO₂e figures from stored close-outs
