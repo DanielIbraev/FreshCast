@@ -66,7 +66,7 @@ The first three are from [Anti-AI-UI](https://github.com/Vanszs/Anti-AI-UI) (MIT
 
 **Strategy that made the biggest difference:** the rule that every number on screen must come from code, never be typed in. It forced the dashboard, impact card, Model page and deck to read from stored close-outs and `benchmarks.json`. Combined with `pitch-and-demo.md` listing the only numbers allowed, it stopped the pitch from drifting away from the app. It is also why an early "20% → 90% accuracy" claim was dropped: there was no honest source for 20%.
 
-**Second:** pairing a ban list (anti-AI-slop) with a pattern library (component reference). Bans alone produced bland UI; the pair gave Kiro both what to avoid and what to build.
+**Second:** pairing a ban list (anti-AI-slop) with a pattern library (component reference), so Kiro had both what to avoid and what to build. That is why the UI uses flat dark surfaces, one emerald accent, Lucide icons and real numbers instead of the usual gradient-and-emoji defaults.
 
 ## Skills (`.kiro/skills/hallmark/`)
 The [Hallmark](https://github.com/nutlope/hallmark) design skill (MIT) was added as a workspace skill. Its `sloplint` script was run against the live app. It flagged low-contrast muted text, weak focus rings, labels in tracked capitals, and 4 font weights where 2–3 is the target. Those are being fixed. Some of the flagged patterns came from our own `ui-design.md` (uppercase, wide-tracked card labels), so the skill also caught a weak rule in our steering.
