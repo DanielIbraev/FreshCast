@@ -108,13 +108,13 @@ export function parseOpeningHours(s: string | undefined): ParsedHours {
 
     // Majority vote across open days that list times ("mostly closes by 4pm").
     const votes = new Map<ServiceStyle, number>();
-    week.forEach((w) => w && w.length && votes.set(classify(w), (votes.get(classify(w)) ?? 0) + 1));
-    let service: ServiceStyle | null = null;
-    let best = 0;
-    votes.forEach((n, k) => {
-      if (n > best) [service, best] = [k, n];
-    });
-    return { openDays, service };
+    for (const w of week) {
+      if (!w || !w.length) continue;
+      const c = classify(w);
+      votes.set(c, (votes.get(c) ?? 0) + 1);
+    }
+    const ranked = Array.from(votes).sort((a, b) => b[1] - a[1]);
+    return { openDays, service: ranked[0]?.[0] ?? null };
   } catch {
     return fallback();
   }
