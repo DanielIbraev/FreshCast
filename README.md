@@ -149,6 +149,7 @@ cd freshcast-app
 npm install
 npm run dev        # http://localhost:3000
 npm run bench      # re-score the model after changes (~20 s)
+npx tsx --tsconfig tsconfig.json scripts/fetch-history-weather.ts   # refresh Boston's recorded weather (last 92 days), then re-run the bench
 ```
 Without a database the app saves to the browser and works offline (seasonal weather fallback).
 
