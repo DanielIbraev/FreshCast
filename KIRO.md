@@ -1,83 +1,114 @@
 # How FreshCast was built with Kiro
 
-FreshCast was built solo in one day in the **Kiro IDE**, mostly in Autopilot mode. Kiro did the research, the code, the tests and the deployment fixes. My job was product decisions and pushing back. Everything below is in this repo: open `.kiro/` and the git history.
+FreshCast was built solo during Hackachusetts 2026 in the **Kiro IDE**. Kiro wrote most of the code, tests and docs, ran the research, and diagnosed deploy and CI failures. I made the product decisions, reviewed every screen, and pushed back when a number or claim didn't hold up. Everything below can be checked in this repo: the `.kiro/` folder and the git history (over 200 commits, most of them from the auto-commit hook).
 
-## Tools
-- **Kiro IDE**, the only Kiro surface used. Autopilot for building, with me reviewing every screen through headless-Chrome screenshots Kiro took itself.
-- **Not used:** Kiro CLI, Web or Crew. As a solo builder in one editor, I had no handoffs to make and no parallel streams that needed them.
-- **Built-in agent tools that mattered most:**
-  - **Web search and fetch** sourced every statistic in the app and deck (FAO, EPA, USDA, Technomic, Galley Solutions), plus the competitor teardown and the research on how Genjutsu, Vercel and Supabase actually behave. Kiro checked these docs instead of guessing.
-  - **Shell** ran builds, tests, benchmarks, and a clean-clone CI reproduction.
+## Kiro tools used: IDE only
+- **Kiro IDE** was the only Kiro surface used. I did not use Kiro CLI, Kiro Web or Kiro Crew, so I can't compare them from experience. As one person working in one editor, I had no handoffs or separate machines that would have needed them.
+- Inside the IDE, these parts did different jobs:
+  - **The agent chat** (mostly Autopilot) built features end to end: code, tests, shell commands, screenshots of the running app for review.
+  - **Subagents** ran in parallel on separate tasks while the main session kept building (details below).
+  - **Spec mode** for the one feature where correctness was the product.
+  - **Hooks, steering, a workspace skill and an MCP server**, each covered below.
+  - **Built-in web search and fetch** sourced every statistic (FAO, EPA, Feeding America, Technomic, Galley Solutions, Our World in Data) and checked vendor docs (Vercel, Supabase, Open-Meteo, the Nominatim usage policy) instead of guessing.
+
+## Subagents
+Kiro dispatched subagents in parallel for:
+1. The setup wizard (`/setup`): OpenStreetMap search that fills in name, address, cuisine and opening hours, plus an opening-hours parser with its own property tests.
+2. The per-restaurant Model accuracy page (`lib/track-record.ts`, `components/model/`).
+3. The page-entrance animation (holds until data is ready, respects reduced motion).
+4. **A math and sources audit of the model.**
+5. These docs, checked line by line against the code.
+
+The audit was the most valuable. It found real problems, and each was fixed in code:
+- **Closed days forecast maximum waste.** A day with 0 usual guests drove the guest signal to its cap. Closed days now have no forecast, no prep cut and no savings (property P12).
+- **All demo restaurants shared one history.** Each restaurant now has its own menu, hidden habits, weather and simulated history (`lib/kitchens.ts`).
+- **Savings counted sold-out nights.** If the plan cut prep and an item logged 0, the cut wasn't provably waste. Those nights now count $0 saved and are excluded from scoring and ranges (P13).
+- **The guest signal claimed a reservation integration that didn't exist.** It now says what it is: the restaurant's usual guests for that weekday, a what-if slider, and guests served entered at close-out.
+- **CO₂ factors were mis-sourced.** They now come from Poore & Nemecek (2018) via Our World in Data, with the per-item mapping written in `lib/kitchens.ts`.
+
+The audit also led to removing two multipliers: a fixed industry day-of-week prior (it double-counted what weekday guest counts already capture, and pointed the wrong way for lunch spots) and a cuisine multiplier (no source).
 
 ## Spec-driven development
-- **Where:** `.kiro/specs/forecast-confidence/`, covering requirements, design and tasks.
-- **When I used it vs. vibe coding:** most of the app was vibe-coded fast, with steering as guardrails. I switched to a spec for the one feature where *correctness* was the product: putting an honest 80% confidence range on every forecast. A wrong range is worse than no range.
-- **How the spec is structured:**
-  - **Requirements** in EARS form ("WHEN … THE SYSTEM SHALL …"), with user stories for the owner and for a skeptical technical reviewer.
-  - **Design** includes a *correctness properties* table, mapping each requirement to a property that must hold for all inputs.
-  - **Tasks** reference requirement numbers. Task 1 was to write the properties before the feature.
-- **What it changed:**
-  1. **The properties found 2 real bugs** before any new code existed (see PBT below).
-  2. **The spec required proving the range is honest** (Req 3), so we measured it. The first version covered only **73.4%** of real nights, because errors were measured against forecasts rebuilt with the guest count known only at close. Recovering the forecast the kitchen actually saw that morning (from the stored prep cut) fixed it: **79.6% coverage on a nominal 80%.** A test now fails if coverage drifts outside 70–90%.
-
-  Vibe coding would have shipped a nice-looking range that was quietly wrong.
+- **Where:** `.kiro/specs/forecast-confidence/` with `requirements.md`, `design.md` and `tasks.md`.
+- **Why a spec here and not everywhere:** most of the app was vibe-coded quickly with steering as guardrails. I switched to a spec for 80% confidence ranges on every forecast, because a range that looks right but is wrong is worse than no range.
+- **How it is structured:**
+  - **Requirements** in EARS form ("WHEN … THE SYSTEM SHALL …"), with user stories for the owner and for a skeptical technical reviewer. Req 3 demands proof: measured coverage of the range, and a test that fails if coverage leaves 70–90%.
+  - **Design** includes a table of correctness properties, each a requirement restated for all inputs, so they could become property-based tests.
+  - **Tasks** reference requirement numbers. Task 1 was to write the properties against the existing code before building anything new.
+- **How it compared with vibe coding:**
+  - The properties found 2 bugs before any new code existed (see below).
+  - The first range design measured only **73.4%** coverage on a nominal 80%. Errors were being measured against a forecast rebuilt with the guest count known only at close, which the kitchen never saw in the morning. The fix was to measure errors against the morning forecast, recovered from the stored prep cut (cut = forecast × 0.63). Coverage is now **80.7%** for Marco's, 79.6% for Golden Crumb and 82.0% for Kendall.
+  - Vibe coding would have shipped the 73% version, because it looked fine on screen.
 
 ## Agent hooks (`.kiro/hooks/`)
-| Hook | Trigger | What it does |
-|---|---|---|
-| `auto-commit-push` | PostFileSave | Commits and pushes every save. The repo's 150+ commits are a live timeline of the build. |
-| `test-on-model-save` | PostFileSave on `lib/` or `tests/` | Runs all 35 unit and property tests, so a model edit can't silently break a claim in the pitch. |
-| `rescore-model` | PostFileSave on the forecasting files | Regenerates `lib/benchmarks.json` (accuracy per model version, the owner baseline, the effort study, range coverage). The dashboard, Model page and deck read that file, so their numbers can't go stale. |
+| Hook file | Trigger | Matcher | What it does |
+|---|---|---|---|
+| `auto-commit-push.json` | PostFileSave | any file | `git add -A`, commit as "auto: save HH:MM:SS", push to `main`. The commit history is a timeline of the build. |
+| `test-on-model-save.json` | PostFileSave | `freshcast-app/(lib\|tests)/.*\.ts$` | Runs the Vitest suite (dot reporter, 120 s timeout), so a model edit can't quietly break a claim in the pitch. |
+| `rescore-model.json` | PostFileSave | `freshcast-app/lib/(prediction\|learning\|sim\|effort\|backtest\|uncertainty)\.ts$` | Runs `npm run bench` (180 s timeout), which rewrites `lib/benchmarks.json`. The Model page and the deck read that file, so their accuracy numbers can't go stale. |
 
-**Lesson learned:** pushing on every save created 140+ commits in 24 hours, and each one triggered a Vercel deploy. That hit Vercel's 100-deploys-per-day limit. Kiro diagnosed it from the GitHub check, confirmed in Vercel's docs that ignored builds still count toward the limit, and fixed the root cause with `git.deploymentEnabled: false`. Now GitHub updates continuously and production deploys happen on purpose. The same session diagnosed a failing CI run: tests passed in a clean UTC clone but timed out on slower shared runners, so the test timeout was raised.
+- **Tried and removed:** a PreToolUse `secret-guard` script that blocked any agent write containing the admin token or a Supabase service key. It is not active. Secrets are kept out by `.gitignore` (`.env.local`, `*.secret`, `*.local.sql`) and by never needing a server secret in the app.
+- **A strategic decision the hooks forced:** pushing on every save produced well over 100 commits a day, and each one triggered a Vercel deploy. That hit Vercel's limit of 100 deployments per day. Kiro found it from the failing GitHub check and confirmed in Vercel's docs that skipped builds still count. The fix was to turn off git deploys (`"git": { "deploymentEnabled": false }` in `freshcast-app/vercel.json`) and deploy through a Vercel deploy hook when a version is ready. GitHub still gets every change; production deploys happen on purpose.
+- The same session fixed a CI failure: tests passed locally but timed out on slower GitHub runners, so the test timeout was raised.
 
-## Steering (`.kiro/steering/`, always on)
-- **Four project files:**
-  - `saas-engineering`: stack, architecture, the model's math.
-  - `ui-design`: color tokens, type, components.
-  - `pitch-and-demo`: verified stats with sources, the demo script, Q&A.
-  - `hackathon-mindset`: scope rules, and *"commit and push after every change; update the pitch, README and deck in the same pass."*
-- **Three third-party files** from [Anti-AI-UI](https://github.com/Vanszs/Anti-AI-UI) (MIT): an anti-AI-slop filter, a component reference, and a UI/UX design system.
-- **Strategy that made the biggest difference:** pairing a *ban list* with a *pattern library*.
-  - The anti-slop file bans the defaults AI UIs fall into: purple gradients, Inter for everything, emoji icons, glassmorphism, hype copy.
-  - The component reference says what to build instead.
-  - This is why the UI uses Sora and Inter, flat surfaces, one emerald accent, and real numbers everywhere.
-- **Second biggest:** the rule that *every number on screen must come from code, not constants.* It forced the dashboard, impact card and deck to read from stored data, and it's why the deck can't contradict the app.
+## Steering (`.kiro/steering/`, 7 files, always included)
+| File | Role |
+|---|---|
+| `anti-ai-slop.md` | Design guardrail: a ban list of the defaults AI-generated UIs fall into (purple gradients, emoji icons, glassmorphism, hype copy, no reduced-motion). |
+| `component-reference.md` | Design guardrail: the matching library of patterns to build instead. |
+| `ui-ux-pro-max.md` | Design guardrail: a searchable design-system reference. |
+| `ui-design.md` | FreshCast's own tokens: dark surfaces, one emerald accent, red for waste, Lucide icons, Recharts. |
+| `saas-engineering.md` | Defines the engine: stack, project structure, every signal and its value, learning rules. |
+| `pitch-and-demo.md` | Keeps numbers consistent: the only numbers allowed in the pitch, the demo script and Q&A. |
+| `hackathon-mindset.md` | Sets priorities and scope, plus the standing rule to update docs, deck and steering in the same pass as any number change. |
+
+The first three are from [Anti-AI-UI](https://github.com/Vanszs/Anti-AI-UI) (MIT).
+
+**Strategy that made the biggest difference:** the rule that every number on screen must come from code, never be typed in. It forced the dashboard, impact card, Model page and deck to read from stored close-outs and `benchmarks.json`. Combined with `pitch-and-demo.md` listing the only numbers allowed, it stopped the pitch from drifting away from the app. It is also why an early "20% → 90% accuracy" claim was dropped: there was no honest source for 20%.
+
+**Second:** pairing a ban list (anti-AI-slop) with a pattern library (component reference). Bans alone produced bland UI; the pair gave Kiro both what to avoid and what to build.
+
+## Skills (`.kiro/skills/hallmark/`)
+The [Hallmark](https://github.com/nutlope/hallmark) design skill (MIT) was added as a workspace skill. Its `sloplint` script was run against the live app. It flagged low-contrast muted text, weak focus rings, labels in tracked capitals, and 4 font weights where 2–3 is the target. Those are being fixed. Some of the flagged patterns came from our own `ui-design.md` (uppercase, wide-tracked card labels), so the skill also caught a weak rule in our steering.
 
 ## MCP (`.kiro/settings/mcp.json`)
-- **`pptx-mcp`** gives Kiro the ability to create and edit real PowerPoint files. Kiro used it to generate an editable backup `.pptx` of the pitch from the same stats.
-- **Getting it running was its own debugging job:**
-  - Its `cryptography` dependency failed to build because macOS had no OpenSSL.
-  - Kiro pinned a version with prebuilt wheels and pointed the MCP config at the Python interpreter that had the dependencies.
-- Without MCP, the deck would only have existed as a web page.
+- **`pptx-mcp`** is the one MCP server configured. It lets Kiro create and edit real PowerPoint files, and Kiro used it to generate an editable backup deck (`_reference/FreshCast-Pitch-Deck.pptx`) in case the web deck failed on the presentation machine. The live deck at `/pitch` is the current one.
+- Getting it running took debugging: its `cryptography` dependency failed to build because macOS had no OpenSSL, so Kiro pinned a version with prebuilt wheels and pointed the config at the Python interpreter that had the dependencies.
+- **Web search and fetch** (built into Kiro, not an MCP server) did the sourcing work: every statistic in the README, app and deck has a named source.
 
-## Property-based testing (`freshcast-app/tests/properties.test.ts`, fast-check)
-11 properties, 200 generated cases each:
+## Property-based testing
+`freshcast-app/tests/properties.test.ts`, fast-check, 200 generated cases per property. The full suite is 60 tests (`cd freshcast-app && ./node_modules/.bin/vitest run`), and GitHub Actions runs it on every push.
 
-| # | Property |
-|---|---|
-| P1 | The forecast is finite and never negative |
-| P2 | More guests never means more waste |
-| P3 | The forecast is linear in prep |
-| P4 | The prep plan never asks for negative prep or more than usual |
-| P5 | Learned factors stay inside their clamps |
-| P6 | Observations from the target day or later never change a forecast (no leakage) |
-| P7 | Calibration stays between 1.0 and the kitchen's mean (shrinkage) |
-| P8 | 0 ≤ low ≤ forecast ≤ high |
-| P9 | Accuracy is in [0, 1] |
-| P10 | Any CSV table survives write → parse |
-| P11 | Every date the importer accepts is a real calendar date |
+| # | Property | Requirement |
+|---|---|---|
+| P1 | The forecast is finite and never negative | Model safety |
+| P2 | More guests never means more forecast waste | Guest signal direction |
+| P3 | The forecast is linear in daily prep | Units |
+| P4 | The prep plan never asks for negative prep or more than usual | The plan can't tell a cook to prep more |
+| P5 | Learned factors stay inside their clamps | Learning stability |
+| P6 | Observations from the target day or later never change the forecast | No leakage (Req 2.4) |
+| P7 | Calibration sits between 1.0 and the kitchen's mean ratio | Shrinkage |
+| P8 | 0 ≤ low ≤ forecast ≤ high | Req 1.3 |
+| P9 | Accuracy is in [0, 1], and exactly 1 when every forecast is right | Metric |
+| P10 | Any CSV table survives write → parse | Importer |
+| P11 | Every date the importer accepts is a real calendar date | Req 4.1 |
+| P12 | A closed day never forecasts waste, savings or a prep cut | Added after the audit |
+| P13 | Sold-out (censored) nights never feed the confidence ranges | Added after the audit |
 
-**What PBT caught that the 21 existing unit tests had missed:**
-- **P4:** for a 0.1 kg/day item, rounding made the plan recommend *more* than the usual prep. Shrunk counterexample: prep 0.1055 kg, 109 guests, calibration 0.4.
-- **P11:** the sales-CSV importer accepted **2/29/2026** (2026 is not a leap year) and silently rolled it into March 1, skewing the guest pattern.
+The setup wizard's opening-hours parser has 3 more properties in `tests/opening-hours.test.ts` (never throws on any string, always returns 7 days, a single rule opens exactly the days it names).
 
-Both are fixed, with regression tests. These are exactly the edge cases people don't think to write example tests for.
+**What PBT caught that the example tests had missed:**
+- **P4:** for tiny items (around 0.1 kg of prep a day), rounding made the plan recommend *more* than the usual prep. Shrunk counterexample: prep 0.1055 kg, 109 guests, calibration 0.4. Fixed with a clamp after rounding in `lib/prediction.ts`; regression test in `tests/prediction.test.ts`.
+- **P11:** the sales-CSV importer accepted **2/29/2026** (not a leap year) and rolled it into March 1, which skewed the guest pattern. Fixed with a calendar round-trip check; regression test in `tests/benchmark.test.ts`.
+
+Both are edge cases nobody thinks to write an example test for.
 
 ## Kiro powers
-Not used during the build. I checked the registry and the Supabase power fit our stack, but I set up Supabase directly (schema plus row-level-security SQL) before I knew powers existed. Next step: use the Supabase power's security advisors to audit the RLS policies.
+None were installed or used. Supabase was set up directly with SQL (`freshcast-app/supabase/schema.sql` and `security.sql`).
 
-## How Kiro shaped the strategy
-- **Research before code:** Kiro pulled the winning-pitch structure from TreeHacks winners and YC's deck guidance, and tested my "beats the owner's gut" claim by *building* an owner baseline. The honest number (38% fewer misses, not "20% → 90%") replaced the one I wanted.
-- **Effort vs. accuracy as an experiment:** Kiro replayed 6 staff-logging plans on 5 simulated kitchens. The data picked the default: one minute a night of quick-tap estimates. A scale costs 3x the time for 0.4 points.
-- **Security as a design decision:** the public can read the demo but not write. Postgres checks an owner token through a `SECURITY DEFINER` function, and pilot sign-ups are insert-only. Kiro also caught that `.env.local` had been committed and upgraded Next.js past critical security advisories.
+## Experimentation and strategic decisions
+- **Build the baseline you're claiming to beat.** Instead of claiming "beats the owner's gut", Kiro built an owner baseline (`ownerBaseline` in `lib/effort.ts`): an owner who remembers exactly what was wasted on the same weekday for the last 4 weeks. That is generous, since no owner knows those numbers without logging. FreshCast's v4 still makes 29%, 32% and 21% fewer misses than that owner for the three restaurants.
+- **Effort vs. accuracy as an experiment.** Kiro replayed 6 staff-logging plans (`PLANS` in `lib/effort.ts`). For Marco's, quick-tap logging of every item plus guests served takes about 1.2 minutes a night and reaches 85.4%. Weighing every item takes about 3.5 minutes for 85.9%. The data chose quick taps as the default.
+- **Ablation, so every signal earns its place.** The benchmark adds signals one version at a time (v0 to v4) and scores each the same way. Signals that couldn't be sourced or that double-counted were removed (see the audit above).
+- **Honest framing of the benchmark.** The simulator shares the model's structure, so the benchmark shows the learning recovers hidden habits. It does not prove real-world accuracy. The next step after the hackathon is testing in a real kitchen.
+- **Security as a design decision.** The public can read the demo but not change it: Postgres row-level security plus an owner token checked by a `SECURITY DEFINER` function. Kiro also caught that `.env.local` had been committed early on (now untracked and ignored) and upgraded Next.js 14 to 15.5.28 to patch critical advisories.
