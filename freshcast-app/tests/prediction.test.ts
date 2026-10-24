@@ -52,6 +52,12 @@ describe("prediction engine", () => {
     expect(p.recommendedPrepKg).toBeGreaterThan(0);
   });
 
+  it("regression (found by PBT P4): tiny items never get more than usual prep", () => {
+    const tiny = { ...salmon, baselinePrepKg: 0.10551996228669307, costPerKg: 0.5 };
+    const p = predictIngredientWaste({ ...neutral({ ingredient: tiny, expectedCovers: 109 }), learned: { ...NO_LEARNING, calibration: 0.4, days: 10 } });
+    expect(p.recommendedPrepKg).toBeLessThanOrEqual(tiny.baselinePrepKg);
+  });
+
   it("learned corrections multiply on top of the priors", () => {
     const base = predictIngredientWaste({ ...neutral(), learned: NO_LEARNING }).predictedWasteKg;
     const learned = predictIngredientWaste({ ...neutral(), learned: { ...NO_LEARNING, calibration: 1.2, days: 20 } }).predictedWasteKg;

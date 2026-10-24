@@ -129,7 +129,9 @@ export function predictIngredientWaste(input: PredictionInput): IngredientPredic
     reducedWasteCost: round(reducedWasteKg * ingredient.costPerKg),
     reducedCo2Kg: round(reducedWasteKg * ingredient.co2PerKg),
     cutKg: round(cutKg, 3),
-    recommendedPrepKg: round(Math.max(0, ingredient.baselinePrepKg - cutKg)),
+    // Clamp after rounding: for tiny items, rounding could otherwise recommend
+    // MORE than usual prep (found by property test P4).
+    recommendedPrepKg: Math.min(ingredient.baselinePrepKg, round(Math.max(0, ingredient.baselinePrepKg - cutKg))),
     recommendation: `Prep ${round(cutKg, 1)}kg less. ${primaryDriver.label} (${primaryDriver.detail}) ${verb}.`,
     riskLevel: predictedWasteCost >= 10 ? "high" : predictedWasteCost >= 4 ? "medium" : "low",
     primaryDriver,

@@ -35,6 +35,11 @@ describe("POS sales import", () => {
     expect(r.guestColumn).toBe("Guests");
   });
 
+  it("regression (found by PBT P11): skips impossible dates like 2/29/2026", () => {
+    const rows = ["Date,Guests", ...Array.from({ length: 14 }, (_, i) => `3/${i + 1}/2026,10`), "2/29/2026,500"];
+    expect(importPosCsv(rows.join("\n")).days).toBe(14);
+  });
+
   it("rejects files without a date column", () => {
     expect(() => importPosCsv("foo,bar\n1,2\n")).toThrow(/date column/);
   });

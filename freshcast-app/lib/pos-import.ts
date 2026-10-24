@@ -55,7 +55,10 @@ function toISODate(v: string): string | null {
   return null;
 }
 function iso(y: number, mo: number, d: number): string | null {
-  if (mo < 1 || mo > 12 || d < 1 || d > 31) return null;
+  // Round-trip through Date so 2/29 in a non-leap year or 4/31 is rejected
+  // instead of rolling into the next month (found by property test P11).
+  const dt = new Date(y, mo - 1, d);
+  if (dt.getFullYear() !== y || dt.getMonth() !== mo - 1 || dt.getDate() !== d) return null;
   return `${y}-${String(mo).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
 }
 
