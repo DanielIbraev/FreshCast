@@ -1,225 +1,133 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { motion } from "framer-motion";
-import {
-  CloudRain,
-  Users,
-  TrendingDown,
-  Leaf,
-  Sparkles,
-  ArrowRight,
-} from "lucide-react";
+import { ArrowDown, Check, Leaf, Radio, Sparkles } from "lucide-react";
 import { Card, CardLabel } from "@/components/ui/card";
 import { Counter } from "@/components/ui/counter";
 import { WasteTrend } from "@/components/charts/waste-trend";
-import { buildDayForecast } from "@/lib/forecast";
-import {
-  DEMO_TOMORROW,
-  DEMO_RUNNING_TOTALS,
-  generateWasteHistory,
-} from "@/lib/demo-data";
-import { formatCurrency } from "@/lib/utils";
+import { WeekStrip } from "@/components/dashboard/week-strip";
+import { ScenarioBar } from "@/components/dashboard/scenario-bar";
+import { IngredientBars } from "@/components/dashboard/ingredient-bars";
+import { SignalBreakdown } from "@/components/dashboard/signal-breakdown";
+import { useStore } from "@/lib/store";
+import { DEMO_RUNNING_TOTALS, generateWasteHistory, parseLocalDate } from "@/lib/demo-data";
+import { cn, formatCurrency } from "@/lib/utils";
 
 export default function DashboardPage() {
+  const { selected, weatherSource, ingredients } = useStore();
   const [applied, setApplied] = useState(false);
-
-  const forecast = useMemo(() => {
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    return buildDayForecast({
-      expectedCovers: DEMO_TOMORROW.expectedCovers,
-      weather: {
-        tempF: DEMO_TOMORROW.tempF,
-        condition: DEMO_TOMORROW.weatherCondition,
-        description: DEMO_TOMORROW.weatherDescription,
-      },
-      event: { name: "", type: "none", distanceMiles: 0 },
-      date: tomorrow,
-    });
-  }, []);
-
+  const [focusId, setFocusId] = useState<string | null>(null);
   const history = useMemo(() => generateWasteHistory(), []);
 
-  const maxWaste = Math.max(
-    ...forecast.ingredients.map((i) => i.predictedWasteCost)
-  );
-
-  const currentTotal = applied
-    ? forecast.totalReducedCost
-    : forecast.totalWasteCost;
+  const focus = selected?.ingredients.find((i) => i.ingredient.id === focusId) ?? selected?.ingredients[0];
+  const dateLabel = selected
+    ? parseLocalDate(selected.date).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })
+    : "";
+  const yearly = (DEMO_RUNNING_TOTALS.wasteBeforeMonthly - DEMO_RUNNING_TOTALS.wasteAfterMonthly) * 12;
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-end justify-between">
+    <div className="space-y-5">
+      <header className="flex items-end justify-between">
         <div>
-          <h1 className="font-display text-2xl font-700 text-text-primary">
-            Tomorrow&apos;s Forecast
-          </h1>
-          <p className="mt-1 text-sm text-text-secondary">
-            Based on 9 live signals. No input needed from you.
-          </p>
+          <p className="text-sm text-text-muted">Prep forecast</p>
+          <h1 className="font-display text-[28px] font-700 leading-tight text-text-primary">{dateLabel || "Loading forecast"}</h1>
         </div>
-        <div className="flex items-center gap-4 text-sm">
-          <span className="flex items-center gap-2 text-text-secondary">
-            <Users className="h-4 w-4 text-data" />
-            {forecast.expectedCovers} covers
-          </span>
-          <span className="flex items-center gap-2 text-text-secondary">
-            <CloudRain className="h-4 w-4 text-data" />
-            {forecast.weather.description}
-          </span>
-        </div>
-      </div>
+        <span className="flex items-center gap-2 rounded-md border border-border bg-surface px-3 py-1.5 text-xs text-text-secondary">
+          <Radio className={cn("h-3.5 w-3.5", weatherSource === "live" ? "text-good" : "text-caution")} />
+          {weatherSource === "live" ? "Live weather · Open-Meteo" : weatherSource === "loading" ? "Fetching weather" : "Offline · seasonal weather"}
+          <span className="text-text-muted">· {ingredients.length} ingredients tracked</span>
+        </span>
+      </header>
 
-      {/* Top stat row */}
-      <div className="grid grid-cols-3 gap-4">
-        <Card>
-          <CardLabel>Waste at risk tomorrow</CardLabel>
-          <p className="mt-2 font-display text-4xl font-800 tracking-tight tabular-nums">
-            <Counter
-              value={currentTotal}
-              prefix="$"
-              className={applied ? "text-good" : "text-waste"}
-            />
-          </p>
-          <p className="mt-1 text-xs text-text-muted">
-            {applied
-              ? "After FreshCast recommendations"
-              : "If you prep as usual"}
-          </p>
-        </Card>
+      <WeekStrip />
+      <ScenarioBar />
 
-        <Card>
-          <CardLabel>Saved this month</CardLabel>
-          <p className="mt-2 font-display text-4xl font-800 tracking-tight tabular-nums text-good">
-            <Counter value={DEMO_RUNNING_TOTALS.savedThisMonth} prefix="$" />
-          </p>
-          <p className="mt-1 flex items-center gap-1 text-xs text-good">
-            <TrendingDown className="h-3 w-3" />
-            81% less waste than before
-          </p>
-        </Card>
-
-        <Card>
-          <CardLabel>CO₂ prevented</CardLabel>
-          <p className="mt-2 font-display text-4xl font-800 tracking-tight tabular-nums text-good">
-            <Counter
-              value={DEMO_RUNNING_TOTALS.co2PreventedKg}
-              suffix="kg"
-            />
-          </p>
-          <p className="mt-1 flex items-center gap-1 text-xs text-text-muted">
-            <Leaf className="h-3 w-3 text-good" />
-            Equal to 193 miles not driven
-          </p>
-        </Card>
-      </div>
-
-      {/* Prediction breakdown — the hero section with red to green */}
-      <Card>
-        <div className="mb-5 flex items-center justify-between">
-          <div>
-            <h2 className="font-display text-lg font-600 text-text-primary">
-              Predicted waste by ingredient
-            </h2>
-            <p className="mt-0.5 text-sm text-text-secondary">
-              {applied
-                ? "Recommendations applied — prep adjusted"
-                : "Highest-risk items for tomorrow's service"}
-            </p>
+      {selected && focus && (
+        <>
+          <div className="grid grid-cols-3 gap-4">
+            <Card>
+              <CardLabel>Waste at risk</CardLabel>
+              <p className={cn("mt-2 font-display text-[44px] font-800 leading-none tracking-tight tabular-nums", applied ? "text-good" : "text-waste")}>
+                <Counter value={applied ? selected.totalReducedCost : selected.totalWasteCost} prefix="$" />
+              </p>
+              <p className="mt-2 text-xs text-text-muted">{applied ? "With FreshCast prep plan" : "If you prep like a normal day"}</p>
+            </Card>
+            <Card>
+              <CardLabel>Plan saves you</CardLabel>
+              <p className="mt-2 font-display text-[44px] font-800 leading-none tracking-tight tabular-nums text-good">
+                <Counter value={selected.totalSavings} prefix="$" />
+              </p>
+              <p className="mt-2 text-xs text-text-muted">
+                and {selected.totalCo2Prevented.toFixed(1)}kg CO₂ on this service
+              </p>
+            </Card>
+            <Card>
+              <CardLabel>Saved this month</CardLabel>
+              <p className="mt-2 font-display text-[44px] font-800 leading-none tracking-tight tabular-nums text-text-primary">
+                <Counter value={DEMO_RUNNING_TOTALS.savedThisMonth} prefix="$" />
+              </p>
+              <p className="mt-2 flex items-center gap-1.5 text-xs text-text-muted">
+                <Leaf className="h-3 w-3 text-good" /> {DEMO_RUNNING_TOTALS.co2PreventedKg}kg CO₂, about 120 miles not driven
+              </p>
+            </Card>
           </div>
-          <button
-            onClick={() => setApplied((v) => !v)}
-            className="flex items-center gap-2 rounded-md bg-good px-4 py-2 text-sm font-500 text-canvas transition-colors duration-150 hover:bg-good-dim"
-          >
-            <Sparkles className="h-4 w-4" />
-            {applied ? "Reset forecast" : "Apply recommendations"}
-          </button>
-        </div>
 
-        <div className="space-y-3">
-          {forecast.ingredients.map((item, idx) => {
-            const cost = applied
-              ? item.reducedWasteCost
-              : item.predictedWasteCost;
-            const widthPct = (cost / maxWaste) * 100;
-            return (
-              <div key={item.ingredient.id} className="flex items-center gap-4">
-                <span className="w-44 shrink-0 text-sm text-text-secondary">
-                  {item.ingredient.name}
-                </span>
-                <div className="relative h-8 flex-1 overflow-hidden rounded-md bg-canvas">
-                  <motion.div
-                    className="absolute inset-y-0 left-0 rounded-md"
-                    initial={false}
-                    animate={{
-                      width: `${Math.max(widthPct, 4)}%`,
-                      backgroundColor: applied ? "#10B981" : "#EF4444",
-                    }}
-                    transition={{ duration: 0.8, ease: "easeInOut", delay: idx * 0.04 }}
-                  />
-                  <span className="absolute inset-y-0 right-3 flex items-center text-xs font-500 tabular-nums text-text-primary">
-                    {formatCurrency(cost)}
-                  </span>
+          <div className="grid grid-cols-[1.45fr_1fr] gap-4">
+            <Card>
+              <div className="mb-4 flex items-start justify-between gap-4">
+                <div>
+                  <h2 className="font-display text-lg font-600 text-text-primary">Waste forecast by ingredient</h2>
+                  <p className="mt-0.5 text-sm text-text-secondary">
+                    {applied ? "Prep plan applied. Bars show what's left at risk." : "Click any row to see why the model flagged it."}
+                  </p>
                 </div>
+                <button
+                  onClick={() => setApplied((v) => !v)}
+                  className={cn(
+                    "flex shrink-0 items-center gap-2 rounded-md px-4 py-2 text-sm font-600 transition-colors duration-150",
+                    applied ? "border border-border text-text-secondary hover:text-text-primary" : "bg-good text-canvas hover:bg-good-dim"
+                  )}
+                >
+                  {applied ? <Check className="h-4 w-4" /> : <Sparkles className="h-4 w-4" />}
+                  {applied ? "Plan applied" : "Apply prep plan"}
+                </button>
               </div>
-            );
-          })}
-        </div>
+              <IngredientBars items={selected.ingredients} applied={applied} selectedId={focus.ingredient.id} onSelect={setFocusId} />
+            </Card>
 
-        {/* Top driver explanation */}
-        <div className="mt-5 rounded-md border border-border bg-canvas p-4">
-          <p className="text-sm text-text-secondary">
-            <span className="font-500 text-text-primary">
-              Why {forecast.ingredients[0].ingredient.name}?
-            </span>{" "}
-            {forecast.ingredients[0].recommendation}
-          </p>
-        </div>
-      </Card>
+            <Card>
+              <CardLabel>How the model got there</CardLabel>
+              <div className="mt-3">
+                <SignalBreakdown item={focus} />
+              </div>
+            </Card>
+          </div>
+        </>
+      )}
 
-      {/* Trend + savings callout */}
       <div className="grid grid-cols-[1.6fr_1fr] gap-4">
         <Card>
-          <h2 className="mb-1 font-display text-lg font-600 text-text-primary">
-            Daily waste, last 3 weeks
-          </h2>
-          <p className="mb-4 text-sm text-text-secondary">
-            Waste dropped 68% after Marco started following FreshCast.
-          </p>
+          <h2 className="font-display text-lg font-600 text-text-primary">Daily waste, last 3 weeks</h2>
+          <p className="mb-4 mt-0.5 text-sm text-text-secondary">Down 68% since Marco started prepping to the forecast.</p>
           <WasteTrend data={history} />
         </Card>
-
-        <Card className="flex flex-col justify-center">
-          <CardLabel>Before vs. after FreshCast</CardLabel>
-          <div className="mt-4 space-y-4">
+        <Card className="flex flex-col">
+          <CardLabel>Monthly waste</CardLabel>
+          <div className="mt-4 flex items-end justify-between">
             <div>
-              <p className="text-sm text-text-muted">Monthly waste before</p>
-              <p className="font-display text-2xl font-700 text-waste tabular-nums">
-                {formatCurrency(DEMO_RUNNING_TOTALS.wasteBeforeMonthly)}
-              </p>
+              <p className="text-xs text-text-muted">Before</p>
+              <p className="font-display text-3xl font-700 tabular-nums text-waste line-through decoration-2">{formatCurrency(DEMO_RUNNING_TOTALS.wasteBeforeMonthly)}</p>
             </div>
-            <div className="flex justify-center">
-              <ArrowRight className="h-5 w-5 rotate-90 text-text-muted" />
+            <ArrowDown className="mb-2 h-5 w-5 -rotate-90 text-text-muted" />
+            <div className="text-right">
+              <p className="text-xs text-text-muted">Now</p>
+              <p className="font-display text-3xl font-700 tabular-nums text-good">{formatCurrency(DEMO_RUNNING_TOTALS.wasteAfterMonthly)}</p>
             </div>
-            <div>
-              <p className="text-sm text-text-muted">Monthly waste now</p>
-              <p className="font-display text-2xl font-700 text-good tabular-nums">
-                {formatCurrency(DEMO_RUNNING_TOTALS.wasteAfterMonthly)}
-              </p>
-            </div>
-            <div className="border-t border-border pt-4">
-              <p className="text-sm text-text-muted">Saved per year</p>
-              <p className="font-display text-3xl font-800 text-good tabular-nums">
-                {formatCurrency(
-                  (DEMO_RUNNING_TOTALS.wasteBeforeMonthly -
-                    DEMO_RUNNING_TOTALS.wasteAfterMonthly) *
-                    12
-                )}
-              </p>
-            </div>
+          </div>
+          <div className="mt-auto border-t border-border pt-4">
+            <p className="text-xs text-text-muted">Kept per year</p>
+            <p className="font-display text-[40px] font-800 leading-none tabular-nums text-good">{formatCurrency(yearly)}</p>
+            <p className="mt-2 text-xs text-text-muted">FreshCast costs $588/year. That&apos;s a 30x return.</p>
           </div>
         </Card>
       </div>
