@@ -16,6 +16,9 @@ import { S12bKiro, S13Team, S14Try } from "@/components/pitch/deck-close";
 // screen recording all look identical.
 const W = 1600;
 const H = 900;
+const CAM_SIZE = 180;
+const CAM_RIGHT = 24;
+const CAM_BOTTOM = 56;
 const LB_PER_KG = 2.2046;
 
 function Deck() {
