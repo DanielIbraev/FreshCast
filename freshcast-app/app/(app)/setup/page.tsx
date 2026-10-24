@@ -1,195 +1,152 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Check, Loader2, MapPin } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { Select } from "@/components/ui/select";
-import { GuestPattern } from "@/components/guest-pattern";
 import { useStore } from "@/lib/store";
 import { CuisineType } from "@/lib/types";
-import { CUISINE_LABELS, STAPLES, toIngredient } from "@/lib/staples";
-import { CATEGORIES } from "@/lib/categories";
-import { Profile, weeklyShape } from "@/lib/profile";
-import { cn } from "@/lib/utils";
+import { AutoField, Draft, Errors, PlaceResult, buildIngredients, buildProfile, emptyDraft, fromPlace, stapleRows, validate } from "@/components/setup/draft";
+import { STEPS, Stepper } from "@/components/setup/stepper";
+import { SearchState, StepFind, emptySearch } from "@/components/setup/step-find";
+import { StepDetails } from "@/components/setup/step-details";
+import { StepBusy } from "@/components/setup/step-busy";
+import { StepPrep } from "@/components/setup/step-prep";
+import { StepReview } from "@/components/setup/step-review";
 
-const input = "w-full rounded-md border border-border bg-canvas px-3 py-2 text-sm text-text-primary focus:border-good focus:outline-none";
-const CUISINES = (Object.keys(CUISINE_LABELS) as CuisineType[]).map((c) => ({ value: c, label: CUISINE_LABELS[c] }));
+const INTRO = [
+  "Takes a few minutes, once. After that the only daily work is about a minute at close.",
+  "Check what we filled in. Change anything that's off.",
+  "Roughly how many guests you see on a normal open day.",
+  "Starter list for your cuisine. You can edit or add items any time in Kitchen.",
+  "One last look before we build your first forecast.",
+];
 
 export default function SetupPage() {
-  const { startOwnRestaurant, profile } = useStore();
-  const [name, setName] = useState("");
-  const [address, setAddress] = useState("");
-  const [loc, setLoc] = useState<{ lat: number; lng: number; place: string } | null>(null);
-  const [looking, setLooking] = useState(false);
-  const [locError, setLocError] = useState<string | null>(null);
-  const [cuisine, setCuisine] = useState<CuisineType>("italian");
-  const [seats, setSeats] = useState("50");
-  const [avg, setAvg] = useState("45");
-  const [pattern, setPattern] = useState<{ byDay: number[]; source: "default" | "pos-import" }>({ byDay: weeklyShape(45), source: "default" });
-  const [picked, setPicked] = useState<Set<string>>(new Set(STAPLES.italian.map((s) => s.name)));
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const { startOwnRestaurant } = useStore();
+  const [step, setStep] = useState(0);
+  const [reached, setReached] = useState(0);
+  const [dir, setDir] = useState(1);
+  const [d, setD] = useState<Draft>(emptyDraft);
+  const [search, setSearch] = useState<SearchState>(emptySearch);
+  const [errors, setErrors] = useState<Errors>({});
+  const [creating, setCreating] = useState(false);
+  const heading = useRef<HTMLHeadingElement>(null);
+  const first = useRef(true);
+  const reduce = useReducedMotion();
 
-  useEffect(() => setPicked(new Set(STAPLES[cuisine].map((s) => s.name))), [cuisine]);
+  // Move focus to the new step's heading so keyboard and screen-reader users follow along.
   useEffect(() => {
-    if (pattern.source === "default") setPattern({ byDay: weeklyShape(Math.max(1, Number(avg) || 1)), source: "default" });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [avg]);
-
-  async function lookup() {
-    setLooking(true);
-    setLocError(null);
-    try {
-      const res = await fetch(`/api/geocode?q=${encodeURIComponent(address)}`);
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
-      setLoc(data);
-    } catch (e) {
-      setLoc(null);
-      setLocError(e instanceof Error ? e.message : "Lookup failed.");
-    } finally {
-      setLooking(false);
+    if (first.current) {
+      first.current = false;
+      return;
     }
+    heading.current?.focus({ preventScroll: true });
+    window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
+  }, [step, reduce]);
+
+  function go(to: number) {
+    setDir(to > step ? 1 : -1);
+    setErrors({});
+    setStep(to);
+    setReached((r) => Math.max(r, to));
   }
 
-  function submit(e: React.FormEvent) {
-    e.preventDefault();
-    const next: Record<string, string> = {};
-    if (!name.trim()) next.name = "What's the restaurant called?";
-    if (!loc) next.loc = "Find the address so we can pull your local weather.";
-    if (!(Number(avg) >= 5 && Number(avg) <= 2000)) next.avg = "Between 5 and 2,000 guests.";
-    if (picked.size === 0) next.items = "Pick at least one ingredient. You can add more later.";
-    setErrors(next);
-    if (Object.keys(next).length || !loc) return;
-
-    const p: Profile = {
-      id: `own-${Date.now().toString(36)}`,
-      name: name.trim().slice(0, 80),
-      address: address.trim().slice(0, 200),
-      place: loc.place,
-      lat: loc.lat,
-      lng: loc.lng,
-      cuisineType: cuisine,
-      seats: Math.max(1, Math.round(Number(seats) || 0)),
-      avgCovers: Math.round(pattern.byDay.reduce((s, x) => s + x, 0) / 7),
-      coversByDay: pattern.byDay,
-      coversSource: pattern.source,
-      isDemo: false,
-    };
-    startOwnRestaurant(p, STAPLES[cuisine].filter((s) => picked.has(s.name)).map(toIngredient));
+  function next() {
+    const e = validate(step, d);
+    setErrors(e);
+    if (Object.keys(e).length) return;
+    go(step + 1);
   }
+
+  function update(patch: Partial<Draft>, touched?: AutoField) {
+    setD((x) => ({ ...x, ...patch, auto: touched ? x.auto.filter((f) => f !== touched) : x.auto }));
+  }
+
+  function setCuisine(c: CuisineType) {
+    setD((x) => (x.cuisineType === c ? x : { ...x, cuisineType: c, rows: [...stapleRows(c), ...x.rows.filter((r) => r.custom)], auto: x.auto.filter((f) => f !== "cuisine") }));
+  }
+
+  function pick(p: PlaceResult) {
+    setD((x) => fromPlace(x, p));
+    go(1);
+  }
+
+  function manual() {
+    setD((x) => (x.auto.length ? { ...emptyDraft(), name: search.q.trim() } : { ...x, name: x.name || search.q.trim() }));
+    go(1);
+  }
+
+  function create() {
+    for (const s of [1, 2, 3]) {
+      const e = validate(s, d);
+      if (Object.keys(e).length) {
+        go(s);
+        setErrors(e);
+        return;
+      }
+    }
+    setCreating(true);
+    startOwnRestaurant(buildProfile(d), buildIngredients(d));
+  }
+
+  const offset = reduce ? 0 : 16;
+  const last = step === STEPS.length - 1;
 
   return (
-    <form onSubmit={submit} className="mx-auto max-w-3xl space-y-5">
+    <div className="mx-auto max-w-4xl space-y-5 pb-10">
       <header>
-        <p className="text-sm text-text-muted">About 2 minutes. Saved on this device only.</p>
-        <h1 className="font-display text-[28px] font-700 leading-tight text-text-primary">Set up your restaurant</h1>
-        {!profile.isDemo && <p className="mt-1 text-xs text-caution">This replaces {profile.name} on this device.</p>}
+        <p className="text-sm text-text-muted">Set up your restaurant</p>
+        <h1 ref={heading} tabIndex={-1} className="font-display text-[28px] font-700 leading-tight text-text-primary focus:outline-none">
+          {STEPS[step]}
+        </h1>
+        <p className="mt-1 max-w-prose text-sm text-text-secondary">{INTRO[step]}</p>
       </header>
 
-      <Card className="space-y-5">
-        <Step n={1} title="Your restaurant">
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_120px]">
-            <Field label="Name" error={errors.name}>
-              <input className={input} value={name} onChange={(e) => setName(e.target.value)} maxLength={80} placeholder="e.g. Lucia's Kitchen" />
-            </Field>
-            <Field label="Seats">
-              <input className={input} type="number" min={1} value={seats} onChange={(e) => setSeats(e.target.value)} />
-            </Field>
-          </div>
-          <Field label="Address (for your local weather)" error={errors.loc ?? locError ?? undefined}>
-            <div className="flex gap-2">
-              <input
-                className={input}
-                value={address}
-                onChange={(e) => {
-                  setAddress(e.target.value);
-                  setLoc(null);
-                }}
-                maxLength={200}
-                placeholder="123 Main St, Cambridge, MA"
-              />
-              <button type="button" onClick={lookup} disabled={address.trim().length < 3 || looking} className="flex shrink-0 items-center gap-1.5 rounded-md border border-border px-3 text-sm text-text-primary hover:border-good disabled:opacity-50">
-                {looking ? <Loader2 className="h-4 w-4 animate-spin" /> : <MapPin className="h-4 w-4" />} Find
-              </button>
-            </div>
-            {loc && (
-              <span className="mt-1.5 flex items-center gap-1.5 text-xs text-good">
-                <Check className="h-3.5 w-3.5" /> {loc.place} · {loc.lat.toFixed(3)}, {loc.lng.toFixed(3)}
-              </span>
-            )}
-          </Field>
-          <Field label="Cuisine">
-            <Select label="Cuisine" value={cuisine} options={CUISINES} onChange={setCuisine} className="w-full sm:w-72" />
-          </Field>
-        </Step>
+      <Stepper current={step} reached={reached} onJump={go} />
 
-        <Step n={2} title="How busy are you?">
-          <Field label="Guests on an average night" error={errors.avg}>
-            <input className={cn(input, "w-32")} type="number" min={5} value={avg} onChange={(e) => setAvg(e.target.value)} />
-          </Field>
-          <GuestPattern
-            coversByDay={pattern.byDay}
-            source={pattern.source}
-            onImport={(r) => {
-              setPattern({ byDay: r.coversByDay, source: "pos-import" });
-              setAvg(String(r.avgCovers));
-            }}
-          />
-        </Step>
-
-        <Step n={3} title="What do you prep?">
-          <p className="mb-3 text-xs text-text-muted">Common for {CUISINE_LABELS[cuisine].toLowerCase()} kitchens, with typical prices. Edit amounts later in Kitchen.</p>
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-            {STAPLES[cuisine].map((s) => {
-              const on = picked.has(s.name);
-              return (
-                <button
-                  type="button"
-                  key={s.name}
-                  onClick={() => setPicked((p) => (p.has(s.name) ? new Set(Array.from(p).filter((x) => x !== s.name)) : new Set(p).add(s.name)))}
-                  className={cn("flex items-center gap-2.5 rounded-md border px-3 py-2 text-left text-sm transition-colors duration-150", on ? "border-good bg-surface-hover text-text-primary" : "border-border text-text-muted")}
-                  aria-pressed={on}
-                >
-                  <span className={cn("flex h-4 w-4 shrink-0 items-center justify-center rounded border", on ? "border-good bg-good" : "border-border")}>{on && <Check className="h-3 w-3 text-canvas" />}</span>
-                  <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: CATEGORIES[s.category].color }} />
-                  <span className="flex-1 truncate">{s.name}</span>
-                  <span className="text-[11px] tabular-nums text-text-muted">{s.baselinePrepKg}kg/day</span>
-                </button>
-              );
-            })}
-          </div>
-          {errors.items && <p className="mt-2 text-xs text-waste">{errors.items}</p>}
-        </Step>
+      <Card className="overflow-hidden p-5 sm:p-6">
+        <AnimatePresence mode="wait" initial={false} custom={dir}>
+          <motion.div
+            key={step}
+            initial={{ opacity: 0, x: dir * offset }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -dir * offset }}
+            transition={{ duration: reduce ? 0 : 0.2, ease: "easeOut" }}
+          >
+            {step === 0 && <StepFind search={search} setSearch={setSearch} onPick={pick} onManual={manual} />}
+            {step === 1 && <StepDetails d={d} errors={errors} update={update} setCuisine={setCuisine} />}
+            {step === 2 && <StepBusy d={d} errors={errors} update={update} />}
+            {step === 3 && <StepPrep d={d} errors={errors} setRows={(rows) => update({ rows })} />}
+            {step === 4 && <StepReview d={d} goTo={go} />}
+          </motion.div>
+        </AnimatePresence>
       </Card>
 
-      <div className="flex items-center justify-between gap-4">
-        <p className="text-xs text-text-muted">Day one runs on industry baselines. It learns your kitchen from your first close-outs.</p>
-        <button type="submit" className="shrink-0 rounded-md bg-good px-5 py-2.5 text-sm font-600 text-canvas transition-colors duration-150 hover:bg-good-dim">
-          See tomorrow&apos;s forecast
-        </button>
+      <div className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
+        {step > 0 ? (
+          <button type="button" onClick={() => go(step - 1)} className="flex cursor-pointer items-center justify-center gap-2 rounded-md border border-border px-4 py-2 text-sm text-text-secondary transition-colors duration-150 hover:border-text-muted hover:text-text-primary">
+            <ArrowLeft className="h-4 w-4" aria-hidden /> Back
+          </button>
+        ) : (
+          <p className="text-xs text-text-muted">Saved on this device only. Nothing is shared.</p>
+        )}
+
+        {step === 0 ? (
+          <button type="button" onClick={manual} className="flex cursor-pointer items-center justify-center gap-2 rounded-md border border-good px-4 py-2 text-sm font-600 text-good transition-colors duration-150 hover:bg-good/10">
+            Enter details manually <ArrowRight className="h-4 w-4" aria-hidden />
+          </button>
+        ) : last ? (
+          <button type="button" onClick={create} disabled={creating} className="flex cursor-pointer items-center justify-center gap-2 rounded-md bg-good px-5 py-2.5 text-sm font-600 text-canvas transition-colors duration-150 hover:bg-good-dim disabled:cursor-wait disabled:opacity-70">
+            {creating && <Loader2 className="h-4 w-4 animate-spin motion-reduce:animate-none" aria-hidden />}
+            {creating ? "Building your forecast" : `Create ${d.name.trim() || "restaurant"}`}
+          </button>
+        ) : (
+          <button type="button" onClick={next} className="flex cursor-pointer items-center justify-center gap-2 rounded-md bg-good px-5 py-2.5 text-sm font-600 text-canvas transition-colors duration-150 hover:bg-good-dim">
+            Next: {STEPS[step + 1]} <ArrowRight className="h-4 w-4" aria-hidden />
+          </button>
+        )}
       </div>
-    </form>
-  );
-}
-
-function Step({ n, title, children }: { n: number; title: string; children: React.ReactNode }) {
-  return (
-    <section className="space-y-3 border-b border-border pb-5 last:border-0 last:pb-0">
-      <h2 className="flex items-center gap-2.5 font-display text-base font-600 text-text-primary">
-        <span className="flex h-6 w-6 items-center justify-center rounded-md bg-canvas text-xs text-good">{n}</span>
-        {title}
-      </h2>
-      {children}
-    </section>
-  );
-}
-
-function Field({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) {
-  return (
-    <div>
-      <span className="mb-1.5 block text-xs text-text-muted">{label}</span>
-      {children}
-      {error && <span className="mt-1 block text-xs text-waste">{error}</span>}
     </div>
   );
 }
