@@ -30,15 +30,16 @@ function Deck() {
   const idleTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const sum = useMemo(() => summarize(dailyTotals(observations, ingredients)), [observations, ingredients]);
-  const kgYear = sum.kgLast30 * 12;
-  const co2Year = (sum.co2Last30 * 12) / 1000;
+  // Annualized from the last 30 days of provable savings, same as the dashboard.
+  const kgYear = (sum.kgLast30 * 365) / 30;
+  const co2Year = (sum.co2Last30 * 365) / 30 / 1000;
   const meals = (kgYear * LB_PER_KG) / 1.2;
-  const savedMonthly = sum.monthlyBefore && sum.monthlyNow ? sum.monthlyBefore - sum.monthlyNow : 0;
+  const savedMonthly = (sum.savedLast30 * 365) / 30 / 12;
   const owner = bench.owner;
   const us = bench.effort.find((e) => e.id === "all-pos")!.accuracy;
 
   const tomorrow = week[0];
-  const prepRows = (tomorrow?.ingredients ?? []).slice(0, 4).map((p) => ({ name: p.ingredient.name, usual: p.ingredient.baselinePrepKg, rec: p.recommendedPrepKg }));
+  const prepRows = (tomorrow?.ingredients ?? []).slice(0, 4).map((p) => ({ name: p.ingredient.name, usual: p.usualPrepKg, rec: p.recommendedPrepKg }));
   const day = tomorrow ? parseLocalDate(tomorrow.date).toLocaleDateString("en-US", { weekday: "long" }) : "Tomorrow";
 
   const all = [

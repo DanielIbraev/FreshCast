@@ -32,7 +32,9 @@ export default function DashboardPage() {
   const dateLabel = selected
     ? parseLocalDate(selected.date).toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" })
     : "";
-  const yearly = sum.monthlyBefore && sum.monthlyNow ? (sum.monthlyBefore - sum.monthlyNow) * 12 : 0;
+  // One definition of "saved" everywhere: food the plan didn't prep on nights
+  // where that is provable (see lib/history.ts), annualized from the last 30 days.
+  const yearly = (sum.savedLast30 * 365) / 30;
 
   return (
     <div className="space-y-5">
@@ -150,7 +152,7 @@ export default function DashboardPage() {
                 <p className="text-xs text-text-muted">{drop}% less food in the bin, from {sum.daysLogged} nights of logs. Not adjusted for season.</p>
               </div>
               <div className="mt-auto border-t border-border pt-4">
-                <p className="text-xs text-text-muted">Kept per year at this rate (monthly × 12)</p>
+                <p className="text-xs text-text-muted">Saved per year at the last 30 days' rate</p>
                 <p className="font-display text-[40px] font-800 leading-none tabular-nums text-good">{formatCurrency(yearly)}</p>
                 <p className="mt-2 text-xs text-text-muted">FreshCast costs $588/year. That&apos;s a {Math.round(yearly / 588)}x return.</p>
               </div>

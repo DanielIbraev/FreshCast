@@ -53,7 +53,7 @@ export function RestaurantSwitcher({ compact = false }: { compact?: boolean }) {
           <Icon className="h-4 w-4 text-good" />
         </span>
         <span className="min-w-0 flex-1">
-          <span className="block truncate text-sm font-600 text-text-primary">{profile.name}</span>
+          <span className="block text-sm font-600 leading-tight text-text-primary">{profile.name}</span>
           <span className="block truncate text-[11px] text-text-muted">
             {hydrated ? `${profile.cuisineLabel ?? profile.place} · ${profile.seats} seats` : "Loading kitchen"}
           </span>
