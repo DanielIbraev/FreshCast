@@ -14,7 +14,9 @@ export function MobileTopBar() {
   const { dbStatus } = useStore();
   return (
     <div className="sticky top-0 z-20 flex items-center gap-3 border-b border-border bg-surface/95 px-4 py-3 backdrop-blur md:hidden print:hidden">
-      <Mark size={28} />
+      <Link href="/" aria-label="FreshCast home" className="shrink-0 rounded-md">
+        <Mark size={28} />
+      </Link>
       <div className="min-w-0 flex-1">
         <RestaurantSwitcher compact />
       </div>

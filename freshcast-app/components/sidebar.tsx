@@ -37,10 +37,10 @@ export function Sidebar() {
 
   return (
     <aside className="hidden h-screen w-60 shrink-0 flex-col border-r border-border bg-surface md:flex print:hidden">
-      <div className="flex items-center gap-2.5 px-5 py-5">
+      <Link href="/" aria-label="FreshCast home" className="flex items-center gap-2.5 rounded-md px-5 py-5">
         <Mark size={32} />
         <span className="font-display text-lg font-700 text-text-primary">FreshCast</span>
-      </div>
+      </Link>
 
       <nav className="flex flex-col gap-0.5 px-3 py-2" aria-label="Main">
         {NAV.map(({ href, label, icon: Icon }) => {
