@@ -1,65 +1,42 @@
-// Assembles a full-day waste forecast across all ingredients by running
-// the prediction engine for each one and aggregating the results.
+// Runs the prediction engine across every ingredient for one day.
 
 import { predictIngredientWaste } from "./prediction";
-import { DayPrediction, WeatherForecast, NearbyEvent, WasteLog } from "./types";
-import {
-  DEMO_INGREDIENTS,
-  DEMO_RESTAURANT,
-  AVG_COVERS,
-  generateLastWeekLogs,
-} from "./demo-data";
+import { DayPrediction, DayWeather, Ingredient, NearbyEvent } from "./types";
+import { DEMO_RESTAURANT, AVG_COVERS } from "./demo-data";
 
 interface ForecastOptions {
+  ingredients: Ingredient[];
   expectedCovers: number;
-  weather: WeatherForecast;
+  weather: DayWeather;
+  weatherSource: "live" | "override" | "offline";
   event: NearbyEvent;
   date: Date;
 }
 
+const round = (n: number) => Math.round(n * 100) / 100;
+
 export function buildDayForecast(opts: ForecastOptions): DayPrediction {
-  const lastWeekLogs = generateLastWeekLogs();
-  const lastWeekMap = new Map<string, number>();
-  lastWeekLogs.forEach((log: WasteLog) =>
-    lastWeekMap.set(log.ingredientId, log.quantityKg)
-  );
+  const ingredients = opts.ingredients
+    .map((ingredient) =>
+      predictIngredientWaste({
+        ingredient,
+        expectedCovers: opts.expectedCovers,
+        avgCovers: AVG_COVERS,
+        weather: opts.weather,
+        weatherSource: opts.weatherSource,
+        date: opts.date,
+        event: opts.event,
+        cuisineType: DEMO_RESTAURANT.cuisineType,
+      })
+    )
+    .sort((a, b) => b.predictedWasteCost - a.predictedWasteCost);
 
-  const ingredients = DEMO_INGREDIENTS.map((ingredient) => {
-    const lastWeekActual = lastWeekMap.get(ingredient.id);
-    // Rough estimate of what we predicted last week for the recency ratio.
-    const lastWeekPredicted = lastWeekActual
-      ? lastWeekActual * 1.1
-      : undefined;
-
-    return predictIngredientWaste({
-      ingredient,
-      expectedCovers: opts.expectedCovers,
-      avgCovers: AVG_COVERS,
-      weather: opts.weather,
-      date: opts.date,
-      event: opts.event,
-      cuisineType: DEMO_RESTAURANT.cuisineType,
-      lastWeekSameDayActualKg: lastWeekActual,
-      lastWeekSameDayPredictedKg: lastWeekPredicted,
-      personalCalibration: 1.0,
-    });
-  }).sort((a, b) => b.predictedWasteCost - a.predictedWasteCost);
-
-  const totalWasteCost = ingredients.reduce(
-    (s, i) => s + i.predictedWasteCost,
-    0
-  );
-  const totalReducedCost = ingredients.reduce(
-    (s, i) => s + i.reducedWasteCost,
-    0
-  );
-  const totalCo2Prevented = ingredients.reduce(
-    (s, i) => s + (i.predictedCo2Kg - i.reducedCo2Kg),
-    0
-  );
+  const totalWasteCost = ingredients.reduce((s, i) => s + i.predictedWasteCost, 0);
+  const totalReducedCost = ingredients.reduce((s, i) => s + i.reducedWasteCost, 0);
+  const totalCo2Prevented = ingredients.reduce((s, i) => s + (i.predictedCo2Kg - i.reducedCo2Kg), 0);
 
   return {
-    date: opts.date.toISOString().split("T")[0],
+    date: opts.weather.date,
     expectedCovers: opts.expectedCovers,
     weather: opts.weather,
     event: opts.event,
@@ -69,8 +46,4 @@ export function buildDayForecast(opts: ForecastOptions): DayPrediction {
     totalSavings: round(totalWasteCost - totalReducedCost),
     totalCo2Prevented: round(totalCo2Prevented),
   };
-}
-
-function round(n: number): number {
-  return Math.round(n * 100) / 100;
 }
