@@ -44,4 +44,4 @@ If food waste were a country, it would be the third-largest greenhouse-gas emitt
 9. **Pitch deck:** `/pitch`. Arrow keys to move, `F` for full screen.
 
 **Run locally:** `cd freshcast-app && npm install && npm run dev`. Works without a database (saves to the browser).
-**Tests:** `cd freshcast-app && ./node_modules/.bin/vitest run` (60 tests). **Benchmark:** `npm run bench` (about 20 s).
+**Tests:** `cd freshcast-app && ./node_modules/.bin/vitest run` (62 tests). **Benchmark:** `npm run bench` (about 20 s).
