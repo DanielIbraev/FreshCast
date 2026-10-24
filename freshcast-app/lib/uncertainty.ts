@@ -1,7 +1,7 @@
 // Forecast confidence ranges, learned from the kitchen's own past errors.
 // Spec: .kiro/specs/forecast-confidence. A residual is ln(actual / forecast)
-// for a past night, where the forecast was rebuilt walk-forward (only earlier
-// nights visible). The 80% range is forecast x exp(10th..90th percentile).
+// for a past night. The forecast is the one shown that morning when we know it
+// (it includes walk-in uncertainty); otherwise it's rebuilt walk-forward. The 80% range is forecast x exp(10th..90th percentile).
 
 import { learn, Observation } from "./learning";
 import { DayPrediction } from "./types";
@@ -41,8 +41,10 @@ export function residuals(obs: Observation[]): Residuals {
   const days = new Map<string, { f: number; a: number }>();
   for (const o of obs) {
     if (!(o.rawKg > 0) || !(o.usualKg > 0)) continue;
-    const L = learn(obs, o.ingredientId, o.date, o.condition); // learn() only sees earlier dates
-    const f = o.rawKg * L.calibration * L.weekday * L.weather * L.recency;
+    const f = o.morningKg ?? (() => {
+      const L = learn(obs, o.ingredientId, o.date, o.condition); // learn() only sees earlier dates
+      return o.rawKg * L.calibration * L.weekday * L.weather * L.recency;
+    })();
     if (!(f > 0)) continue;
     const r = Math.log(o.usualKg / f);
     pooled.push(r);

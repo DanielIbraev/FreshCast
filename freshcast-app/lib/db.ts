@@ -5,6 +5,7 @@
 import { getSupabase, RESTAURANT_ID } from "./supabase";
 import { Ingredient, WasteLog, Category, WasteReason } from "./types";
 import { Observation } from "./learning";
+import { REDUCTION_RATE } from "./prediction";
 
 export interface DailyObservation {
   date: string;
@@ -71,7 +72,15 @@ const fromObs = (o: DailyObservation) => ({
 
 // What the learning layer consumes: "usual" waste = binned + what the plan cut.
 export function toLearningObs(obs: DailyObservation[]): Observation[] {
-  return obs.map((o) => ({ date: o.date, ingredientId: o.ingredientId, rawKg: o.priorKg, usualKg: o.loggedKg + o.cutKg, condition: o.weather }));
+  // The morning forecast is recoverable from the prep cut: cut = forecast x REDUCTION_RATE.
+  return obs.map((o) => ({
+    date: o.date,
+    ingredientId: o.ingredientId,
+    rawKg: o.priorKg,
+    usualKg: o.loggedKg + o.cutKg,
+    condition: o.weather,
+    morningKg: o.cutKg > 0 ? o.cutKg / REDUCTION_RATE : undefined,
+  }));
 }
 
 export async function loadRemote(): Promise<Snapshot | null> {

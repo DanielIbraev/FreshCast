@@ -53,7 +53,9 @@ export function IngredientBars({ items, applied, selectedId, onSelect }: Props) 
                 <span className={cn("block text-sm font-600 tabular-nums", applied ? "text-good" : "text-text-primary")}>
                   {formatCurrency(cost)}
                 </span>
-                <span className="block text-[11px] tabular-nums text-text-muted">{kg.toFixed(2)}kg</span>
+                <span className="block text-[11px] tabular-nums text-text-muted" title="80% range, learned from this kitchen's past errors">
+                  {!applied && item.lowCost !== undefined && item.highCost !== undefined ? `${formatCurrency(item.lowCost)}–${formatCurrency(item.highCost)}` : `${kg.toFixed(2)}kg`}
+                </span>
               </span>
             </button>
           </li>

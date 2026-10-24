@@ -40,6 +40,9 @@ export default function ModelPage() {
           <p className="mt-2 text-xs text-text-muted">
             Cuts forecast error {Math.round((1 - (1 - vLast) / (1 - v0)) * 100)}% vs. guessing. Best possible is {pct(bench.ceiling)}.
           </p>
+          <p className="mt-1 text-xs text-text-muted">
+            80% ranges contain the real night <span className="font-600 text-good">{pct(bench.coverage80)}</span> of the time: calibrated.
+          </p>
         </Card>
         <Card>
           <CardLabel>On Marco&apos;s stored logs</CardLabel>

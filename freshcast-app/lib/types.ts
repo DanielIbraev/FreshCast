@@ -114,6 +114,13 @@ export interface IngredientPrediction {
   recommendation: string;
   riskLevel: "high" | "medium" | "low";
   primaryDriver: SignalFactor;
+  // 80% range learned from this kitchen's past errors (lib/uncertainty.ts)
+  lowKg?: number;
+  highKg?: number;
+  lowCost?: number;
+  highCost?: number;
+  rangeSource?: "own" | "blended" | "cold-start";
+  rangeN?: number;
 }
 
 export interface DayPrediction {
@@ -126,4 +133,6 @@ export interface DayPrediction {
   totalReducedCost: number;
   totalSavings: number;
   totalCo2Prevented: number;
+  totalLow?: number;
+  totalHigh?: number;
 }

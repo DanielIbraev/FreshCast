@@ -6,6 +6,7 @@ import fc from "fast-check";
 import { predictIngredientWaste, priorWasteKg } from "@/lib/prediction";
 import { learn, accuracy, NO_LEARNING, Observation } from "@/lib/learning";
 import { parseCsv, importPosCsv } from "@/lib/pos-import";
+import { range } from "@/lib/uncertainty";
 import { Category, CuisineType, Ingredient, PredictionInput, WeatherCondition } from "@/lib/types";
 
 const RUNS = { numRuns: 200 };
@@ -120,6 +121,19 @@ describe("P5-P7: learning layer", () => {
         const mean = ratios.reduce((s, x) => s + x, 0) / ratios.length;
         const c = learn(obs, "a", TARGET).calibration;
         return c >= Math.min(1, mean) - 1e-9 && c <= Math.max(1, mean) + 1e-9;
+      }),
+      RUNS
+    );
+  });
+});
+
+describe("P8: confidence range", () => {
+  it("0 <= low <= forecast <= high, for any forecast and any error history", () => {
+    const res = fc.array(fc.double({ min: -3, max: 3, noNaN: true }), { maxLength: 40 });
+    fc.assert(
+      fc.property(fc.double({ min: 0, max: 500, noNaN: true }), res, res, (f, own, pooled) => {
+        const r = range(f, own, pooled);
+        return r.low >= 0 && r.low <= f + 1e-9 && f <= r.high + 1e-9 && Number.isFinite(r.high);
       }),
       RUNS
     );

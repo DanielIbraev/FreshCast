@@ -9,6 +9,7 @@ import { priorWasteKg, computeSignals, REDUCTION_RATE, BASE_WASTE_FRACTION } fro
 import { learn, accuracy, Observation, NO_LEARNING } from "./learning";
 import { simulateDays, SimDay } from "./sim";
 import type { DailyObservation } from "./db";
+import { range } from "./uncertainty";
 
 export interface WeekResult {
   week: number;
@@ -131,4 +132,45 @@ export function runBacktest(ingredients: Ingredient[], weeks = 12, seed = 7, end
     closeouts,
     days,
   };
+}
+
+// Share of nights whose actual waste fell inside the 80% range forecast for
+// them that morning. Ranges come only from residuals of earlier nights, built
+// the same way the app builds them (lib/uncertainty.ts). Spec Req 3.
+export function coverage(ingredients: Ingredient[], seeds = [7, 11, 23, 31, 42], weeks = 12): number {
+  let hits = 0;
+  let total = 0;
+  for (const seed of seeds) {
+    const end = new Date();
+    const days = simulateDays(ingredients, new Date(end.getFullYear(), end.getMonth(), end.getDate() - weeks * 7), weeks * 7, seed);
+    const obs: Observation[] = [];
+    const own = new Map<string, number[]>();
+    const pooled: number[] = [];
+    days.forEach((day, i) => {
+      const tonight: { obs: Observation; r: number }[] = [];
+      for (const ing of ingredients) {
+        const input = { ingredient: ing, expectedCovers: day.expectedCovers, avgCovers: AVG_COVERS, weather: day.weather, weatherSource: "live" as const, date: day.dateObj, event: day.event, cuisineType: DEMO_RESTAURANT.cuisineType };
+        const L = obs.length ? learn(obs, ing.id, day.date, day.weather.condition) : NO_LEARNING;
+        const corr = L.calibration * L.weekday * L.weather * L.recency;
+        const forecast = priorWasteKg(input) * corr;
+        const actual = day.trueUsual[ing.id];
+        if (i >= 14) {
+          const rg = range(forecast, own.get(ing.id) ?? [], pooled);
+          total++;
+          if (actual >= rg.low && actual <= rg.high) hits++;
+        }
+        const cut = forecast * REDUCTION_RATE;
+        const usual = Math.max(0, actual - cut) + cut;
+        const priorActual = priorWasteKg({ ...input, expectedCovers: day.actualCovers });
+        // Same residual the app stores: actual vs. the forecast shown that morning.
+        tonight.push({ obs: { date: day.date, ingredientId: ing.id, rawKg: priorActual, usualKg: usual, condition: day.weather.condition }, r: Math.log(usual / forecast) });
+      }
+      for (const t of tonight) {
+        obs.push(t.obs);
+        pooled.push(t.r);
+        (own.get(t.obs.ingredientId) ?? own.set(t.obs.ingredientId, []).get(t.obs.ingredientId)!).push(t.r);
+      }
+    });
+  }
+  return hits / total;
 }

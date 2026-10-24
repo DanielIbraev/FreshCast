@@ -61,7 +61,10 @@ export default function DashboardPage() {
               <p className={cn("mt-2 font-display text-[44px] font-800 leading-none tracking-tight tabular-nums", applied ? "text-good" : "text-waste")}>
                 <Counter value={applied ? selected.totalReducedCost : selected.totalWasteCost} prefix="$" />
               </p>
-              <p className="mt-2 text-xs text-text-muted">{applied ? "With FreshCast prep plan" : "If you prep like a normal day"}</p>
+              <p className="mt-2 text-xs text-text-muted">
+                {applied ? "With FreshCast prep plan" : "If you prep like a normal day"}
+                {!applied && selected.totalLow !== undefined && selected.totalHigh !== undefined && ` · likely ${formatCurrency(selected.totalLow)}–${formatCurrency(selected.totalHigh)}`}
+              </p>
             </Card>
             <Card>
               <CardLabel>Plan saves you</CardLabel>

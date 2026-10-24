@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { runAblation } from "@/lib/backtest";
+import { runAblation, coverage } from "@/lib/backtest";
 import { runEffort, ownerBaseline } from "@/lib/effort";
 import { DEMO_INGREDIENTS } from "@/lib/demo-data";
 import { importPosCsv, parseCsv } from "@/lib/pos-import";
@@ -17,6 +17,14 @@ describe("benchmark (walk-forward on simulated kitchens)", () => {
     const rec = runEffort(DEMO_INGREDIENTS, [7, 11]).find((r) => r.plan.id === "all-pos")!;
     expect(rec.accuracy).toBeGreaterThan(ownerBaseline(DEMO_INGREDIENTS, [7, 11]));
     expect(rec.minutes).toBeLessThan(10);
+  });
+});
+
+describe("confidence ranges are honest (spec Req 3.3)", () => {
+  it("about 80% of real nights land inside the 80% range", () => {
+    const c = coverage(DEMO_INGREDIENTS, [7, 11]);
+    expect(c).toBeGreaterThan(0.7);
+    expect(c).toBeLessThan(0.9);
   });
 });
 

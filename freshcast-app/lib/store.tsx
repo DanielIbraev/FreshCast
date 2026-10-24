@@ -7,6 +7,7 @@ import { buildDayForecast } from "./forecast";
 import { describe, fallbackWeek } from "./weather";
 import { priorWasteKg } from "./prediction";
 import { runBacktest } from "./backtest";
+import { residuals, withRanges } from "./uncertainty";
 import { DEMO_PROFILE, Profile, loadProfile, saveProfile, clearProfile } from "./profile";
 import { readAdminToken } from "./admin";
 import { setAdminToken } from "./supabase";
@@ -122,15 +123,16 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
   const setScenario = useCallback((patch: Partial<Scenario>) => setScenarioState((s) => ({ ...s, ...patch })), []);
   const learningObs = useMemo(() => db.toLearningObs(observations), [observations]);
+  const resid = useMemo(() => residuals(learningObs), [learningObs]);
   const src = weatherSource === "live" ? "live" : "offline";
   const base = { cuisineType: profile.cuisineType, avgCovers: profile.avgCovers };
 
   const today = useMemo(() => {
     if (!days[0]) return null;
     const date = parseLocalDate(days[0].date);
-    return buildDayForecast({ ...base, ingredients, observations: learningObs, expectedCovers: profile.coversByDay[date.getDay()], weather: days[0], weatherSource: src, event: EVENTS.none, date });
+    return withRanges(buildDayForecast({ ...base, ingredients, observations: learningObs, expectedCovers: profile.coversByDay[date.getDay()], weather: days[0], weatherSource: src, event: EVENTS.none, date }), resid);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [days, ingredients, learningObs, src, profile]);
+  }, [days, ingredients, learningObs, src, profile, resid]);
 
   const week = useMemo(() => {
     const forecastDays = days.slice(1);
@@ -141,7 +143,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       const date = parseLocalDate(day.date);
       const over = isSel && scenario.weatherOverride !== "live";
       const cond = over ? (scenario.weatherOverride as DayWeather["condition"]) : day.condition;
-      return buildDayForecast({
+      return withRanges(buildDayForecast({
         ...base,
         ingredients,
         observations: learningObs,
@@ -150,10 +152,10 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
         weatherSource: over ? "override" : src,
         event: isSel ? EVENTS[scenario.event] : EVENTS.none,
         date,
-      });
+      }), resid);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [days, ingredients, learningObs, scenario, src, profile]);
+  }, [days, ingredients, learningObs, scenario, src, profile, resid]);
 
   const selected = useMemo(() => week.find((d) => d.date === scenario.selectedDate) ?? week[0] ?? null, [week, scenario.selectedDate]);
 

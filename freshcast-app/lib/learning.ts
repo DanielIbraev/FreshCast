@@ -8,6 +8,7 @@ export interface Observation {
   rawKg: number; // prior-only forecast for "prep as usual" (signals 1-7)
   usualKg: number; // observed: logged waste + amount the plan cut from prep
   condition: string; // weather that day
+  morningKg?: number; // the forecast the kitchen actually saw that morning, if known
 }
 
 export interface Learned {

@@ -64,6 +64,17 @@ export function SignalBreakdown({ item }: { item: IngredientPrediction }) {
         <span className="font-600 text-waste">{formatCurrency(item.predictedWasteCost)}</span>
       </div>
 
+      {item.lowKg !== undefined && item.highKg !== undefined && (
+        <div className="mt-3 flex items-center justify-between rounded-md border border-border bg-canvas px-3 py-2 text-[12px]">
+          <span className="text-text-secondary">
+            80% range: <span className="font-600 tabular-nums text-text-primary">{item.lowKg.toFixed(2)}–{item.highKg.toFixed(2)}kg</span> ({formatCurrency(item.lowCost ?? 0)}–{formatCurrency(item.highCost ?? 0)})
+          </span>
+          <span className="text-text-muted">
+            {item.rangeSource === "own" ? `from ${item.rangeN} of this item's nights` : item.rangeSource === "blended" ? `${item.rangeN} nights + kitchen average` : "cold start, still wide"}
+          </span>
+        </div>
+      )}
+
       <p className="mt-3 text-[13px] leading-relaxed text-text-secondary">{item.recommendation}</p>
     </div>
   );
