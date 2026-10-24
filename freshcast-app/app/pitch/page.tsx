@@ -141,9 +141,9 @@ function Deck() {
         </AnimatePresence>
         </div>
         {cam && (
-          // Exact 1:1 camera crop at x=1396, y=664 on the 1600x900 canvas.
+          // Exact 1:1 camera crop at x=1404, y=664 on the 1600x900 canvas.
           // Its bottom edge is 20px above the progress line; the 0.86 uniform
-          // content scale ends at x=1393.4, so no slide content sits underneath.
+          // content scale ends at x=1393.4, leaving a clear safe gap.
           <div
             aria-hidden="true"
             className="pointer-events-none absolute rounded-[10px] border-2 border-text-muted"
