@@ -19,24 +19,7 @@ export function HowItWorks() {
           How it works: one multiplication
         </h2>
 
-        <ol className="mt-10 grid overflow-hidden rounded-lg border border-border md:grid-cols-4">
-          {TERMS.map((t, i) => (
-            <li
-              key={t.title}
-              className={`min-w-0 p-6 ${i > 0 ? "border-t border-border md:border-l md:border-t-0" : ""} ${t.result ? "bg-surface" : ""}`}
-            >
-              <p className="flex h-8 items-center gap-2 font-display text-xl font-700 text-text-primary">
-                {t.op && (
-                  <span className="text-2xl font-400 text-text-muted" aria-hidden>
-                    {t.op}
-                  </span>
-                )}
-                <span className={t.result ? "text-waste" : undefined}>{t.title}</span>
-              </p>
-              <p className="mt-2 text-sm leading-relaxed text-text-secondary">{t.body}</p>
-            </li>
-          ))}
-        </ol>
+        <EquationFlow terms={TERMS} />
 
         <p className="mt-8 max-w-2xl text-lg leading-relaxed text-text-primary">
           Then prep <span className="font-700 text-good">{pct(REDUCTION_RATE)} of that</span> less. The rest is a buffer.
