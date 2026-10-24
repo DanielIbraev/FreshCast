@@ -41,10 +41,16 @@ export default function OrdersPage() {
           </p>
           <h1 className="font-display text-[28px] font-700 leading-tight text-text-primary">Prep & order list</h1>
         </div>
+        <div className="flex flex-wrap items-center gap-2">
+        <Link href={`/screen?r=${profile.id}`} className="flex items-center gap-2 rounded-md border border-border px-4 py-2 text-sm font-600 text-text-secondary transition-colors duration-150 hover:border-text-secondary hover:text-text-primary">
+          <Tv className="h-4 w-4" />
+          Kitchen screen
+        </Link>
         <button onClick={copyList} className="flex items-center gap-2 rounded-md border border-good px-4 py-2 text-sm font-600 text-good transition-colors duration-150 hover:bg-good hover:text-canvas">
           {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
           {copied ? "Copied for your supplier" : "Copy list for supplier"}
         </button>
+        </div>
       </header>
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
