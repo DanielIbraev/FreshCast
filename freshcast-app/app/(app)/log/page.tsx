@@ -6,6 +6,7 @@ import { Undo2 } from "lucide-react";
 import { Card, CardLabel } from "@/components/ui/card";
 import { Counter } from "@/components/ui/counter";
 import { ReasonBreakdown } from "@/components/log/reason-breakdown";
+import { CloseOut } from "@/components/log/close-out";
 import { useStore } from "@/lib/store";
 import { WasteReason } from "@/lib/types";
 import { CATEGORIES, WASTE_REASONS } from "@/lib/categories";
@@ -141,6 +142,8 @@ export default function LogWastePage() {
           </AnimatePresence>
         </ul>
       </Card>
+
+      <CloseOut />
     </div>
   );
 }
