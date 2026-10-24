@@ -52,8 +52,9 @@ freshcast-app/
     track-record.ts   → per-restaurant Model accuracy (leak-free) and "What would improve accuracy" (buildActions)
     benchmarks.json   → output of `npm run bench`
     db.ts, store.tsx  → data access and app state
-    pos-import.ts, opening-hours.ts, i18n.ts, weather.ts, categories.ts, staples.ts
+    pos-import.ts, opening-hours.ts, i18n.ts, i18n-screen.ts, weather.ts, categories.ts, staples.ts
   scripts/bench.ts    → regenerates lib/benchmarks.json
+  scripts/fetch-history-weather.ts → refreshes lib/history-weather.json (rainy = rain/drizzle code or ≥ 2 mm)
   scripts/reseed-marco.ts → owner-only: wipes and reseeds Marco's in Supabase
   supabase/           → schema.sql, security.sql
   tests/              → unit tests + properties.test.ts (P1–P13)
