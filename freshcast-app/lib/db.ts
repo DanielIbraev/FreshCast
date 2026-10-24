@@ -2,7 +2,7 @@
 // tables don't exist yet, the app falls back to browser storage so a demo
 // never shows an error screen.
 
-import { supabase, RESTAURANT_ID } from "./supabase";
+import { getSupabase, RESTAURANT_ID } from "./supabase";
 import { Ingredient, WasteLog, Category, WasteReason } from "./types";
 import { Observation } from "./learning";
 
@@ -22,7 +22,8 @@ export interface Snapshot {
   observations: DailyObservation[];
 }
 
-export type DbStatus = "connected" | "local" | "loading";
+// connected: owner, writes go to Supabase. sandbox: visitor, changes stay on this device.
+export type DbStatus = "connected" | "sandbox" | "local" | "loading";
 
 type IngredientRow = { id: string; name: string; category: Category; cost_per_kg: number; baseline_prep_kg: number; shelf_life_days: number; co2_per_kg: number };
 type LogRow = { id: string; ingredient_id: string; quantity_kg: number; reason: WasteReason; logged_at: string };
@@ -74,6 +75,7 @@ export function toLearningObs(obs: DailyObservation[]): Observation[] {
 }
 
 export async function loadRemote(): Promise<Snapshot | null> {
+  const supabase = getSupabase();
   if (!supabase) return null;
   const since = new Date(Date.now() - 120 * 86_400_000).toISOString();
   const [ing, logs, obs] = await Promise.all([
@@ -91,6 +93,7 @@ export async function loadRemote(): Promise<Snapshot | null> {
 
 // Writes are fire-and-forget from the UI's view; failures surface in the status pill.
 export async function writeSnapshot(s: Snapshot): Promise<boolean> {
+  const supabase = getSupabase();
   if (!supabase) return false;
   const a = await supabase.from("ingredients").upsert(s.ingredients.map(fromIngredient));
   if (a.error) return false;
@@ -102,35 +105,61 @@ export async function writeSnapshot(s: Snapshot): Promise<boolean> {
 }
 
 export async function upsertIngredient(i: Ingredient) {
-  return !(await supabase?.from("ingredients").upsert(fromIngredient(i)))?.error;
+  return !(await getSupabase()?.from("ingredients").upsert(fromIngredient(i)))?.error;
 }
 export async function deleteIngredient(id: string) {
-  return !(await supabase?.from("ingredients").delete().eq("id", id).eq("restaurant_id", RESTAURANT_ID))?.error;
+  return !(await getSupabase()?.from("ingredients").delete().eq("id", id).eq("restaurant_id", RESTAURANT_ID))?.error;
 }
 export async function insertLog(l: WasteLog) {
-  return !(await supabase?.from("waste_logs").insert({ id: l.id, restaurant_id: RESTAURANT_ID, ingredient_id: l.ingredientId, quantity_kg: l.quantityKg, reason: l.reason, logged_at: l.loggedAt }))?.error;
+  return !(await getSupabase()?.from("waste_logs").insert({ id: l.id, restaurant_id: RESTAURANT_ID, ingredient_id: l.ingredientId, quantity_kg: l.quantityKg, reason: l.reason, logged_at: l.loggedAt }))?.error;
 }
 export async function deleteLog(id: string) {
-  return !(await supabase?.from("waste_logs").delete().eq("id", id).eq("restaurant_id", RESTAURANT_ID))?.error;
+  return !(await getSupabase()?.from("waste_logs").delete().eq("id", id).eq("restaurant_id", RESTAURANT_ID))?.error;
 }
 export async function upsertObservations(obs: DailyObservation[]) {
-  return !(await supabase?.from("daily_observations").upsert(obs.map(fromObs)))?.error;
+  return !(await getSupabase()?.from("daily_observations").upsert(obs.map(fromObs)))?.error;
 }
 export async function wipeRemote() {
+  const supabase = getSupabase();
   if (!supabase) return;
   // waste_logs and daily_observations cascade from ingredients
   await supabase.from("ingredients").delete().eq("restaurant_id", RESTAURANT_ID);
 }
 
-const LOCAL_KEY = "freshcast:v3";
-export function loadLocal(): Snapshot | null {
+// Asks Postgres whether this client's admin token is valid.
+export async function verifyAdmin(): Promise<boolean> {
+  const supabase = getSupabase();
+  if (!supabase) return false;
+  const { data, error } = await supabase.rpc("is_admin");
+  return !error && data === true;
+}
+
+export interface PilotSignup {
+  name: string;
+  restaurant: string;
+  email: string;
+  city?: string;
+  note?: string;
+}
+export async function insertSignup(s: PilotSignup): Promise<boolean> {
+  const supabase = getSupabase();
+  if (!supabase) return false;
+  return !(await supabase.from("pilot_signups").insert(s)).error;
+}
+
+// One local copy per restaurant, so a visitor's own setup never overwrites the demo.
+const localKey = (profileId: string) => `freshcast:data:${profileId}`;
+export function loadLocal(profileId: string): Snapshot | null {
   try {
-    const raw = localStorage.getItem(LOCAL_KEY);
+    const raw = localStorage.getItem(localKey(profileId));
     return raw ? (JSON.parse(raw) as Snapshot) : null;
   } catch {
     return null;
   }
 }
-export function saveLocal(s: Snapshot) {
-  localStorage.setItem(LOCAL_KEY, JSON.stringify(s));
+export function saveLocal(profileId: string, s: Snapshot) {
+  localStorage.setItem(localKey(profileId), JSON.stringify(s));
+}
+export function clearLocal(profileId: string) {
+  localStorage.removeItem(localKey(profileId));
 }

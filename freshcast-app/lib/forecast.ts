@@ -2,8 +2,7 @@
 // learned corrections fitted from the kitchen's stored close-outs.
 
 import { predictIngredientWaste, priorWasteKg } from "./prediction";
-import { DayPrediction, DayWeather, Ingredient, NearbyEvent } from "./types";
-import { DEMO_RESTAURANT, AVG_COVERS } from "./demo-data";
+import { CuisineType, DayPrediction, DayWeather, Ingredient, NearbyEvent } from "./types";
 import { learn, Observation } from "./learning";
 
 interface ForecastOptions {
@@ -14,6 +13,8 @@ interface ForecastOptions {
   weatherSource: "live" | "override" | "offline";
   event: NearbyEvent;
   date: Date;
+  cuisineType: CuisineType;
+  avgCovers: number;
 }
 
 const round = (n: number) => Math.round(n * 100) / 100;
@@ -24,12 +25,12 @@ export function buildDayForecast(opts: ForecastOptions): DayPrediction {
       const input = {
         ingredient,
         expectedCovers: opts.expectedCovers,
-        avgCovers: AVG_COVERS,
+        avgCovers: opts.avgCovers,
         weather: opts.weather,
         weatherSource: opts.weatherSource,
         date: opts.date,
         event: opts.event,
-        cuisineType: DEMO_RESTAURANT.cuisineType,
+        cuisineType: opts.cuisineType,
       };
       const learned = learn(opts.observations, ingredient.id, opts.weather.date, opts.weather.condition);
       return { ...predictIngredientWaste({ ...input, learned }), priorKg: Math.round(priorWasteKg(input) * 1000) / 1000 };

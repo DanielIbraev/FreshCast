@@ -1,17 +1,24 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { classify, describe, fallbackWeek } from "@/lib/weather";
 import { DEMO_RESTAURANT } from "@/lib/demo-data";
 import { DayWeather } from "@/lib/types";
 
 // Cache the forecast for 30 minutes; weather doesn't change faster than that.
-export const revalidate = 1800;
+export const dynamic = "force-dynamic";
 
-export async function GET() {
-  const { lat, lng } = DEMO_RESTAURANT;
+// Restaurant location comes from the query string; anything invalid falls back to the demo.
+function coord(v: string | null, limit: number, fallback: number): number {
+  const n = Number(v);
+  return v !== null && Number.isFinite(n) && Math.abs(n) <= limit ? Math.round(n * 1e4) / 1e4 : fallback;
+}
+
+export async function GET(req: NextRequest) {
+  const lat = coord(req.nextUrl.searchParams.get("lat"), 90, DEMO_RESTAURANT.lat);
+  const lng = coord(req.nextUrl.searchParams.get("lng"), 180, DEMO_RESTAURANT.lng);
   const url =
     `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}` +
     `&daily=weather_code,temperature_2m_max,precipitation_probability_max` +
-    `&temperature_unit=fahrenheit&timezone=America%2FNew_York&forecast_days=8`;
+    `&temperature_unit=fahrenheit&timezone=auto&forecast_days=8`;
 
   try {
     const res = await fetch(url, { next: { revalidate: 1800 }, signal: AbortSignal.timeout(5000) });
