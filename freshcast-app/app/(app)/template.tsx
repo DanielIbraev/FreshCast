@@ -1,12 +1,11 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useNavTransition } from "@/components/nav-transition";
 
-// Re-mounts on every tab change, so each page eases in after the logo loop.
+// Re-mounts on every tab change. The page's sections fade up one after another
+// (CSS `.fc-page` in globals.css). While the nav overlay is still up the
+// animation is held at its first frame, so it plays as the overlay fades out.
 export default function Template({ children }: { children: React.ReactNode }) {
-  return (
-    <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.28, ease: "easeOut" }}>
-      {children}
-    </motion.div>
-  );
+  const { pending } = useNavTransition();
+  return <div className={pending ? "fc-page fc-hold" : "fc-page"}>{children}</div>;
 }
