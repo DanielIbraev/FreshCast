@@ -4,7 +4,7 @@ import { CalendarDays, RotateCcw, SlidersHorizontal } from "lucide-react";
 import { Select } from "@/components/ui/select";
 import { useStore, EVENTS } from "@/lib/store";
 import { EventType, WeatherCondition } from "@/lib/types";
-import { COVERS_BY_DAY, parseLocalDate } from "@/lib/demo-data";
+import { parseLocalDate } from "@/lib/demo-data";
 import { cn } from "@/lib/utils";
 
 const WEATHER_OPTIONS: { value: WeatherCondition | "live"; label: string }[] = [
@@ -23,10 +23,10 @@ const EVENT_OPTIONS = (["none", "game", "concert", "festival", "graduation"] as 
 
 // What-if controls for the selected day. Every change reruns the model.
 export function ScenarioBar() {
-  const { selected, scenario, setScenario } = useStore();
+  const { selected, scenario, setScenario, profile } = useStore();
   if (!selected) return null;
 
-  const defaultCovers = COVERS_BY_DAY[parseLocalDate(selected.date).getDay()];
+  const defaultCovers = profile.coversByDay[parseLocalDate(selected.date).getDay()];
   const covers = scenario.coversOverride ?? defaultCovers;
   const touched = scenario.coversOverride !== null || scenario.weatherOverride !== "live" || scenario.event !== "none";
 
@@ -41,7 +41,7 @@ export function ScenarioBar() {
         <input
           type="range"
           min={15}
-          max={110}
+          max={Math.max(110, profile.avgCovers * 2)}
           value={covers}
           onChange={(e) => setScenario({ coversOverride: Number(e.target.value) })}
           className="h-1 w-36 cursor-pointer accent-good"

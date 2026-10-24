@@ -7,7 +7,7 @@ import { buildDayForecast } from "./forecast";
 import { describe, fallbackWeek } from "./weather";
 import { priorWasteKg } from "./prediction";
 import { runBacktest } from "./backtest";
-import { DEMO_PROFILE, Profile, loadProfile, saveProfile } from "./profile";
+import { DEMO_PROFILE, Profile, loadProfile, saveProfile, clearProfile } from "./profile";
 import { readAdminToken } from "./admin";
 import { setAdminToken } from "./supabase";
 import * as db from "./db";
@@ -222,7 +222,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
       window.location.assign("/dashboard");
     },
     backToDemo: () => {
-      saveProfile(DEMO_PROFILE);
+      clearProfile();
       window.location.assign("/dashboard");
     },
   };

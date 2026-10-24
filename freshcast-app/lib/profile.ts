@@ -53,6 +53,9 @@ export function loadProfile(): Profile {
 }
 
 export function saveProfile(p: Profile) {
-  if (p.isDemo) localStorage.removeItem(KEY);
-  else localStorage.setItem(KEY, JSON.stringify(p));
+  localStorage.setItem(KEY, JSON.stringify(p));
+}
+
+export function clearProfile() {
+  localStorage.removeItem(KEY);
 }

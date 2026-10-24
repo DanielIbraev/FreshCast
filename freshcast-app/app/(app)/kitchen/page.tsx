@@ -8,22 +8,14 @@ import { IngredientForm } from "@/components/kitchen/ingredient-form";
 import { IngredientTable } from "@/components/kitchen/ingredient-table";
 import { useStore } from "@/lib/store";
 import { Category, Ingredient } from "@/lib/types";
+import { STAPLES, CUISINE_LABELS, toIngredient } from "@/lib/staples";
+import { GuestPattern } from "@/components/guest-pattern";
+import { saveProfile } from "@/lib/profile";
 import { CATEGORIES, CATEGORY_ORDER } from "@/lib/categories";
 import { cn, formatCurrency } from "@/lib/utils";
 
-// Common staples an Italian kitchen can add in one tap, with typical Boston
-// wholesale prices. The owner can edit any of these afterward.
-const STAPLES: Omit<Ingredient, "id" | "co2PerKg">[] = [
-  { name: "Parmigiano Reggiano", category: "dairy", costPerKg: 24, baselinePrepKg: 2, shelfLifeDays: 14 },
-  { name: "Burrata", category: "dairy", costPerKg: 26, baselinePrepKg: 2.5, shelfLifeDays: 2 },
-  { name: "Gulf Shrimp", category: "seafood", costPerKg: 22, baselinePrepKg: 4, shelfLifeDays: 2 },
-  { name: "Lemons", category: "produce", costPerKg: 4.5, baselinePrepKg: 3, shelfLifeDays: 7 },
-  { name: "Italian Sausage", category: "meat", costPerKg: 13, baselinePrepKg: 4, shelfLifeDays: 3 },
-  { name: "Arborio Rice", category: "dry", costPerKg: 5, baselinePrepKg: 3, shelfLifeDays: 2 },
-];
-
 export default function KitchenPage() {
-  const { ingredients, observations, addIngredient, updateIngredient, removeIngredient } = useStore();
+  const { ingredients, observations, addIngredient, updateIngredient, removeIngredient, profile } = useStore();
   const daysByIngredient = useMemo(() => {
     const m = new Map<string, Set<string>>();
     observations.forEach((o) => (m.get(o.ingredientId) ?? m.set(o.ingredientId, new Set()).get(o.ingredientId)!).add(o.date));
@@ -47,10 +39,10 @@ export default function KitchenPage() {
   const perishable = ingredients.filter((i) => i.shelfLifeDays <= 2);
   const learning = ingredients.filter((i) => daysOf(i.id) < 14).length;
   const names = new Set(ingredients.map((i) => i.name.toLowerCase()));
-  const staples = STAPLES.filter((s) => !names.has(s.name.toLowerCase()));
+  const staples = STAPLES[profile.cuisineType].filter((s) => !names.has(s.name.toLowerCase()));
 
-  function quickAdd(s: (typeof STAPLES)[number]) {
-    addIngredient({ ...s, id: `${s.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-${Date.now().toString(36)}`, co2PerKg: CATEGORIES[s.category].co2PerKg });
+  function quickAdd(s: (typeof staples)[number]) {
+    addIngredient(toIngredient(s));
   }
 
   return (
@@ -99,9 +91,27 @@ export default function KitchenPage() {
         </Card>
       </div>
 
+      <Card>
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <CardLabel>Guests by weekday</CardLabel>
+          <span className="text-xs text-text-muted">Drives the guest signal in every forecast</span>
+        </div>
+        <div className="mt-4 max-w-xl">
+          <GuestPattern
+            coversByDay={profile.coversByDay}
+            source={profile.coversSource}
+            onImport={(r) => {
+              // Reload so every forecast and the learning layer use the new pattern.
+              saveProfile({ ...profile, coversByDay: r.coversByDay, avgCovers: r.avgCovers, coversSource: "pos-import" });
+              setTimeout(() => window.location.reload(), 1200);
+            }}
+          />
+        </div>
+      </Card>
+
       {staples.length > 0 && (
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs text-text-muted">Common for Italian kitchens:</span>
+          <span className="text-xs text-text-muted">Common for {CUISINE_LABELS[profile.cuisineType].toLowerCase()} kitchens:</span>
           {staples.map((s) => (
             <button
               key={s.name}
