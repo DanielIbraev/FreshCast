@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 
 const WEATHER_OPTIONS: { value: WeatherCondition | "live"; label: string }[] = [
   { value: "live", label: "Live" },
-  { value: "normal", label: "Clear" },
+  { value: "normal", label: "Dry" },
   { value: "rain", label: "Rain" },
   { value: "hot", label: "Heat" },
   { value: "cold", label: "Cold" },
