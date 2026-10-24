@@ -65,10 +65,17 @@ export function computeSignals(input: PredictionInput): SignalFactor[] {
   const hol = holiday(date);
   const wx = input.weatherSource === "live" ? "Open-Meteo API" : input.weatherSource === "override" ? "Manual what-if" : "Seasonal fallback";
   const learnedDow = Math.abs(L.weekday - 1) > 0.005;
+  const learnedWx = Math.abs(L.weather - 1) > 0.005;
 
   const signals: SignalFactor[] = [
     { key: "demand", label: "Expected covers", source: "Reservations", detail: `${input.expectedCovers} vs ${input.avgCovers} avg`, value: demandFactor(input.expectedCovers, input.avgCovers) },
-    { key: "weather", label: "Weather", source: wx, detail: weather.description, value: weatherFactor(weather) },
+    {
+      key: "weather",
+      label: "Weather",
+      source: learnedWx ? `${wx} + your logs` : wx,
+      detail: learnedWx ? `${weather.description}, adjusted ×${L.weather.toFixed(2)}` : weather.description,
+      value: weatherFactor(weather) * L.weather,
+    },
     {
       key: "dayOfWeek",
       label: "Day of week",

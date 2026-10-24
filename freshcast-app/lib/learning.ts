@@ -7,11 +7,13 @@ export interface Observation {
   ingredientId: string;
   rawKg: number; // prior-only forecast for "prep as usual" (signals 1-7)
   usualKg: number; // observed: logged waste + amount the plan cut from prep
+  condition: string; // weather that day
 }
 
 export interface Learned {
   calibration: number; // per-ingredient correction
   weekday: number; // per-weekday correction learned across all ingredients
+  weather: number; // correction for this weather condition, learned across all ingredients
   recency: number; // last week, same day
   days: number; // days of data for this ingredient
   lastWeekRatio: number | null;
@@ -26,9 +28,9 @@ function shrunkMean(values: number[], k: number): number {
   return (values.reduce((s, v) => s + v, 0) + k) / (values.length + k);
 }
 
-export const NO_LEARNING: Learned = { calibration: 1, weekday: 1, recency: 1, days: 0, lastWeekRatio: null };
+export const NO_LEARNING: Learned = { calibration: 1, weekday: 1, weather: 1, recency: 1, days: 0, lastWeekRatio: null };
 
-export function learn(obs: Observation[], ingredientId: string, targetDate: string): Learned {
+export function learn(obs: Observation[], ingredientId: string, targetDate: string, targetCondition = "normal"): Learned {
   const target = toDay(targetDate);
   const ratio = (o: Observation) => o.usualKg / o.rawKg;
   const past = obs.filter((o) => o.rawKg > 0 && toDay(o.date) < target);
@@ -51,12 +53,16 @@ export function learn(obs: Observation[], ingredientId: string, targetDate: stri
   const sameWeekday = past.filter((o) => (target - toDay(o.date)) % 7 === 0 && target - toDay(o.date) <= 56);
   const weekday = clamp(shrunkMean(sameWeekday.map((o) => ratio(o) / calFor(o.ingredientId)), 4), 0.6, 1.6);
 
-  // 3. Last week, same day, for this ingredient (partial weight)
+  // 3. Does this weather hit this kitchen harder than the prior assumes? (last 8 weeks)
+  const sameWeather = past.filter((o) => o.condition === targetCondition && target - toDay(o.date) <= 56);
+  const weather = clamp(shrunkMean(sameWeather.map((o) => ratio(o) / calFor(o.ingredientId)), 6), 0.6, 1.6);
+
+  // 4. Last week, same day, for this ingredient (partial weight)
   const lw = mine.find((o) => target - toDay(o.date) === 7);
   const lastWeekRatio = lw ? ratio(lw) : null;
-  const recency = lw ? clamp(0.3 * (ratio(lw) / (calibration * weekday)) + 0.7, 0.75, 1.3) : 1;
+  const recency = lw ? clamp(0.3 * (ratio(lw) / (calibration * weekday * weather)) + 0.7, 0.75, 1.3) : 1;
 
-  return { calibration, weekday, recency, days: new Set(mine.map((o) => o.date)).size, lastWeekRatio };
+  return { calibration, weekday, weather, recency, days: new Set(mine.map((o) => o.date)).size, lastWeekRatio };
 }
 
 // Standard forecasting accuracy: 1 - weighted absolute percentage error.

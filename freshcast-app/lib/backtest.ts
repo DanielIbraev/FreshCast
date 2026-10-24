@@ -30,7 +30,7 @@ export const VERSIONS = [
   { id: "v1", name: "+ Covers & weekday", detail: "Reservations and day-of-week priors", priors: ["demand", "dayOfWeek"], learning: 0 },
   { id: "v2", name: "+ Weather, season, events", detail: "Open-Meteo, calendar, events feed", priors: ["demand", "dayOfWeek", "weather", "season", "holiday", "event", "cuisine"], learning: 0 },
   { id: "v3", name: "+ Kitchen calibration", detail: "Learns each ingredient from your logs", priors: ["demand", "dayOfWeek", "weather", "season", "holiday", "event", "cuisine"], learning: 1 },
-  { id: "v4", name: "+ Weekday & recency learning", detail: "Learns your busy days and last week", priors: ["demand", "dayOfWeek", "weather", "season", "holiday", "event", "cuisine"], learning: 2 },
+  { id: "v4", name: "+ Weekday, weather & recency learning", detail: "Learns your busy days, how rain hits you, and last week", priors: ["demand", "dayOfWeek", "weather", "season", "holiday", "event", "cuisine"], learning: 2 },
 ] as const;
 
 export interface VersionResult {
@@ -52,12 +52,12 @@ export function runAblation(ingredients: Ingredient[], seeds = [7, 11, 23], week
         for (const ing of ingredients) {
           const signals = computeSignals({ ingredient: ing, expectedCovers: day.expectedCovers, avgCovers: AVG_COVERS, weather: day.weather, weatherSource: "live", date: day.dateObj, event: day.event, cuisineType: DEMO_RESTAURANT.cuisineType });
           const raw = ing.baselinePrepKg * BASE_WASTE_FRACTION * signals.filter((s) => (v.priors as readonly string[]).includes(s.key)).reduce((a, s) => a * s.value, 1);
-          const L = v.learning > 0 && obs.length ? learn(obs, ing.id, day.date) : NO_LEARNING;
-          const forecast = raw * L.calibration * (v.learning > 1 ? L.weekday * L.recency : 1);
+          const L = v.learning > 0 && obs.length ? learn(obs, ing.id, day.date, day.weather.condition) : NO_LEARNING;
+          const forecast = raw * L.calibration * (v.learning > 1 ? L.weekday * L.weather * L.recency : 1);
           const actual = day.trueUsual[ing.id];
           if (i >= 14) pairs.push({ predicted: forecast, actual });
           const cut = forecast * REDUCTION_RATE;
-          obs.push({ date: day.date, ingredientId: ing.id, rawKg: raw, usualKg: Math.max(0, actual - cut) + cut });
+          obs.push({ date: day.date, ingredientId: ing.id, rawKg: raw, usualKg: Math.max(0, actual - cut) + cut, condition: day.weather.condition });
         }
       });
       return accuracy(pairs);
@@ -87,8 +87,8 @@ export function runBacktest(ingredients: Ingredient[], weeks = 12, seed = 7, end
         cuisineType: DEMO_RESTAURANT.cuisineType,
       };
       const raw = priorWasteKg(input);
-      const L = obs.length ? learn(obs, ing.id, day.date) : NO_LEARNING;
-      const forecast = raw * L.calibration * L.weekday * L.recency;
+      const L = obs.length ? learn(obs, ing.id, day.date, day.weather.condition) : NO_LEARNING;
+      const forecast = raw * L.calibration * L.weekday * L.weather * L.recency;
       const actual = day.trueUsual[ing.id];
 
       buckets[w].naive.push({ predicted: ing.baselinePrepKg * BASE_WASTE_FRACTION, actual });
@@ -101,7 +101,7 @@ export function runBacktest(ingredients: Ingredient[], weeks = 12, seed = 7, end
       // the log reads 0 and the observation is censored at the cut amount.
       const cut = forecast * REDUCTION_RATE;
       const logged = Math.max(0, actual - cut);
-      obs.push({ date: day.date, ingredientId: ing.id, rawKg: raw, usualKg: logged + cut });
+      obs.push({ date: day.date, ingredientId: ing.id, rawKg: raw, usualKg: logged + cut, condition: day.weather.condition });
     }
   });
 
