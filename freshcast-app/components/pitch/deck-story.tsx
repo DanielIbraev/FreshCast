@@ -19,9 +19,12 @@ export function Source({ children }: { children: React.ReactNode }) {
   return <p className="ml-auto text-right text-base text-text-muted">{children}</p>;
 }
 
-// Full-bleed background clip from /public/broll. If the file isn't there,
-// the slide simply renders without it.
+// Full-bleed background clip from /public/broll. Only names listed here are
+// requested, so a missing clip doesn't log a 404 in the console. Add a name
+// after dropping `<name>.mp4` into public/broll.
+const BROLL_CLIPS = new Set<string>([]);
 export function Broll({ name }: { name: string }) {
+  if (!BROLL_CLIPS.has(name)) return null;
   return (
     <div className="pointer-events-none absolute -inset-x-[110px] -inset-y-[90px] -z-10 overflow-hidden">
       <video
