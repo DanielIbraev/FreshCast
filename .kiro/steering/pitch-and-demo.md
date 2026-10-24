@@ -87,9 +87,10 @@ Worked at a small cafe, watched prepped food go in the trash every night, and th
    - **Kendall Bowl Co.** (`?r=kendall-bowls`, ~10 s): Sunday is closed, no forecast. The week is lunch-shaped: busy Monday to Thursday, quiet Saturday.
    - **Golden Crumb Café** (~10 s): croissants have a 1-day shelf life, so the shelf-life signal pushes them up. Its weekend brunch peaks are a different week shape again.
    - **Marco's Trattoria** (~40 s): click a day, then **Atlantic Salmon**. Walk the 9 signals: real Boston weather from Open-Meteo, usual guests for that weekday, shelf life, the learned corrections, the equation and the 80% range. "This is arithmetic, not a chatbot." Drag guests down, set weather to rain, watch the numbers move. **Apply prep plan**: red to green.
-   - **Log + close-out** (~25 s): switch to Español, tap an item, tap a portion. **Close out today**, enter guests served. Tomorrow's forecast changes.
-   - **Model accuracy** (~15 s): this restaurant's own track record (morning forecast vs. each close-out, 80% range hits, sold-out nights), then the v0 → v4 ladder against the owner's best guess and the oracle.
-4. **Impact (2:15–2:40)**, deck. Marco's simulated bin: $1,435 → $638 a month; ~6.1 t CO₂e a year. At 1% of US independents: ~25,000 t CO₂e and ~9.5 million meals a year. Say "simulated".
+   - **Kitchen screen** (optional, ~5 s): from Prep & order, open **Kitchen screen**. The prep list in big type for the wall tablet; tap one item to mark it done.
+   - **Log + close-out** (~25 s): switch to Español, tap an item, tap a portion. **Close out today**, enter guests served. **What tonight taught the model** appears: point at one item's actual vs. forecast kg, its calibration before → after, and tomorrow's forecast before → after. "One night moved it a little. That's the shrinkage."
+   - **Model accuracy** (~15 s): this restaurant's own track record (morning forecast vs. each close-out, 80% range hits, sold-out nights) and one specific finding under "What would improve accuracy", then the v0 → v4 ladder against the owner's best guess and the oracle.
+4. **Impact (2:15–2:40)**, deck. Marco's simulated bin: $1,273 → $856 a month; ~5.8 t CO₂e a year. At 1% of US independents: ~23,800 t CO₂e and ~9.0 million meals a year. Say "simulated".
 5. **Kiro (2:40–2:55)**, deck Kiro slide or `.kiro/` on screen. "Built solo in the Kiro IDE: a spec for the confidence ranges, property tests that caught 2 bugs, hooks that re-score the model on every save, steering that keeps every number honest, and a subagent audit that found five real problems."
 
 ## Q&A (technical judges)
