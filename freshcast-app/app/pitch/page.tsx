@@ -141,9 +141,14 @@ function Deck() {
         </AnimatePresence>
         </div>
         {cam && (
-          // Webcam frame: 180px circle, 30px from the right and bottom edges of the
-          // 1600x900 slide, in the corner the 0.86 scale frees up. Content stays centred.
-          <div className="pointer-events-none absolute bottom-[30px] right-[30px] h-[180px] w-[180px] rounded-full border-2 border-border" />
+          // Exact 1:1 camera crop at x=1396, y=664 on the 1600x900 canvas.
+          // Its bottom edge is 20px above the progress line; the 0.86 uniform
+          // content scale ends at x=1393.4, so no slide content sits underneath.
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute rounded-[10px] border-2 border-text-muted"
+            style={{ width: CAM_SIZE, height: CAM_SIZE, right: CAM_RIGHT, bottom: CAM_BOTTOM }}
+          />
         )}
         {!presenting && (
           <div className="absolute bottom-8 left-[110px] right-[110px] flex gap-1.5" onClick={(e) => e.stopPropagation()}>
