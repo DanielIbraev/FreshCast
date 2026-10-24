@@ -16,7 +16,7 @@ export function Line({ children, sub }: { children: React.ReactNode; sub?: React
 // Sources sit bottom-right, where the 0.86 cam scale keeps them clear of the
 // webcam circle.
 export function Source({ children }: { children: React.ReactNode }) {
-  return <p className="ml-auto max-w-[1100px] text-right text-base text-text-muted">{children}</p>;
+  return <p className="ml-auto text-right text-base text-text-muted">{children}</p>;
 }
 
 // Full-bleed background clip from /public/broll. If the file isn't there,
@@ -85,8 +85,8 @@ export const S3Guess = () => (
 );
 
 export const S4Solution = ({ rows, day }: { rows: { name: string; usual: number; rec: number }[]; day: string }) => (
-  <div className="flex h-full items-center justify-between gap-16">
-    <div className="max-w-[740px]">
+  <div className="flex h-full items-center justify-between gap-12">
+    <div className="max-w-[810px]">
       <div className="mb-10 flex items-center gap-4">
         <Mark size={56} />
         <span className="font-display text-4xl font-700 text-text-primary">FreshCast</span>

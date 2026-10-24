@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, MotionConfig, motion } from "framer-motion";
 import { Maximize } from "lucide-react";
 import { StoreProvider, useStore } from "@/lib/store";
 import { dailyTotals, summarize } from "@/lib/history";
@@ -9,7 +9,8 @@ import { parseLocalDate } from "@/lib/demo-data";
 import bench from "@/lib/benchmarks.json";
 import { S6bHow, S7Kitchens, S13Roadmap } from "@/components/pitch/deck-model";
 import { S0Brand, S1Hook, S2Country, S3Guess, S4Solution, S5Loop, S6Demo } from "@/components/pitch/deck-story";
-import { S7bTrust, S8Impact, S9Scale, S10Audience, S12Competition, S12bKiro, S13Team, S14Try } from "@/components/pitch/deck-proof";
+import { S7bTrust, S8Impact, S9Scale, S10Audience, S12Competition } from "@/components/pitch/deck-proof";
+import { S12bKiro, S13Team, S14Try } from "@/components/pitch/deck-close";
 
 // Slides render at 1600x900 and scale to fit, so a laptop, projector, and a
 // screen recording all look identical.
@@ -28,6 +29,9 @@ function Deck() {
   // recording replaces the demo slide).
   const [cam, setCam] = useState(false);
   const [videoCut, setVideoCut] = useState(false);
+  // ready: URL params read. Until then render nothing, so ?s=N opens on slide N
+  // instead of flashing slide 1 and fading across.
+  const [ready, setReady] = useState(false);
   const idleTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   const sum = useMemo(() => summarize(dailyTotals(observations, ingredients)), [observations, ingredients]);
@@ -78,6 +82,7 @@ function Deck() {
     if (s >= 1) setI(s - 1);
     setCam(q.get("cam") === "1");
     setVideoCut(q.get("cut") === "video");
+    setReady(true);
     const onFs = () => setPresenting(!!document.fullscreenElement);
     document.addEventListener("fullscreenchange", onFs);
     return () => document.removeEventListener("fullscreenchange", onFs);
@@ -117,7 +122,8 @@ function Deck() {
   return (
     <div className="fixed inset-0 flex items-center justify-center overflow-hidden bg-canvas" style={{ cursor: presenting && idle ? "none" : "default" }}>
       <div style={{ width: W, height: H, transform: `scale(${scale})` }} className="relative shrink-0 px-[110px] py-[90px]" onClick={() => go(1)}>
-        <div className="h-full" style={cam ? { transform: "scale(0.86)", transformOrigin: "top center" } : undefined}>
+        {/* The brand frame stays full size and centred in cam mode: the intro clip dissolves into it. */}
+        <div className="h-full" style={cam && !(videoCut && i === 0) ? { transform: "scale(0.86)", transformOrigin: "top center" } : undefined}>
         <AnimatePresence mode="wait">
           <motion.div
             key={i}
@@ -127,7 +133,7 @@ function Deck() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3, ease: "easeOut" }}
           >
-            {slides[i]}
+            {ready && slides[i]}
           </motion.div>
         </AnimatePresence>
         </div>
@@ -151,7 +157,7 @@ function Deck() {
         >
           <Maximize className="h-3.5 w-3.5" />
           {presenting ? "Exit (F)" : "Present (F)"}
-          <span className="text-text-muted">· {i + 1}/{slides.length}</span>
+          <span className="ml-1 tabular-nums text-text-muted">{i + 1}/{slides.length}</span>
         </button>
       )}
     </div>
@@ -161,7 +167,10 @@ function Deck() {
 export default function PitchPage() {
   return (
     <StoreProvider only="marcos-trattoria">
-      <Deck />
+      {/* reducedMotion="user": with prefers-reduced-motion, transform animations jump to their end state. */}
+      <MotionConfig reducedMotion="user">
+        <Deck />
+      </MotionConfig>
     </StoreProvider>
   );
 }

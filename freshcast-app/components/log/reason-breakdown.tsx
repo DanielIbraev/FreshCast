@@ -31,9 +31,9 @@ export function ReasonBreakdown({ logs, ingredients, labels }: { logs: WasteLog[
       </div>
       <ul className="mt-4 grid grid-cols-2 gap-x-6 gap-y-2">
         {rows.map((r) => (
-          <li key={r.reason} className="flex items-center justify-between text-xs">
-            <span className="flex items-center gap-2 text-text-secondary">
-              <span className="h-2 w-2 rounded-full" style={{ background: WASTE_REASONS[r.reason].color }} />
+          <li key={r.reason} className="flex items-center justify-between gap-3 text-xs">
+            <span className="flex min-w-0 items-center gap-2 text-text-secondary">
+              <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: WASTE_REASONS[r.reason].color }} />
               {labels?.[r.reason] ?? WASTE_REASONS[r.reason].label}
             </span>
             <span className="tabular-nums text-text-primary">{formatCurrency(r.value)}</span>

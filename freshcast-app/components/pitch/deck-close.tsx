@@ -33,7 +33,7 @@ export const S12bKiro = () => {
         {tiles.map(([h, a, b]) => (
           <div key={h} className="rounded-2xl border border-border bg-surface p-8">
             <p className="font-display text-[36px] font-700 text-good">{h}</p>
-            <p className="mt-3 text-[26px] leading-snug text-text-primary">{a}</p>
+            <p className="mt-3 text-[24px] leading-snug text-text-primary">{a}</p>
             <p className="mt-2 text-[20px] leading-snug text-text-muted">{b}</p>
           </div>
         ))}

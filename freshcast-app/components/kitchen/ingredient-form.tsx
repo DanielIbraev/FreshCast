@@ -57,7 +57,7 @@ export function IngredientForm({ initial, onSave, onClose }: Props) {
       >
         <div className="flex items-center justify-between border-b border-border px-6 py-4">
           <h2 className="font-display text-lg font-600 text-text-primary">{initial ? `Edit ${initial.name}` : "Add an ingredient"}</h2>
-          <button type="button" onClick={onClose} aria-label="Close" className="text-text-muted hover:text-text-primary">
+          <button type="button" onClick={onClose} aria-label="Close" className="-m-1.5 rounded-md p-1.5 text-text-muted transition-colors duration-150 hover:text-text-primary">
             <X className="h-5 w-5" />
           </button>
         </div>

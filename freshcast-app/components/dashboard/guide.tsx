@@ -36,8 +36,8 @@ export function Guide({ state }: { state: GuideState }) {
   };
 
   return (
-    <section aria-label="Try FreshCast in four steps" className="rounded-lg border border-good/40 bg-surface px-4 py-3">
-      <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+    <section aria-label="Try FreshCast in four steps" className="flex items-start gap-3 rounded-lg border border-good/40 bg-surface py-3 pl-4 pr-2">
+      <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-6 gap-y-2 py-1.5">
         <p className="text-sm font-600 text-text-primary">{all ? "That's the morning loop." : `New here? Four clicks, ${done} done.`}</p>
         {all ? (
           <Link href="/log" className="inline-flex items-center gap-1.5 text-sm font-600 text-good hover:text-text-primary">
@@ -58,10 +58,10 @@ export function Guide({ state }: { state: GuideState }) {
             })}
           </ol>
         )}
-        <button onClick={close} aria-label="Close the walkthrough" className="ml-auto rounded-md p-1 text-text-muted transition-colors duration-150 hover:text-text-primary">
-          <X className="h-4 w-4" />
-        </button>
       </div>
+      <button onClick={close} aria-label="Close the walkthrough" className="shrink-0 rounded-md p-2 text-text-muted transition-colors duration-150 hover:text-text-primary">
+        <X className="h-4 w-4" />
+      </button>
     </section>
   );
 }

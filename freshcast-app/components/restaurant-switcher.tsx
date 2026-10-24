@@ -48,16 +48,16 @@ export function RestaurantSwitcher({ compact = false }: { compact?: boolean }) {
         aria-haspopup="menu"
         aria-expanded={open}
         className={cn(
-          "flex w-full items-center gap-2.5 rounded-md border border-border bg-canvas text-left transition-colors duration-150 hover:border-text-muted",
-          compact ? "px-2.5 py-1.5" : "px-3 py-2.5"
+          "flex w-full items-center gap-2 rounded-md border border-border bg-canvas text-left transition-colors duration-150 hover:border-text-muted",
+          compact ? "px-2.5 py-1.5" : "px-2.5 py-2.5"
         )}
       >
         <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-surface-hover">
           <Icon className="h-4 w-4 text-good" />
         </span>
         <span className="min-w-0 flex-1">
-          <span className="block text-sm font-600 leading-tight text-text-primary">{profile.name}</span>
-          <span className="mt-0.5 block text-xs leading-snug text-text-muted">
+          <span className="block text-sm font-600 leading-tight text-text-primary [text-wrap:balance]">{profile.name}</span>
+          <span className="mt-0.5 block text-xs leading-snug text-text-muted [text-wrap:balance]">
             {hydrated ? profile.cuisineLabel ?? profile.place : "Loading kitchen"}
           </span>
         </span>

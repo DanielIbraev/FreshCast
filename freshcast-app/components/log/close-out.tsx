@@ -87,7 +87,7 @@ export function CloseOut({ s = t("en") }: { s?: Strings }) {
         <div className="flex items-center gap-2">
           <span className="text-xs text-text-muted">{s.guests}</span>
           <div className="flex items-center rounded-md border border-[#66768C] bg-canvas">
-            <button onClick={() => step(-1)} aria-label="One fewer guest" className="px-2 py-2 text-text-muted hover:text-text-primary">
+            <button onClick={() => step(-1)} aria-label="One fewer guest" className="flex h-8 items-center px-2 text-text-muted hover:text-text-primary">
               <Minus className="h-3.5 w-3.5" />
             </button>
             <input
@@ -97,7 +97,7 @@ export function CloseOut({ s = t("en") }: { s?: Strings }) {
               onChange={(e) => setGuests(Math.max(0, Math.min(400, Number(e.target.value) || 0)))}
               className="w-12 bg-transparent text-center text-sm font-600 tabular-nums text-text-primary focus:outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none"
             />
-            <button onClick={() => step(1)} aria-label="One more guest" className="px-2 py-2 text-text-muted hover:text-text-primary">
+            <button onClick={() => step(1)} aria-label="One more guest" className="flex h-8 items-center px-2 text-text-muted hover:text-text-primary">
               <Plus className="h-3.5 w-3.5" />
             </button>
           </div>

@@ -110,8 +110,9 @@ export default function KitchenPage() {
       </Card>
 
       {staples.length > 0 && (
-        <div className="flex flex-wrap items-center gap-2">
-          <span className="text-xs text-text-muted">Common for {CUISINE_LABELS[profile.cuisineType].toLowerCase()} kitchens:</span>
+        <div>
+          <p className="mb-2 text-xs text-text-muted">Common for {CUISINE_LABELS[profile.cuisineType].toLowerCase()} kitchens, one tap to add:</p>
+          <div className="flex flex-wrap gap-2">
           {staples.map((s) => (
             <button
               key={s.name}
@@ -121,6 +122,7 @@ export default function KitchenPage() {
               <Plus className="h-3 w-3" /> {s.name}
             </button>
           ))}
+          </div>
         </div>
       )}
 

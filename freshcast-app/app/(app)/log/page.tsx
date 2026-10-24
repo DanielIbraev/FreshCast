@@ -187,8 +187,8 @@ export default function LogWastePage() {
                   <span className="flex items-center gap-4">
                     <span className="text-xs tabular-nums text-text-muted">{l.quantityKg}kg</span>
                     <span className="w-16 text-right text-sm font-600 tabular-nums text-waste">{formatCurrency((ing?.costPerKg ?? 0) * l.quantityKg)}</span>
-                    <button onClick={() => removeLog(l.id)} aria-label={s.undo} className="text-text-muted hover:text-text-primary">
-                      <Undo2 className="h-3.5 w-3.5" />
+                    <button onClick={() => removeLog(l.id)} aria-label={s.undo} className="-m-2 rounded-md p-2 text-text-muted transition-colors duration-150 hover:text-text-primary">
+                      <Undo2 className="h-4 w-4" />
                     </button>
                   </span>
                 </motion.li>

@@ -56,7 +56,7 @@ export function ScenarioBar() {
             key={o.value}
             onClick={() => setScenario({ weatherOverride: o.value })}
             className={cn(
-              "rounded px-2.5 py-1 text-xs transition-colors duration-150",
+              "rounded px-2.5 py-2 text-xs transition-colors duration-150",
               scenario.weatherOverride === o.value ? "bg-surface-hover font-600 text-text-primary" : "text-text-muted hover:text-text-secondary"
             )}
           >

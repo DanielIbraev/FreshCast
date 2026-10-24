@@ -20,7 +20,7 @@ export const S6bHow = ({ item, day }: { item: IngredientPrediction | null; day: 
   const kitchen = v("calibration") * v("dayOfWeek") * v("recency");
   const steps = [
     { top: `${(item.usualPrepKg * BASE_WASTE_FRACTION).toFixed(2)} kg`, mid: "Normal waste", sub: `${Math.round(BASE_WASTE_FRACTION * 100)}% of the ${item.usualPrepKg.toFixed(1)} kg usually prepped on ${day}` },
-    { top: x(world), mid: "The day", sub: `${(item.signals.find((s) => s.key === "weather")?.detail ?? "Weather").split(", adjusted")[0]}, season, shelf life` },
+    { top: x(world), mid: "The day", sub: `${(item.signals.find((s) => s.key === "weather")?.detail ?? "Weather").split(", adjusted")[0]}, plus season and shelf life` },
     { top: x(kitchen), mid: "Your kitchen", sub: "Learned from every close-out" },
   ];
   return (
@@ -111,7 +111,7 @@ export const S7Kitchens = () => {
           <span className="absolute right-0">100% accurate</span>
         </div>
       </div>
-      <Source>Simulated kitchens, 12 weeks, 5 random seeds each, walk-forward. Accuracy = 1 − weighted absolute error. Real-world accuracy needs a real kitchen.</Source>
+      <Source>Simulated kitchens: 12 weeks, 5 seeds each, scored walk-forward. Accuracy = 1 − weighted absolute error. Real-world accuracy needs a real kitchen.</Source>
     </div>
   );
 };
@@ -123,13 +123,13 @@ export const S13Roadmap = () => {
     ["After that", "text-text-secondary", ["Guest counts straight from the POS", "Order list sent to the supplier", "Multi-location groups"]],
   ];
   return (
-    <div className="flex h-full flex-col gap-16">
+    <div className="flex h-full flex-col">
       <Line>Roadmap.</Line>
-      <div className="grid grid-cols-3 gap-8">
+      <div className="grid flex-1 grid-cols-3 content-center gap-8">
         {cols.map(([h, tone, items], i) => (
           <motion.div key={h} className="rounded-2xl border border-border bg-surface p-9" initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 + i * 0.2, duration: 0.45, ease }}>
             <p className={`font-display text-[34px] font-700 ${tone}`}>{h}</p>
-            <ul className="mt-6 space-y-4 text-[24px] leading-snug text-text-secondary">
+            <ul className="mt-6 space-y-4 text-[26px] leading-snug text-text-secondary">
               {items.map((t) => (
                 <li key={t}>{t}</li>
               ))}

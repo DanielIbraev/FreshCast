@@ -62,7 +62,7 @@ export function Sidebar() {
         })}
       </nav>
 
-      <div className="mt-auto border-t border-border px-4 py-4">
+      <div className="mt-auto border-t border-border px-3 py-4">
         <RestaurantSwitcher />
         <p className="mt-2 px-1 text-xs leading-snug text-text-muted">
           {profile.place}
@@ -70,7 +70,7 @@ export function Sidebar() {
         </p>
         <p className="mt-2 flex items-start gap-1.5 px-1 text-xs leading-snug text-text-muted" title={st.title}>
           <span className={cn("mt-[5px] h-1.5 w-1.5 shrink-0 rounded-full", st.dot)} />
-          {st.text}
+          <span className="[text-wrap:balance]">{st.text}</span>
         </p>
         <div className="mt-1.5 flex flex-col">
           {/* py-2 gives the text button a 32px hit area without changing how it looks. */}

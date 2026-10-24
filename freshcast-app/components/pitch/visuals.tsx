@@ -68,7 +68,7 @@ export function Podium() {
 // What the cook sees at 6am.
 export function PrepCard({ rows, day }: { rows: { name: string; usual: number; rec: number }[]; day: string }) {
   return (
-    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease }} className="w-[560px] rounded-2xl border border-border bg-surface p-8">
+    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease }} className="w-[520px] shrink-0 rounded-2xl border border-border bg-surface p-8">
       <p className="text-[20px] text-text-muted">{day}&apos;s prep list</p>
       <ul className="mt-6 space-y-5">
         {rows.map((r, i) => (

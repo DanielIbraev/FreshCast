@@ -26,9 +26,10 @@ export function SignalBreakdown({ item }: { item: IngredientPrediction }) {
             <li key={s.key} className="grid grid-cols-[1fr_96px_52px] items-center gap-3">
               <div className="min-w-0">
                 <p className="truncate text-[13px] text-text-primary">{s.label}</p>
-                <p className="flex min-w-0 gap-2 text-xs">
-                  <span className="max-w-full shrink-0 truncate text-text-secondary">{s.detail}</span>
-                  <span className="min-w-0 truncate text-text-muted" title={s.source}>{s.source}</span>
+                {/* detail, then where it came from; the source wraps below when the column is narrow */}
+                <p className="flex flex-wrap gap-x-2 text-xs leading-snug">
+                  <span className="text-text-secondary">{s.detail}</span>
+                  <span className="text-text-muted">{s.source}</span>
                 </p>
               </div>
               {/* centered track: left = less waste, right = more waste */}

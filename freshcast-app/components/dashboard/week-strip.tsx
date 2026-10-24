@@ -11,7 +11,7 @@ const DAY_SHORT = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 export function WeekStrip() {
   const { week, selected, setScenario } = useStore();
   if (week.length === 0) {
-    return <div className="flex h-[118px] gap-2 md:grid md:grid-cols-7">{Array.from({ length: 7 }, (_, i) => <div key={i} className="min-w-[110px] animate-pulse rounded-lg bg-surface md:min-w-0" />)}</div>;
+    return <div className="flex h-[118px] gap-2 overflow-hidden xl:grid xl:grid-cols-7">{Array.from({ length: 7 }, (_, i) => <div key={i} className="min-w-[128px] animate-pulse rounded-lg bg-surface xl:min-w-0" />)}</div>;
   }
 
   const open = week.filter((d) => !d.closed);
@@ -19,15 +19,15 @@ export function WeekStrip() {
   const min = Math.min(...open.map((d) => d.totalWasteCost), max);
 
   return (
-    <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 md:mx-0 md:grid md:grid-cols-7 md:overflow-visible md:px-0 md:pb-0">
+    <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 md:-mx-8 md:px-8 xl:mx-0 xl:grid xl:grid-cols-7 xl:overflow-visible xl:px-0 xl:pb-0">
       {week.map((day) => {
         const date = parseLocalDate(day.date);
         const isSel = selected?.date === day.date;
         if (day.closed) {
           return (
-            <div key={day.date} className="flex min-w-[112px] flex-col rounded-lg border border-dashed border-border px-3 py-3 md:min-w-0" aria-label={`${DAY_SHORT[date.getDay()]} ${date.getDate()}: closed`}>
+            <div key={day.date} className="flex min-w-[128px] flex-col rounded-lg border border-dashed border-border px-3 py-3 xl:min-w-0" aria-label={`${DAY_SHORT[date.getDay()]} ${date.getDate()}: closed`}>
               <div className="flex items-center justify-between gap-2 text-xs">
-                <span className="font-600 text-text-muted">
+                <span className="whitespace-nowrap font-600 text-text-muted">
                   {DAY_SHORT[date.getDay()]} {date.getDate()}
                 </span>
                 <span className="tabular-nums text-text-muted">{Math.round(day.weather.tempF)}°F</span>
@@ -48,15 +48,15 @@ export function WeekStrip() {
             key={day.date}
             onClick={() => setScenario({ selectedDate: day.date, coversOverride: null, weatherOverride: "live", event: "none" })}
             className={cn(
-              "group flex min-w-[112px] flex-col rounded-lg border px-3 py-3 text-left transition-colors duration-150 md:min-w-0",
+              "group flex min-w-[128px] flex-col rounded-lg border px-3 py-3 text-left transition-colors duration-150 xl:min-w-0",
               isSel ? "border-good bg-surface-hover" : "border-border bg-surface hover:border-text-muted"
             )}
           >
             <div className="flex items-center justify-between gap-2 text-xs">
-              <span className={cn("font-600", isSel ? "text-text-primary" : "text-text-secondary")}>
+              <span className={cn("whitespace-nowrap font-600", isSel ? "text-text-primary" : "text-text-secondary")}>
                 {DAY_SHORT[date.getDay()]} {date.getDate()}
               </span>
-              <span className="flex items-center gap-1 tabular-nums text-text-muted">
+              <span className="flex shrink-0 items-center gap-1 tabular-nums text-text-muted">
                 <WeatherIcon condition={day.weather.condition} className="h-4 w-4 text-data" />
                 {Math.round(day.weather.tempF)}°F
               </span>
