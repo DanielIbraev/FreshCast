@@ -14,14 +14,27 @@ export function WeekStrip() {
     return <div className="flex h-[118px] gap-2 md:grid md:grid-cols-7">{Array.from({ length: 7 }, (_, i) => <div key={i} className="min-w-[110px] animate-pulse rounded-lg bg-surface md:min-w-0" />)}</div>;
   }
 
-  const max = Math.max(...week.map((d) => d.totalWasteCost));
-  const min = Math.min(...week.map((d) => d.totalWasteCost));
+  const open = week.filter((d) => !d.closed);
+  const max = Math.max(...open.map((d) => d.totalWasteCost), 0);
+  const min = Math.min(...open.map((d) => d.totalWasteCost), max);
 
   return (
     <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 md:mx-0 md:grid md:grid-cols-7 md:overflow-visible md:px-0 md:pb-0">
       {week.map((day) => {
         const date = parseLocalDate(day.date);
         const isSel = selected?.date === day.date;
+        if (day.closed) {
+          return (
+            <div key={day.date} className="flex min-w-[112px] flex-col rounded-lg border border-dashed border-border px-3 py-3 md:min-w-0" aria-label={`${DAY_SHORT[date.getDay()]} ${date.getDate()}: closed`}>
+              <span className="text-xs font-600 text-text-muted">
+                {DAY_SHORT[date.getDay()]} {date.getDate()}
+              </span>
+              <span className="mt-0.5 text-[11px] text-text-muted">{Math.round(day.weather.tempF)}°F</span>
+              <span className="mt-2 font-display text-lg font-600 text-text-muted">Closed</span>
+              <span className="mt-1.5 text-[11px] text-text-muted">No prep</span>
+            </div>
+          );
+        }
         // 0 = lowest-risk day of the week, 1 = highest
         const t = max === min ? 0.5 : (day.totalWasteCost - min) / (max - min);
         const riskColor = t > 0.66 ? "#EF4444" : t > 0.33 ? "#F59E0B" : "#10B981";

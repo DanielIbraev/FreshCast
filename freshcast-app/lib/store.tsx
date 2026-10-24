@@ -287,7 +287,8 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     startOwnRestaurant: (p, items) => {
       saveProfile(p);
       db.saveLocal(p.id, { ingredients: items, logs: [], observations: [] });
-      activate(p);
+      setActive(p.id);
+      window.location.assign("/dashboard"); // fresh start on the new kitchen's forecast
     },
     backToDemo: () => activate(getProfile(DEMO_PROFILE.id) ?? DEMO_PROFILE),
   };

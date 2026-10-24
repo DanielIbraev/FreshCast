@@ -16,11 +16,11 @@ import { dailyTotals, summarize } from "@/lib/history";
 import { cn, formatCurrency } from "@/lib/utils";
 
 export default function DashboardPage() {
-  const { selected, weatherSource, ingredients, observations, dbStatus } = useStore();
+  const { selected, weatherSource, ingredients, observations, dbStatus, profile } = useStore();
   const [applied, setApplied] = useState(false);
   const [focusId, setFocusId] = useState<string | null>(null);
   const totals = useMemo(() => dailyTotals(observations, ingredients), [observations, ingredients]);
-  const sum = useMemo(() => summarize(totals), [totals]);
+  const sum = useMemo(() => summarize(totals, profile.openDays.filter(Boolean).length), [totals, profile.openDays]);
   // 7-day rolling average: daily waste is noisy, the trend is the story
   const trend = totals.map((t, i) => {
     const win = totals.slice(Math.max(0, i - 6), i + 1);
@@ -72,7 +72,7 @@ export default function DashboardPage() {
                 <Counter value={selected.totalSavings} prefix="$" />
               </p>
               <p className="mt-2 text-xs text-text-muted">
-                and {selected.totalCo2Prevented.toFixed(1)}kg CO₂ on this service
+                and {selected.totalCo2Prevented.toFixed(1)}kg CO₂e on this service
               </p>
             </Card>
             <Card>
@@ -81,7 +81,7 @@ export default function DashboardPage() {
                 <Counter value={sum.savedLast30} prefix="$" />
               </p>
               <p className="mt-2 flex items-center gap-1.5 text-xs text-text-muted">
-                <Leaf className="h-3 w-3 text-good" /> {Math.round(sum.co2Last30)}kg CO₂, about {Math.round(sum.co2Last30 / 0.4).toLocaleString()} miles not driven
+                <Leaf className="h-3 w-3 text-good" /> {Math.round(sum.co2Last30)}kg CO₂e, about {Math.round(sum.co2Last30 / 0.4).toLocaleString()} miles of driving
               </p>
             </Card>
           </div>
@@ -125,7 +125,7 @@ export default function DashboardPage() {
         <Card>
           <h2 className="font-display text-lg font-600 text-text-primary">What actually went in the bin</h2>
           <p className="mb-4 mt-0.5 text-sm text-text-secondary">
-            7-day average of {totals.length} nightly close-outs{drop !== null ? `. Down ${drop}% since Marco started prepping to the plan.` : "."}
+            7-day average of {totals.length} nightly close-outs{drop !== null ? `. Down ${drop}% since the kitchen started prepping to the plan.` : "."}
           </p>
           <WasteTrend data={trend} adoptionDate={sum.planStart} />
         </Card>
@@ -147,10 +147,10 @@ export default function DashboardPage() {
               <div className="mt-5 space-y-2">
                 <div className="h-2.5 w-full rounded-full bg-waste/80" />
                 <div className="h-2.5 rounded-full bg-good" style={{ width: `${(sum.monthlyNow / sum.monthlyBefore) * 100}%` }} />
-                <p className="text-xs text-text-muted">{drop}% less food in the bin, from {sum.daysLogged} days of logs</p>
+                <p className="text-xs text-text-muted">{drop}% less food in the bin, from {sum.daysLogged} nights of logs. Not adjusted for season.</p>
               </div>
               <div className="mt-auto border-t border-border pt-4">
-                <p className="text-xs text-text-muted">Kept per year at this rate</p>
+                <p className="text-xs text-text-muted">Kept per year at this rate (monthly × 12)</p>
                 <p className="font-display text-[40px] font-800 leading-none tabular-nums text-good">{formatCurrency(yearly)}</p>
                 <p className="mt-2 text-xs text-text-muted">FreshCast costs $588/year. That&apos;s a {Math.round(yearly / 588)}x return.</p>
               </div>

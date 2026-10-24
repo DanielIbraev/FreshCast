@@ -18,10 +18,23 @@ export function CloseOut({ s = t("en") }: { s?: Strings }) {
   const [busy, setBusy] = useState(false);
   const tomorrow = week[0];
 
-  // Prefill from reservations; a POS integration would fill the real number.
+  // Prefill with the usual for today; staff correct it from the register.
   useEffect(() => {
     if (today && guests === null) setGuests(today.expectedCovers);
   }, [today, guests]);
+
+  if (today?.closed) {
+    return (
+      <Card>
+        <div className="flex items-center gap-4">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-canvas">
+            <MoonStar className="h-5 w-5 text-text-muted" />
+          </div>
+          <p className="text-sm text-text-secondary">Closed today. Nothing to close out; the forecast skips closed days.</p>
+        </div>
+      </Card>
+    );
+  }
 
   async function run() {
     if (!tomorrow || guests === null) return;

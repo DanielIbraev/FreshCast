@@ -36,18 +36,18 @@ export function ScenarioBar() {
         <SlidersHorizontal className="h-3.5 w-3.5" /> What if
       </span>
 
-      <label className="flex items-center gap-3 text-sm text-text-secondary" title="Covers: guests expected for the service, from reservations">
+      <label className="flex items-center gap-3 text-sm text-text-secondary" title={`Usual for this weekday: ${defaultCovers}. Drag if you know it will be busier or quieter.`}>
         Guests
         <input
           type="range"
-          min={15}
-          max={Math.max(110, profile.avgCovers * 2)}
+          min={Math.max(5, Math.round(defaultCovers * 0.3))}
+          max={Math.max(20, Math.round(defaultCovers * 1.8))}
           value={covers}
           onChange={(e) => setScenario({ coversOverride: Number(e.target.value) })}
           className="h-1 w-36 cursor-pointer accent-good"
           aria-label="Expected guests (covers)"
         />
-        <span className="w-8 font-600 tabular-nums text-text-primary">{covers}</span>
+        <span className="w-9 font-600 tabular-nums text-text-primary">{covers}</span>
       </label>
 
       <div className="flex items-center gap-1 rounded-md bg-canvas p-0.5" role="group" aria-label="Weather">

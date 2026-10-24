@@ -6,24 +6,27 @@ import { Counter } from "@/components/ui/counter";
 import { Summary } from "@/lib/history";
 
 // Climate impact of following the prep plan, from the last 30 days of close-outs.
-// 1 meal = 1.2 lb of food (USDA / Feeding America). 0.4 kg CO2e per mile driven (EPA).
+// 1 meal = 1.2 lb of food (Feeding America). ~0.4 kg CO2 per mile for a
+// typical passenger car (EPA). CO2e = farm-to-retail emissions of the food
+// the plan didn't buy (Poore & Nemecek 2018 via Our World in Data); landfill
+// methane would add more, so these are conservative.
 const LB_PER_KG = 2.2046;
 
 export function ImpactCard({ sum }: { sum: Summary }) {
   const meals = (sum.kgLast30 * LB_PER_KG) / 1.2;
   const miles = sum.co2Last30 / 0.4;
   const items = [
-    { icon: Utensils, value: meals, suffix: "", label: "meals of food not wasted" },
+    { icon: Utensils, value: meals, suffix: "", label: "meals' worth of food not bought and binned" },
     { icon: Scale, value: sum.kgLast30, suffix: " kg", label: "less food bought and binned" },
-    { icon: Leaf, value: sum.co2Last30, suffix: " kg", label: "CO₂e kept out of the air" },
-    { icon: Car, value: miles, suffix: "", label: "miles of driving, equivalent" },
+    { icon: Leaf, value: sum.co2Last30, suffix: "", label: "kg CO₂e embodied in food not bought" },
+    { icon: Car, value: miles, suffix: "", label: "miles of car driving, equivalent" },
   ];
 
   return (
     <Card className="border-good/30">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <CardLabel>Climate impact · last 30 days</CardLabel>
-        <span className="text-xs text-text-muted">From your nightly close-outs. Sources: USDA, EPA, FAO/WRAP.</span>
+        <span className="text-xs text-text-muted">From your nightly close-outs. Only nights where the plan's cut is provable. Sources: Feeding America, EPA, Our World in Data.</span>
       </div>
       {sum.daysLogged === 0 ? (
         <p className="mt-4 text-sm text-text-muted">Close out a few nights and your impact shows up here.</p>

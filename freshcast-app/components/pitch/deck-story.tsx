@@ -61,7 +61,7 @@ export const S1Hook = () => (
 export const S2Country = () => (
   <div className="relative isolate flex h-full flex-col justify-between">
     <Broll name="landfill" />
-    <Line>If food waste were a country, it would be the 3rd biggest polluter on Earth.</Line>
+    <Line>If food waste were a country, it would be the 3rd largest greenhouse-gas emitter, after China and the US.</Line>
     <div className="flex justify-center">
       <Podium />
     </div>
@@ -100,7 +100,7 @@ export const S5Loop = () => (
       No hardware. <span className="text-good">One minute a night.</span>
     </Line>
     <Loop />
-    <p className="text-[26px] text-text-secondary">It reads the weather, reservations, and calendar. Every night it learns that kitchen a little better.</p>
+    <p className="text-[26px] text-text-secondary">It reads the live weather, your usual guests, and the calendar. Every night it learns that kitchen a little better.</p>
   </div>
 );
 

@@ -12,7 +12,7 @@ export const S7Proof = ({ owner, us }: { owner: number; us: number }) => (
       Better than the owner&apos;s own gut. <span className="text-good">{Math.round((1 - (1 - us) / (1 - owner)) * 100)}% fewer misses.</span>
     </Line>
     <VersusBars owner={owner} us={us} />
-    <Source>12-week walk-forward test on 5 simulated kitchens. Owner baseline: remembers exactly what was wasted the last 4 same weekdays.</Source>
+    <Source>12-week walk-forward test on a simulated kitchen, 5 random seeds. Owner baseline: remembers exactly what was wasted the last 4 same weekdays.</Source>
   </div>
 );
 
@@ -141,10 +141,10 @@ export const S14Ask = () => (
 // Proof it's real engineering, not a mockup.
 export const S7bTrust = ({ coverage }: { coverage: number }) => {
   const tiles: [string, string, string][] = [
-    [`${Math.round(coverage * 100)}%`, "of real nights land inside the 80% range", "Calibrated uncertainty, not a guess"],
+    [`${Math.round(coverage * 100)}%`, "of simulated nights land inside the 80% range", "Calibrated uncertainty, not a guess"],
     ["35", "automated tests, 11 property-based", "Caught 2 real bugs before launch"],
     ["0", "writes allowed from the public", "Postgres row-level security"],
-    ["9", "live signals per forecast", "Weather, guests, calendar, your logs"],
+    ["9", "signals per forecast, 1 live feed", "Live weather, usual guests, calendar, your logs"],
   ];
   return (
     <div className="relative flex h-full flex-col justify-between">
@@ -158,7 +158,7 @@ export const S7bTrust = ({ coverage }: { coverage: number }) => {
           </div>
         ))}
       </div>
-      <Source>Public data: Open-Meteo weather · OpenStreetMap geocoding · FAO/WRAP carbon factors · USDA · EPA</Source>
+      <Source>Public data: Open-Meteo weather · OpenStreetMap geocoding · Poore & Nemecek / Our World in Data CO₂e factors · Feeding America · EPA</Source>
     </div>
   );
 };

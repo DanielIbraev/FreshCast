@@ -16,9 +16,9 @@ export default function OrdersPage() {
   const day = parseLocalDate(selected.date).toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" });
   const rows = selected.ingredients.map((p) => ({
     p,
-    usual: p.ingredient.baselinePrepKg,
+    usual: p.usualPrepKg,
     rec: p.recommendedPrepKg,
-    saved: (p.ingredient.baselinePrepKg - p.recommendedPrepKg) * p.ingredient.costPerKg,
+    saved: (p.usualPrepKg - p.recommendedPrepKg) * p.ingredient.costPerKg,
   }));
   const usualSpend = rows.reduce((s, r) => s + r.usual * r.p.ingredient.costPerKg, 0);
   const recSpend = rows.reduce((s, r) => s + r.rec * r.p.ingredient.costPerKg, 0);
@@ -58,9 +58,9 @@ export default function OrdersPage() {
           <p className="mt-2 text-xs text-text-muted">{formatCurrency(usualSpend - recSpend)} less, {cutKg.toFixed(1)}kg less food bought</p>
         </Card>
         <Card>
-          <CardLabel>CO₂ kept out of the bin</CardLabel>
+          <CardLabel>CO₂e not bought</CardLabel>
           <p className="mt-2 font-display text-[40px] font-800 leading-none tabular-nums text-good">{selected.totalCo2Prevented.toFixed(1)}kg</p>
-          <p className="mt-2 text-xs text-text-muted">for this one service</p>
+          <p className="mt-2 text-xs text-text-muted">embodied in food not bought, this service</p>
         </Card>
       </div>
 
@@ -85,7 +85,7 @@ export default function OrdersPage() {
                 <div className="absolute inset-y-0 left-0 rounded-full bg-good" style={{ width: `${Math.max((saved / maxSaved) * 100, 4)}%` }} />
               </div>
               <span className="text-right text-sm tabular-nums">
-                <span className="text-text-muted line-through">{usual}</span> <span className="font-600 text-good">{rec.toFixed(1)}kg</span>
+                <span className="text-text-muted line-through">{usual.toFixed(1)}</span> <span className="font-600 text-good">{rec.toFixed(1)}kg</span>
               </span>
               <span className="text-right text-sm font-600 tabular-nums text-good">{formatCurrency(saved)}</span>
               <span className="truncate text-xs text-text-secondary">
