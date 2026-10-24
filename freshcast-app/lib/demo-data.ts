@@ -1,6 +1,6 @@
 // Marco's Trattoria: the demo restaurant. 60-seat independent Italian, Boston.
 
-import { Restaurant, Ingredient, WasteLog, WasteReason } from "./types";
+import { Restaurant, Ingredient, WasteLog, WasteReason, EventType, NearbyEvent } from "./types";
 
 export const DEMO_RESTAURANT: Restaurant = {
   id: "marcos-trattoria",
