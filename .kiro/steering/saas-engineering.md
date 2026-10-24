@@ -35,7 +35,8 @@ freshcast-app/
     api/weather       → Open-Meteo proxy (seasonal fallback if offline)
     api/places        → Nominatim restaurant search (name, address, cuisine, opening hours)
     api/geocode       → Nominatim address geocoding
-  components/         → ui, charts, dashboard, log, kitchen, model, setup, pitch
+  components/         → ui, charts, dashboard (incl. guide.tsx, the first-visit steps), log (incl. what-changed.tsx,
+                        "What tonight taught the model"), kitchen, model, setup, landing, screen, pitch
   lib/
     prediction.ts     → priors and the 9 signals (the math, no AI)
     learning.ts       → shrunk corrections learned from close-outs; accuracy (1 − WAPE)
