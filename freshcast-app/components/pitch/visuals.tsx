@@ -37,24 +37,28 @@ export function Crates() {
 // FAO: food waste would rank third among the world's emitters.
 export function Podium() {
   const bars = [
-    { label: "China", h: 420, c: "#3B4A61", rank: "1" },
-    { label: "United States", h: 205, c: "#3B4A61", rank: "2" },
-    { label: "Food waste", h: 130, c: "#EF4444", rank: "3" },
+    { label: "China", h: 370, c: "#3B4A61", rank: "1" },
+    { label: "United States", h: 180, c: "#3B4A61", rank: "2" },
+    { label: "Food waste", h: 115, c: "#EF4444", rank: "3" },
   ];
+  // Bars rise by translating inside a clipped box (transform only, no height
+  // animation); with reduced motion the global MotionConfig skips the rise.
   return (
     <div className="flex items-end gap-10">
       {bars.map((b, i) => (
         <div key={b.label} className="flex w-[260px] flex-col items-center">
           <span className={`mb-4 font-display text-[30px] font-700 ${i === 2 ? "text-waste" : "text-text-secondary"}`}>{b.label}</span>
-          <motion.div
-            className="flex w-full items-start justify-center rounded-t-lg pt-4 font-display text-5xl font-800"
-            style={{ background: b.c, color: i === 2 ? "#0F1117" : "#94A3B8" }}
-            initial={{ height: 0 }}
-            animate={{ height: b.h }}
-            transition={{ duration: 0.9, delay: i * 0.25, ease }}
-          >
-            {b.rank}
-          </motion.div>
+          <div className="w-full overflow-hidden rounded-t-lg" style={{ height: b.h }}>
+            <motion.div
+              className="flex h-full w-full items-start justify-center pt-4 font-display text-5xl font-800"
+              style={{ background: b.c, color: i === 2 ? "#0F1117" : "#94A3B8" }}
+              initial={{ y: b.h }}
+              animate={{ y: 0 }}
+              transition={{ duration: 0.9, delay: i * 0.25, ease }}
+            >
+              {b.rank}
+            </motion.div>
+          </div>
         </div>
       ))}
     </div>

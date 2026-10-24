@@ -153,7 +153,7 @@ export default function LogWastePage() {
                       aria-checked={reason === r}
                       onClick={() => setReason(r)}
                       className={cn(
-                        "flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs transition-colors duration-150",
+                        "flex items-center gap-1.5 rounded-md border px-3 py-2 text-xs transition-colors duration-150",
                         reason === r ? "border-text-secondary bg-surface-hover font-600 text-text-primary" : "border-border text-text-muted hover:text-text-secondary"
                       )}
                     >

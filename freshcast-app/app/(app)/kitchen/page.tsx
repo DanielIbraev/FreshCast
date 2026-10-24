@@ -116,7 +116,7 @@ export default function KitchenPage() {
             <button
               key={s.name}
               onClick={() => quickAdd(s)}
-              className="flex items-center gap-1.5 rounded-md border border-border bg-surface px-2.5 py-1 text-xs text-text-secondary transition-colors duration-150 hover:border-good hover:text-text-primary"
+              className="flex items-center gap-1.5 rounded-md border border-border bg-surface px-2.5 py-2 text-xs text-text-secondary transition-colors duration-150 hover:border-good hover:text-text-primary"
             >
               <Plus className="h-3 w-3" /> {s.name}
             </button>

@@ -69,7 +69,7 @@ export function Select<T extends string>({ value, options, onChange, label, icon
         onClick={() => (open ? setOpen(false) : openMenu())}
         onKeyDown={onKey}
         className={cn(
-          "flex w-full items-center gap-2 rounded-md border bg-canvas px-3 py-1.5 text-left text-xs transition-colors duration-150",
+          "flex w-full items-center gap-2 rounded-md border bg-canvas px-3 py-2 text-left text-xs transition-colors duration-150",
           open ? "border-good" : "border-border hover:border-text-muted"
         )}
       >

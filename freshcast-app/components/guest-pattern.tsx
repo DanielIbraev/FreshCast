@@ -61,14 +61,14 @@ export function GuestPattern({ coversByDay, source, onImport }: { coversByDay: n
         <button
           type="button"
           onClick={() => input.current?.click()}
-          className="flex items-center gap-2 rounded-md border border-border bg-canvas px-3 py-1.5 text-xs text-text-primary transition-colors duration-150 hover:border-good"
+          className="flex items-center gap-2 rounded-md border border-border bg-canvas px-3 py-2 text-xs text-text-primary transition-colors duration-150 hover:border-good"
         >
           <Upload className="h-3.5 w-3.5" /> Upload POS sales export (CSV)
         </button>
         <button
           type="button"
           onClick={sample}
-          className={cn("flex items-center gap-2 rounded-md px-3 py-1.5 text-xs text-text-muted transition-colors duration-150 hover:text-text-primary")}
+          className={cn("flex items-center gap-2 rounded-md px-3 py-2 text-xs text-text-muted transition-colors duration-150 hover:text-text-primary")}
         >
           <FileSpreadsheet className="h-3.5 w-3.5" /> Try a sample export
         </button>
