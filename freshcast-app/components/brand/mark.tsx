@@ -14,7 +14,7 @@ export function Mark({ size = 32, animating = false, className }: { size?: numbe
 
   return (
     <div className={cn("flex shrink-0 items-center justify-center rounded-[22%] bg-good", className)} style={{ width: size, height: size }}>
-      <svg width={icon} height={icon} viewBox="0 0 24 24" fill="none" stroke="var(--color-canvas)" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <svg width={icon} height={icon} viewBox="0 0 24 24" fill="none" stroke="rgb(var(--color-canvas))" strokeWidth={2.5} strokeLinecap="round" strokeLinejoin="round" aria-hidden>
         {animating ? (
           <>
             <motion.path d={STEM} initial={{ pathLength: 0 }} animate={{ pathLength: [0, 1, 1, 1], opacity: [1, 1, 1, 0] }} transition={t} />
