@@ -116,14 +116,14 @@ From each restaurant's simulated history (`runBacktest`, seed 7, plan starts on 
 
 | | Marco's | Golden Crumb | Kendall |
 |---|---|---|---|
-| In the bin per month, before the plan | $1,435 | $1,118 | $1,379 |
-| In the bin per month, last 14 open days on the plan | $638 | $508 | $675 |
-| Kept out of the bin, last 30 days | $1,074 | $804 | $1,115 |
-| Kept out of the bin, per year | ~$13,069 | ~$9,780 | ~$13,570 |
-| Food not wasted, per year | ~1,249 kg (~2,295 meals) | ~1,704 kg (~3,131 meals) | ~3,272 kg (~6,012 meals) |
-| CO₂e embodied in that food, per year | ~6.1 t | ~4.0 t | ~15.4 t |
+| In the bin per month, before the plan | $1,273 | $1,005 | $1,453 |
+| In the bin per month, last 14 open days on the plan | $856 | $681 | $835 |
+| Kept out of the bin, last 30 days | $1,031 | $790 | $1,069 |
+| Kept out of the bin, per year | ~$12,538 | ~$9,617 | ~$13,007 |
+| Food not wasted, per year | ~1,188 kg (~2,182 meals) | ~1,684 kg (~3,094 meals) | ~3,204 kg (~5,887 meals) |
+| CO₂e embodied in that food, per year | ~5.8 t | ~4.0 t | ~14.8 t |
 
-**At scale:** there are about 412,498 US independent restaurants (Technomic, 2025). If 1% of them (about 4,125) saved like Marco's, that would be about **25,000 t CO₂e** and **9.5 million meals' worth of food** a year, roughly the yearly CO₂ of 5,400 cars.
+**At scale:** there are about 412,498 US independent restaurants (Technomic, 2025). If 1% of them (about 4,125) saved like Marco's, that would be about **23,800 t CO₂e** and **9.0 million meals' worth of food** a year, roughly the yearly CO₂ of 5,200 cars.
 
 Conversions: 1 meal = 1.2 lb of food (Feeding America). About 0.4 kg CO₂ per mile and 4.6 t CO₂ per car per year (EPA). CO₂e factors are farm-to-retail emissions from Poore & Nemecek (2018), *Science*, via Our World in Data: the embodied emissions of food that didn't need to be bought.
 
