@@ -5,6 +5,7 @@ import { parseLocalDate } from "@/lib/demo-data";
 
 interface WasteTrendProps {
   data: { date: string; wasteCost: number }[];
+  adoptionDate: string | null;
 }
 
 const short = (d: string) => {
@@ -12,10 +13,7 @@ const short = (d: string) => {
   return `${date.getMonth() + 1}/${date.getDate()}`;
 };
 
-export function WasteTrend({ data }: WasteTrendProps) {
-  // FreshCast recommendations started on day 8
-  const adoptionDate = data[7]?.date;
-
+export function WasteTrend({ data, adoptionDate }: WasteTrendProps) {
   return (
     <div className="h-[220px] w-full">
       <ResponsiveContainer width="100%" height="100%">
@@ -26,7 +24,7 @@ export function WasteTrend({ data }: WasteTrendProps) {
               <stop offset="100%" stopColor="#10B981" stopOpacity={0} />
             </linearGradient>
           </defs>
-          <XAxis dataKey="date" tick={{ fill: "#64748B", fontSize: 11 }} tickFormatter={short} interval={4} axisLine={{ stroke: "#2D3748" }} tickLine={false} />
+          <XAxis dataKey="date" tick={{ fill: "#64748B", fontSize: 11 }} tickFormatter={short} interval={Math.max(1, Math.floor(data.length / 6))} axisLine={{ stroke: "#2D3748" }} tickLine={false} />
           <YAxis tick={{ fill: "#64748B", fontSize: 11 }} tickFormatter={(v: number) => `$${v}`} axisLine={false} tickLine={false} width={48} />
           <Tooltip
             contentStyle={{ background: "#1A1D27", border: "1px solid #2D3748", borderRadius: "8px", color: "#E2E8F0", fontSize: 12 }}
@@ -39,7 +37,7 @@ export function WasteTrend({ data }: WasteTrendProps) {
               x={adoptionDate}
               stroke="#60A5FA"
               strokeDasharray="4 4"
-              label={{ value: "FreshCast on", fill: "#60A5FA", fontSize: 10, position: "top" }}
+              label={{ value: "Prepping to plan", fill: "#60A5FA", fontSize: 10, position: "top" }}
             />
           )}
           {/* animation off: an empty chart mid-animation is worse on a demo screen than no animation */}

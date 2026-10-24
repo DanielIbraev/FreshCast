@@ -26,7 +26,7 @@ export function dailyTotals(obs: DailyObservation[], ingredients: Ingredient[]):
     d.onPlan ||= o.cutKg > 0;
     days.set(o.date, d);
   }
-  return [...days.values()].sort((a, b) => a.date.localeCompare(b.date));
+  return Array.from(days.values()).sort((a, b) => a.date.localeCompare(b.date));
 }
 
 export interface Summary {

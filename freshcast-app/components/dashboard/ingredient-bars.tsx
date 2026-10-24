@@ -21,7 +21,7 @@ export function IngredientBars({ items, applied, selectedId, onSelect }: Props) 
         const cost = applied ? item.reducedWasteCost : item.predictedWasteCost;
         const kg = applied ? item.reducedWasteKg : item.predictedWasteKg;
         const isSel = item.ingredient.id === selectedId;
-        const learning = !item.ingredient.history;
+        const learning = item.signals.find((s) => s.key === "calibration")?.detail === "Cold start";
         return (
           <li key={item.ingredient.id}>
             <button

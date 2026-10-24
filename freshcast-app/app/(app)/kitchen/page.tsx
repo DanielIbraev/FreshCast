@@ -23,7 +23,13 @@ const STAPLES: Omit<Ingredient, "id" | "co2PerKg">[] = [
 ];
 
 export default function KitchenPage() {
-  const { ingredients, addIngredient, updateIngredient, removeIngredient } = useStore();
+  const { ingredients, observations, addIngredient, updateIngredient, removeIngredient } = useStore();
+  const daysByIngredient = useMemo(() => {
+    const m = new Map<string, Set<string>>();
+    observations.forEach((o) => (m.get(o.ingredientId) ?? m.set(o.ingredientId, new Set()).get(o.ingredientId)!).add(o.date));
+    return m;
+  }, [observations]);
+  const daysOf = (id: string) => daysByIngredient.get(id)?.size ?? 0;
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState<Category | "all">("all");
   const [editing, setEditing] = useState<Ingredient | null | "new">(null);
@@ -39,7 +45,7 @@ export default function KitchenPage() {
 
   const prepValue = ingredients.reduce((s, i) => s + i.costPerKg * i.baselinePrepKg, 0);
   const perishable = ingredients.filter((i) => i.shelfLifeDays <= 2);
-  const learning = ingredients.filter((i) => !i.history).length;
+  const learning = ingredients.filter((i) => daysOf(i.id) < 14).length;
   const names = new Set(ingredients.map((i) => i.name.toLowerCase()));
   const staples = STAPLES.filter((s) => !names.has(s.name.toLowerCase()));
 
@@ -121,7 +127,7 @@ export default function KitchenPage() {
             ))}
           </div>
         </div>
-        <IngredientTable items={visible} onEdit={setEditing} onDelete={(i) => removeIngredient(i.id)} />
+        <IngredientTable items={visible} onEdit={setEditing} onDelete={(i) => removeIngredient(i.id)} daysOf={daysOf} />
       </Card>
 
       {editing && (

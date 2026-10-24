@@ -40,9 +40,7 @@ export function IngredientForm({ initial, onSave, onClose }: Props) {
       costPerKg: Number(cost),
       baselinePrepKg: Number(prep),
       shelfLifeDays: Math.round(Number(shelf)),
-      // keep the model's learned history if editing; new items start cold
       co2PerKg: initial && initial.category === category ? initial.co2PerKg : CATEGORIES[category].co2PerKg,
-      history: initial?.history,
     });
   }
 
@@ -104,7 +102,7 @@ export function IngredientForm({ initial, onSave, onClose }: Props) {
           <div className="rounded-md border border-border bg-canvas px-3 py-2.5 text-xs leading-relaxed text-text-secondary">
             Carbon factor set automatically: <span className="font-600 text-text-primary">{CATEGORIES[category].co2PerKg} kg CO₂ per kg</span> wasted
             (FAO/WRAP {CATEGORIES[category].label.toLowerCase()} average).
-            {!initial?.history && " The model starts on industry baselines and calibrates to your kitchen as you log waste."}
+            {!initial && " The model starts on industry baselines and calibrates to your kitchen as you log waste."}
           </div>
         </div>
 

@@ -9,9 +9,10 @@ interface Props {
   items: Ingredient[];
   onEdit: (i: Ingredient) => void;
   onDelete: (i: Ingredient) => void;
+  daysOf: (id: string) => number; // days of stored close-outs for this item
 }
 
-export function IngredientTable({ items, onEdit, onDelete }: Props) {
+export function IngredientTable({ items, onEdit, onDelete, daysOf }: Props) {
   if (items.length === 0) {
     return <p className="py-10 text-center text-sm text-text-muted">No ingredients match. Try another filter or add one.</p>;
   }
@@ -57,8 +58,10 @@ export function IngredientTable({ items, onEdit, onDelete }: Props) {
                   </span>
                 </td>
                 <td className="px-4 py-3">
-                  {i.history ? (
-                    <span className="text-xs text-good">Calibrated · {i.history.weeksOfData} wks</span>
+                  {daysOf(i.id) >= 14 ? (
+                    <span className="text-xs text-good">Calibrated · {daysOf(i.id)} days</span>
+                  ) : daysOf(i.id) > 0 ? (
+                    <span className="text-xs text-caution">Calibrating · {daysOf(i.id)} days</span>
                   ) : (
                     <span className="text-xs text-data">Learning · industry baseline</span>
                   )}

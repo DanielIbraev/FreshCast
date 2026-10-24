@@ -141,7 +141,7 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     const rows: DailyObservation[] = today.ingredients.map((p) => ({
       date: todayKey,
       ingredientId: p.ingredient.id,
-      priorKg: p.priorKg,
+      priorKg: p.priorKg ?? 0,
       cutKg: p.cutKg,
       loggedKg: Math.round(logs.filter((l) => isToday(l) && l.ingredientId === p.ingredient.id).reduce((s, l) => s + l.quantityKg, 0) * 1000) / 1000,
       weather: today.weather.condition,
