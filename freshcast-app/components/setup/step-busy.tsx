@@ -34,8 +34,8 @@ export function StepBusy({ d, errors, update }: { d: Draft; errors: Errors; upda
         <div>
           <div className="mb-2 flex flex-wrap items-baseline justify-between gap-2">
             <span className="text-xs text-text-secondary">Your week, as the forecast will see it</span>
-            <span className="text-[11px] tabular-nums text-text-muted">
-              {weekly.toLocaleString("en-US")} guests a week · {d.imported ? "your sales export" : `typical ${SERVICE_LABELS[d.service].toLowerCase()} pattern`}
+            <span className="text-xs tabular-nums text-text-muted">
+              {weekly.toLocaleString("en-US")} guests a week, from {d.imported ? "your sales export" : `a typical ${SERVICE_LABELS[d.service].toLowerCase()} pattern`}
             </span>
           </div>
           <ul className="grid grid-cols-7 gap-1.5" aria-label="Expected guests by weekday">
@@ -46,9 +46,9 @@ export function StepBusy({ d, errors, update }: { d: Draft; errors: Errors; upda
                   key={DAY_SHORT[i]}
                   className={cn("flex h-28 flex-col justify-between rounded-md border p-1.5 text-center", closed ? "border-dashed border-border" : "border-border bg-canvas")}
                 >
-                  <span className="text-[11px] text-text-muted">{DAY_SHORT[i]}</span>
+                  <span className="text-xs text-text-muted">{DAY_SHORT[i]}</span>
                   {closed ? (
-                    <span className="text-[11px] text-text-muted">Closed</span>
+                    <span className="text-xs text-text-muted">Closed</span>
                   ) : (
                     <span className="flex flex-1 flex-col justify-end gap-1">
                       <span className="mx-auto w-full max-w-[28px] rounded-sm bg-data/70 transition-[height] duration-300 motion-reduce:transition-none" style={{ height: `${Math.max(4, (c / max) * 48)}px` }} />

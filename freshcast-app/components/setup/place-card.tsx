@@ -27,7 +27,7 @@ export function daysSummary(open: boolean[]): string {
 function hoursSummary(p: PlaceResult): string {
   if (!p.openingHours) return "Hours not listed";
   if (!p.service) return p.openingHours.slice(0, 48);
-  return `${daysSummary(p.openDays)} · ${SERVICE_LABELS[p.service].toLowerCase()}`;
+  return `${daysSummary(p.openDays)}, ${SERVICE_LABELS[p.service].toLowerCase()}`;
 }
 
 export function PlaceCard({ p, onPick }: { p: PlaceResult; onPick: () => void }) {
@@ -41,12 +41,12 @@ export function PlaceCard({ p, onPick }: { p: PlaceResult; onPick: () => void })
         <div className="min-w-0 flex-1">
           <p className="flex flex-wrap items-baseline gap-x-2 font-display text-[15px] font-600 text-text-primary">
             {p.name}
-            <span className="font-sans text-[11px] font-400 text-text-muted">{AMENITY[p.osmType] ?? "Restaurant"}</span>
+            <span className="font-sans text-xs font-400 text-text-muted">{AMENITY[p.osmType] ?? "Restaurant"}</span>
           </p>
           <p className="mt-1 flex items-center gap-1.5 truncate text-xs text-text-secondary">
             <MapPin className="h-3.5 w-3.5 shrink-0 text-text-muted" aria-hidden /> {p.address}
           </p>
-          <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-text-muted">
+          <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-text-muted">
             <span className="flex items-center gap-1.5">
               <UtensilsCrossed className="h-3 w-3" aria-hidden /> {CUISINE_LABELS[p.cuisineType]}
             </span>

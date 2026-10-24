@@ -101,7 +101,7 @@ export function CloseOut({ s = t("en") }: { s?: Strings }) {
               <Plus className="h-3.5 w-3.5" />
             </button>
           </div>
-          {today && <span className="text-[11px] text-text-muted">{s.booked(today.expectedCovers)}</span>}
+          {today && <span className="text-xs text-text-muted">{s.booked(today.expectedCovers)}</span>}
         </div>
         <button
           onClick={run}

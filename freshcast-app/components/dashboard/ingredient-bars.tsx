@@ -35,7 +35,7 @@ export function IngredientBars({ items, applied, selectedId, onSelect }: Props) 
                 <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: CATEGORIES[item.ingredient.category].color }} />
                 <span className="truncate text-sm text-text-primary">{item.ingredient.name}</span>
                 {learning && (
-                  <span className="shrink-0 rounded border border-data/40 px-1 text-[11px] text-data">learning</span>
+                  <span className="shrink-0 rounded border border-data/40 px-1 text-xs text-data">learning</span>
                 )}
               </span>
               <div className="relative h-7 overflow-hidden rounded bg-canvas">
@@ -53,7 +53,7 @@ export function IngredientBars({ items, applied, selectedId, onSelect }: Props) 
                 <span className={cn("block text-sm font-600 tabular-nums", applied ? "text-good" : "text-text-primary")}>
                   {formatCurrency(cost)}
                 </span>
-                <span className="block text-[11px] tabular-nums text-text-muted" title="80% range, learned from this kitchen's past errors">
+                <span className="block text-xs tabular-nums text-text-muted" title="80% range, learned from this kitchen's past errors">
                   {!applied && item.lowCost !== undefined && item.highCost !== undefined ? `${formatCurrency(item.lowCost)}–${formatCurrency(item.highCost)}` : `${kg.toFixed(2)}kg`}
                 </span>
               </span>

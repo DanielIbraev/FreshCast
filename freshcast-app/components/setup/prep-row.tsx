@@ -16,7 +16,7 @@ export const ROW_GRID = "grid grid-cols-[28px_minmax(0,1fr)] gap-x-3 gap-y-2 sm:
 function Num({ id, label, value, unit, onChange, bad, disabled }: { id: string; label: string; value: string; unit: string; onChange: (v: string) => void; bad?: boolean; disabled?: boolean }) {
   return (
     <label htmlFor={id} className="flex items-center gap-1.5 sm:block">
-      <span className="w-20 text-[11px] text-text-muted sm:sr-only">{label}</span>
+      <span className="w-20 text-xs text-text-muted sm:sr-only">{label}</span>
       <span className="relative block flex-1">
         <input
           id={id}
@@ -30,7 +30,7 @@ function Num({ id, label, value, unit, onChange, bad, disabled }: { id: string; 
           onChange={(e) => onChange(e.target.value)}
           className={cn(cell, "pr-7", bad && "border-waste focus:border-waste")}
         />
-        <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-[11px] text-text-muted">{unit}</span>
+        <span className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs text-text-muted">{unit}</span>
       </span>
     </label>
   );
@@ -76,7 +76,7 @@ export function PrepRowView({ r, errors, onChange, onRemove }: { r: Row; errors:
         <span className="flex min-w-0 items-center gap-2 text-sm text-text-primary">
           <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: CATEGORIES[r.category].color }} aria-hidden />
           <span className={cn("truncate", off && "line-through decoration-text-muted")}>{r.name}</span>
-          <span className="hidden text-[11px] text-text-muted md:inline">{CATEGORIES[r.category].label}</span>
+          <span className="hidden text-xs text-text-muted md:inline">{CATEGORIES[r.category].label}</span>
         </span>
       )}
 

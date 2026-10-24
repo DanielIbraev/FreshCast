@@ -49,7 +49,7 @@ export function Guide({ state }: { state: GuideState }) {
               const ok = state[s.key];
               return (
                 <li key={s.key} className={cn("flex items-center gap-2 text-sm", ok ? "text-text-muted line-through" : "text-text-secondary")}>
-                  <span className={cn("flex h-5 w-5 items-center justify-center rounded-full border text-[11px] tabular-nums", ok ? "border-good bg-good text-canvas" : "border-border text-text-secondary")} aria-hidden>
+                  <span className={cn("flex h-5 w-5 items-center justify-center rounded-full border text-xs tabular-nums", ok ? "border-good bg-good text-canvas" : "border-border text-text-secondary")} aria-hidden>
                     {ok ? <Check className="h-3 w-3" strokeWidth={3} /> : i + 1}
                   </span>
                   {s.text}

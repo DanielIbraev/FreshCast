@@ -89,7 +89,7 @@ export default function LogWastePage() {
       <Card>
         <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2">
           <h2 className="font-display text-lg font-600 text-text-primary">
-            <span className="mr-2 text-sm font-500 text-text-muted">1</span>{s.step1}
+            <span className="mr-2 text-sm font-600 text-text-muted">1</span>{s.step1}
           </h2>
           <span className="text-xs text-text-muted">{s.step1hint}</span>
         </div>
@@ -108,11 +108,16 @@ export default function LogWastePage() {
             >
               <span className="flex items-center gap-2">
                 <span className="h-2 w-2 rounded-full" style={{ background: CATEGORIES[i.category].color }} />
-                <span className="truncate text-sm font-500 text-text-primary">{i.name}</span>
+                <span className="truncate text-sm font-600 text-text-primary">{i.name}</span>
               </span>
-              <span className="flex items-center justify-between text-[11px] tabular-nums">
+              <span className="flex items-center justify-between text-xs tabular-nums">
                 <span className="text-text-muted">${i.costPerKg}/kg</span>
-                {kgToday > 0 && <span className="font-600 text-waste">{kgToday.toFixed(2)}kg · {formatCurrency(kgToday * i.costPerKg)}</span>}
+                {kgToday > 0 && (
+                  <span className="flex gap-2 font-600 text-waste">
+                    <span>{kgToday.toFixed(2)}kg</span>
+                    <span>{formatCurrency(kgToday * i.costPerKg)}</span>
+                  </span>
+                )}
               </span>
             </button>
             );
@@ -124,14 +129,15 @@ export default function LogWastePage() {
             <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.2 }} className="overflow-hidden">
               <div className="mt-4 border-t border-border pt-4">
                 <p className="mb-2 text-sm font-600 text-text-primary">
-                  <span className="mr-2 text-sm font-500 text-text-muted">2</span>{s.step2(find(picked)?.name ?? "")}
+                  <span className="mr-2 text-sm font-600 text-text-muted">2</span>{s.step2(find(picked)?.name ?? "")}
                 </p>
               <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
                 {AMOUNTS.map((a) => (
                   <button key={a.kg} onClick={() => log(a.kg)} className="flex-1 rounded-md border border-border bg-canvas px-2 py-3 transition-colors duration-150 hover:border-waste">
                     <span className="block font-display text-base font-700 text-text-primary">{a.label}</span>
-                    <span className="mt-0.5 block text-[11px] tabular-nums text-text-muted">
-                      ~{a.kg}kg · {formatCurrency((find(picked)?.costPerKg ?? 0) * a.kg)}
+                    <span className="mt-0.5 flex gap-2 text-xs tabular-nums text-text-muted">
+                      <span>~{a.kg}kg</span>
+                      <span>{formatCurrency((find(picked)?.costPerKg ?? 0) * a.kg)}</span>
                     </span>
                   </button>
                 ))}
@@ -172,7 +178,7 @@ export default function LogWastePage() {
                   <span className="flex items-center gap-3">
                     <span className="w-16 whitespace-nowrap text-xs tabular-nums text-text-muted">{new Date(l.loggedAt).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}</span>
                     <span className="text-sm text-text-primary">{ing?.name ?? s.removed}</span>
-                    <span className="rounded px-1.5 py-0.5 text-[11px]" style={{ color: WASTE_REASONS[l.reason].color, background: `${WASTE_REASONS[l.reason].color}1A` }}>
+                    <span className="rounded px-1.5 py-0.5 text-xs" style={{ color: WASTE_REASONS[l.reason].color, background: `${WASTE_REASONS[l.reason].color}1A` }}>
                       {s.reasons[l.reason]}
                     </span>
                   </span>

@@ -29,7 +29,7 @@ function headlineFor(items: ItemRecord[]) {
   return `${lead}All ${items.length} logged items are within 15% on average`;
 }
 
-const th = "whitespace-nowrap px-3 py-2.5 text-left text-[11px] font-500 text-text-muted";
+const th = "whitespace-nowrap px-3 py-2.5 text-left text-xs font-600 text-text-muted";
 const td = "px-3 py-3 tabular-nums";
 
 export function ItemTable({ items }: { items: ItemRecord[] }) {
@@ -41,7 +41,31 @@ export function ItemTable({ items }: { items: ItemRecord[] }) {
         <h2 className="font-display text-lg font-600 text-text-primary">{headlineFor(rows)}</h2>
         <p className="mt-0.5 text-sm text-text-secondary">Each item scored on its own close-outs over the last 4 weeks. Sorted by what actually went in the bin.</p>
       </div>
-      <div className="overflow-x-auto border-t border-border">
+      {/* Phones: one stacked row per item (name, accuracy and status first). */}
+      <ul className="divide-y divide-border border-t border-border sm:hidden">
+        {rows.map((i) => (
+          <li key={i.id} className="px-4 py-3">
+            <div className="flex items-center gap-3">
+              <span className="min-w-0 flex-1 truncate text-sm font-600 text-text-primary">{i.name}</span>
+              <span className="text-sm font-600 tabular-nums text-text-primary">{pct(i.accuracy, 1)}</span>
+              <span className={cn("inline-flex whitespace-nowrap rounded-md border px-2 py-0.5 text-xs font-600", STATUS[i.status].cls)}>{STATUS[i.status].label}</span>
+            </div>
+            <p className="mt-1 flex flex-wrap gap-x-3 gap-y-0.5 text-xs tabular-nums text-text-muted">
+              <span>{i.nights} nights</span>
+              <span className={i.bias !== null && Math.abs(i.bias) > 0.15 ? "text-caution" : undefined}>{biasText(i.bias)}</span>
+              <span>{pct(i.rangeHit)} in range</span>
+              <span className={i.soldOut >= 3 ? "text-caution" : undefined}>{i.soldOut} sold out</span>
+              <span>{usd(i.wasteCostLast28)} wasted</span>
+            </p>
+          </li>
+        ))}
+        {unlogged.length > 0 && (
+          <li className="px-4 py-3 text-xs text-text-muted">
+            <span className="font-600">Not logged yet ({unlogged.length}):</span> {unlogged.map((i) => i.name).join(", ")}. Forecast from priors until a close-out includes them.
+          </li>
+        )}
+      </ul>
+      <div className="hidden overflow-x-auto border-t border-border sm:block">
         <table className="w-full min-w-[820px] text-sm">
           <thead className="bg-canvas/60">
             <tr>
@@ -61,7 +85,7 @@ export function ItemTable({ items }: { items: ItemRecord[] }) {
               const bigBias = i.bias !== null && Math.abs(i.bias) > 0.15;
               return (
                 <tr key={i.id} className="transition-colors duration-150 hover:bg-surface-hover">
-                  <th scope="row" className="whitespace-nowrap py-3 pl-6 pr-3 text-left font-500 text-text-primary">{i.name}</th>
+                  <th scope="row" className="whitespace-nowrap py-3 pl-6 pr-3 text-left font-600 text-text-primary">{i.name}</th>
                   <td className={cn(td, "text-right text-text-secondary")}>{i.nights}</td>
                   <td className={cn(td, "text-right font-600 text-text-primary")}>{pct(i.accuracy, 1)}</td>
                   <td className={cn(td, "whitespace-nowrap", bigBias ? "text-caution" : "text-text-secondary")}>{biasText(i.bias)}</td>
@@ -69,21 +93,21 @@ export function ItemTable({ items }: { items: ItemRecord[] }) {
                   <td className={cn(td, "text-right", i.soldOut >= 3 ? "text-caution" : "text-text-secondary")}>{i.soldOut}</td>
                   <td className={cn(td, "text-right font-600 text-text-primary")}>{usd(i.wasteCostLast28)}</td>
                   <td className="py-3 pl-3 pr-6">
-                    <span className={cn("inline-flex whitespace-nowrap rounded-md border px-2 py-0.5 text-xs font-500", s.cls)}>{s.label}</span>
+                    <span className={cn("inline-flex whitespace-nowrap rounded-md border px-2 py-0.5 text-xs font-600", s.cls)}>{s.label}</span>
                   </td>
                 </tr>
               );
             })}
             {unlogged.length > 0 && (
               <tr>
-                <th scope="row" className="py-3 pl-6 pr-3 text-left font-500 text-text-muted">
+                <th scope="row" className="py-3 pl-6 pr-3 text-left font-600 text-text-muted">
                   Not logged yet ({unlogged.length})
                 </th>
                 <td colSpan={6} className="px-3 py-3 text-[13px] text-text-muted">
                   {unlogged.map((i) => i.name).join(", ")}. Forecast from priors until a close-out includes them.
                 </td>
                 <td className="py-3 pl-3 pr-6">
-                  <span className={cn("inline-flex whitespace-nowrap rounded-md border px-2 py-0.5 text-xs font-500", STATUS.learning.cls)}>No data</span>
+                  <span className={cn("inline-flex whitespace-nowrap rounded-md border px-2 py-0.5 text-xs font-600", STATUS.learning.cls)}>No data</span>
                 </td>
               </tr>
             )}

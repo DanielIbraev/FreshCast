@@ -156,12 +156,12 @@ export default function DashboardPage() {
               <div className="mt-4 flex flex-wrap items-end gap-x-8 gap-y-3">
                 <div>
                   <p className="text-xs text-text-muted">Before FreshCast</p>
-                  <p className="font-display text-3xl font-700 tabular-nums text-waste">{formatCurrency(beforeWk)}<span className="text-base font-500 text-text-muted"> a week</span></p>
+                  <p className="font-display text-3xl font-700 tabular-nums text-waste">{formatCurrency(beforeWk)}<span className="text-base font-400 text-text-muted"> a week</span></p>
                 </div>
                 <ArrowDown className="mb-2 h-5 w-5 -rotate-90 text-text-muted" />
                 <div>
                   <p className="text-xs text-text-muted">Last 2 weeks, prepping to plan</p>
-                  <p className="font-display text-3xl font-700 tabular-nums text-good">{formatCurrency(nowWk)}<span className="text-base font-500 text-text-muted"> a week</span></p>
+                  <p className="font-display text-3xl font-700 tabular-nums text-good">{formatCurrency(nowWk)}<span className="text-base font-400 text-text-muted"> a week</span></p>
                 </div>
                 <p className="mb-1 rounded-md border border-good/40 px-2 py-0.5 text-sm font-600 tabular-nums text-good">{Math.round((1 - nowWk / beforeWk) * 100)}% less</p>
               </div>

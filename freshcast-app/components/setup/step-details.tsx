@@ -80,7 +80,7 @@ export function StepDetails({ d, errors, update, setCuisine }: Props) {
         </div>
         {d.loc && (
           <span className="mt-1.5 flex items-center gap-1.5 text-xs text-good">
-            <Check className="h-3.5 w-3.5" aria-hidden /> Weather for {d.loc.place || "this spot"} · {d.loc.lat.toFixed(3)}, {d.loc.lng.toFixed(3)}
+            <Check className="h-3.5 w-3.5" aria-hidden /> Weather for {d.loc.place || "this spot"} ({d.loc.lat.toFixed(3)}, {d.loc.lng.toFixed(3)})
           </span>
         )}
       </Field>

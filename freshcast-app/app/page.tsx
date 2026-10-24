@@ -18,7 +18,7 @@ export default function Home() {
         </Link>
         <Link
           href="/dashboard"
-          className="rounded-md px-2 py-1 text-sm font-500 text-text-secondary transition-colors duration-150 hover:text-text-primary"
+          className="rounded-md px-2 py-1 text-sm font-600 text-text-secondary transition-colors duration-150 hover:text-text-primary"
         >
           Open the app
         </Link>

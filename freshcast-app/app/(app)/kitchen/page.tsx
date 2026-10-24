@@ -74,7 +74,7 @@ export default function KitchenPage() {
           {perishable.length > 0 && (
             <div className="mt-auto flex flex-wrap gap-1.5 border-t border-border pt-4">
               {perishable.map((p) => (
-                <span key={p.id} className="flex items-center gap-1.5 rounded border border-border bg-canvas px-2 py-0.5 text-[11px] text-text-secondary">
+                <span key={p.id} className="flex items-center gap-1.5 rounded border border-border bg-canvas px-2 py-0.5 text-xs text-text-secondary">
                   <span className="h-1.5 w-1.5 rounded-full" style={{ background: CATEGORIES[p.category].color }} />
                   {p.name}
                   <span className="text-waste">{p.shelfLifeDays}d</span>

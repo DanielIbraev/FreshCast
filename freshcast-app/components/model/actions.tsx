@@ -53,7 +53,7 @@ export function Actions({ actions }: { actions: Action[] }) {
               {link && (
                 <Link
                   href={link.href}
-                  className="inline-flex shrink-0 items-center gap-1.5 rounded-md px-2 py-1 text-xs font-500 text-text-primary transition-colors duration-150 hover:bg-surface-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-data"
+                  className="inline-flex shrink-0 items-center gap-1.5 rounded-md px-2 py-1 text-xs font-600 text-text-primary transition-colors duration-150 hover:bg-surface-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-data"
                 >
                   {link.label}
                   <ArrowRight className="h-3 w-3" aria-hidden />

@@ -10,7 +10,7 @@ export const errorCls = "border-waste focus:border-waste";
 
 export function AutoChip() {
   return (
-    <span className="inline-flex items-center gap-1 rounded border border-data/40 px-1.5 py-px text-[11px] font-500 text-data">
+    <span className="inline-flex items-center gap-1 rounded border border-data/40 px-1.5 py-px text-xs font-600 text-data">
       <MapPinned className="h-3 w-3" aria-hidden /> Filled in from OpenStreetMap
     </span>
   );
@@ -35,7 +35,7 @@ export function Field({ label, htmlFor, hint, error, auto, className, children }
   );
   const foot = (
     <>
-      {hint && !error && <span className="mt-1 block text-[11px] text-text-muted">{hint}</span>}
+      {hint && !error && <span className="mt-1 block text-xs text-text-muted">{hint}</span>}
       {error && (
         <span role="alert" className="mt-1 block text-xs text-waste">
           {error}

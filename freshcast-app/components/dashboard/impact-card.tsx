@@ -25,7 +25,7 @@ export function ImpactCard({ sum }: { sum: Summary }) {
   return (
     <Card className="border-good/30">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <CardLabel>Climate impact · last 30 days</CardLabel>
+        <CardLabel>Climate impact, last 30 days</CardLabel>
         <span className="text-xs text-text-muted">From your nightly close-outs. Only nights where the plan's cut is provable. Sources: Feeding America, EPA, Our World in Data.</span>
       </div>
       {sum.daysLogged === 0 ? (

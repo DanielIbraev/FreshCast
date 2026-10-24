@@ -110,7 +110,7 @@ export function Select<T extends string>({ value, options, onChange, label, icon
                 >
                   <Check className={cn("h-3.5 w-3.5 shrink-0 text-good", !selected && "invisible")} />
                   <span className="flex-1">{o.label}</span>
-                  {o.hint && <span className="text-[11px] text-text-muted">{o.hint}</span>}
+                  {o.hint && <span className="text-xs text-text-muted">{o.hint}</span>}
                 </li>
               );
             })}

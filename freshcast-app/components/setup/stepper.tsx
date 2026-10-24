@@ -10,7 +10,7 @@ export function Stepper({ current, reached, onJump }: { current: number; reached
   return (
     <nav aria-label="Setup progress">
       <p className="mb-2 text-xs text-text-muted sm:hidden">
-        Step {current + 1} of {STEPS.length} · <span className="text-text-primary">{STEPS[current]}</span>
+        Step {current + 1} of {STEPS.length}: <span className="text-text-primary">{STEPS[current]}</span>
       </p>
       <ol className="grid grid-cols-5 gap-1.5 sm:gap-2">
         {STEPS.map((name, i) => {
@@ -34,7 +34,7 @@ export function Stepper({ current, reached, onJump }: { current: number; reached
                 <span className="mt-2 hidden items-center gap-2 sm:flex">
                   <span
                     className={cn(
-                      "flex h-5 w-5 shrink-0 items-center justify-center rounded text-[11px] font-600 tabular-nums transition-colors duration-150",
+                      "flex h-5 w-5 shrink-0 items-center justify-center rounded text-xs font-600 tabular-nums transition-colors duration-150",
                       active ? "bg-good text-canvas" : done ? "bg-good/15 text-good" : "bg-canvas text-text-muted",
                       "group-focus-visible:ring-1 group-focus-visible:ring-good"
                     )}

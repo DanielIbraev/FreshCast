@@ -17,7 +17,7 @@ export function EffortChart({ rows, recommended, ceiling }: { rows: EffortRow[];
 
   return (
     <div className="space-y-2.5">
-      <div className="grid grid-cols-[minmax(0,240px)_70px_1fr_60px] gap-4 px-1 text-[11px] text-text-muted">
+      <div className="grid grid-cols-[minmax(0,240px)_70px_1fr_60px] gap-4 px-1 text-xs text-text-muted">
         <span>Staff does</span>
         <span className="text-right">Min/day</span>
         <span>Accuracy</span>
@@ -29,7 +29,7 @@ export function EffortChart({ rows, recommended, ceiling }: { rows: EffortRow[];
           <div key={r.id} className={cn("grid grid-cols-[minmax(0,240px)_70px_1fr_60px] items-center gap-4 rounded-md px-1 py-1.5", rec && "bg-surface-hover")}>
             <span className="flex min-w-0 items-center gap-2 text-sm text-text-primary">
               <span className="truncate">{r.name}</span>
-              {rec && <span className="shrink-0 rounded border border-good/50 px-1.5 text-[11px] text-good">default</span>}
+              {rec && <span className="shrink-0 rounded border border-good/50 px-1.5 text-xs text-good">default</span>}
             </span>
             <span className="text-right text-sm tabular-nums text-text-secondary">{r.minutes < 0.05 ? "0" : r.minutes.toFixed(1)}</span>
             <div className="relative h-5 rounded bg-canvas">

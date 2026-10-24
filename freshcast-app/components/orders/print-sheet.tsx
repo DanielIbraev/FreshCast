@@ -42,7 +42,7 @@ export function PrintSheet({ day, profile }: { day: DayPrediction; profile: Prof
         <div>
           <dt className="text-black/60">Weather</dt>
           <dd className="font-600">
-            {day.weather.description}, {Math.round(day.weather.tempF)}°F
+            {day.weather.description || `${Math.round(day.weather.tempF)}°F`}
           </dd>
         </div>
         <div>

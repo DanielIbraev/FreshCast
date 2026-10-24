@@ -41,9 +41,9 @@ export function GuestPattern({ coversByDay, source, onImport }: { coversByDay: n
       <div className="flex h-28 items-end gap-2">
         {coversByDay.map((c, i) => (
           <div key={i} className="flex flex-1 flex-col items-center gap-1.5">
-            <span className="text-[11px] tabular-nums text-text-secondary">{c}</span>
+            <span className="text-xs tabular-nums text-text-secondary">{c}</span>
             <div className="w-full rounded-t bg-data/70 transition-all duration-500" style={{ height: `${(c / max) * 72}px` }} />
-            <span className="text-[11px] text-text-muted">{DAYS[i]}</span>
+            <span className="text-xs text-text-muted">{DAYS[i]}</span>
           </div>
         ))}
       </div>

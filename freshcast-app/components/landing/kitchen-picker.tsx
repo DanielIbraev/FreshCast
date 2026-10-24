@@ -38,7 +38,7 @@ export function KitchenPicker() {
       </ul>
       <Link
         href="/setup"
-        className="mt-5 inline-block rounded-sm text-sm font-500 text-good underline decoration-good/40 underline-offset-4 transition-colors duration-150 hover:decoration-good"
+        className="mt-5 inline-block rounded-sm text-sm font-600 text-good underline decoration-good/40 underline-offset-4 transition-colors duration-150 hover:decoration-good"
       >
         Set up your own restaurant
       </Link>

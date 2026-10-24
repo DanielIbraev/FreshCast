@@ -25,7 +25,7 @@ export default function ModelPage() {
         <div className="flex flex-wrap items-center gap-3">
           <h1 className="font-display text-[28px] font-700 leading-tight text-text-primary">Model accuracy</h1>
           {profile.isDemo && (
-            <span className="rounded-md border border-border px-2 py-0.5 text-[11px] text-text-muted">Simulated history</span>
+            <span className="rounded-md border border-border px-2 py-0.5 text-xs text-text-muted">Simulated history</span>
           )}
         </div>
         <p className="mt-1 text-sm text-text-secondary">

@@ -39,7 +39,7 @@ export function Accuracy() {
             <tbody>
               {rows.map((r) => (
                 <tr key={r.id} className="border-b border-border">
-                  <th scope="row" className="py-5 pr-2 text-sm font-500 sm:pr-4 sm:text-base text-text-primary">{r.name}</th>
+                  <th scope="row" className="py-5 pr-2 text-sm font-600 sm:pr-4 sm:text-base text-text-primary">{r.name}</th>
                   <td className="px-2 py-5 text-right font-display text-2xl sm:px-4 sm:text-3xl font-700 tabular-nums text-good">{pct(r.model)}</td>
                   <td className="px-2 py-5 text-right text-sm sm:px-4 sm:text-base tabular-nums text-text-secondary">{pct(r.owner)}</td>
                   <td className="py-5 pl-2 text-right text-sm sm:pl-4 sm:text-base tabular-nums text-text-secondary">{pct(r.ceiling)}</td>

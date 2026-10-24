@@ -12,7 +12,7 @@ export function VersionLadder({ versions, ceiling }: { versions: VersionResult[]
   return (
     <div className="relative">
       <div className="absolute inset-y-0 border-l border-dashed border-data/60" style={{ left: `calc(220px + (100% - 220px - 64px) * ${(ceiling - floor) / (1 - floor)})` }}>
-        <span className="absolute -top-5 -translate-x-1/2 whitespace-nowrap text-[11px] text-data">Oracle {(ceiling * 100).toFixed(0)}%</span>
+        <span className="absolute -top-5 -translate-x-1/2 whitespace-nowrap text-xs text-data">Oracle {(ceiling * 100).toFixed(0)}%</span>
       </div>
       <ul className="space-y-3 pt-4">
         {versions.map((v, i) => {

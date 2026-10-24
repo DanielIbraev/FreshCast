@@ -35,15 +35,15 @@ export function StepReview({ d, goTo }: { d: Draft; goTo: (step: number) => void
     <div className="grid grid-cols-1 gap-5 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
       <dl>
         <Row label="Restaurant" value={<span className="font-600">{d.name}</span>} onEdit={() => goTo(1)} />
-        <Row label="Address" value={<>{d.address}<span className="block text-[11px] text-text-muted">Weather for {d.loc?.place || "your location"}</span></>} onEdit={() => goTo(1)} />
-        <Row label="Cuisine" value={d.cuisineLabel.trim() ? `${CUISINE_LABELS[d.cuisineType]} · ${d.cuisineLabel.trim()}` : CUISINE_LABELS[d.cuisineType]} onEdit={() => goTo(1)} />
-        <Row label="Service" value={`${SERVICE_LABELS[d.service]} · ${daysSummary(d.openDays)} · ${d.seats} seats`} onEdit={() => goTo(1)} />
+        <Row label="Address" value={<>{d.address}<span className="block text-xs text-text-muted">Weather for {d.loc?.place || "your location"}</span></>} onEdit={() => goTo(1)} />
+        <Row label="Cuisine" value={d.cuisineLabel.trim() ? `${CUISINE_LABELS[d.cuisineType]}, ${d.cuisineLabel.trim()}` : CUISINE_LABELS[d.cuisineType]} onEdit={() => goTo(1)} />
+        <Row label="Service" value={<>{SERVICE_LABELS[d.service]}, {d.seats} seats<span className="block text-xs text-text-muted">{daysSummary(d.openDays)}</span></>} onEdit={() => goTo(1)} />
         <Row
           label="Guests"
           value={
             <>
               About {averageOpen(week, d.openDays)} on an open day
-              <span className="block text-[11px] text-text-muted">{d.imported ? "From your sales export" : "Typical weekly pattern, corrected as you log"}</span>
+              <span className="block text-xs text-text-muted">{d.imported ? "From your sales export" : "Typical weekly pattern, corrected as you log"}</span>
             </>
           }
           onEdit={() => goTo(2)}
@@ -53,7 +53,7 @@ export function StepReview({ d, goTo }: { d: Draft; goTo: (step: number) => void
           value={
             <>
               {on.length} items, about {formatCurrency(dailyPrepCost(d.rows))} a day
-              {custom > 0 && <span className="block text-[11px] text-text-muted">Includes {custom} you added</span>}
+              {custom > 0 && <span className="block text-xs text-text-muted">Includes {custom} you added</span>}
             </>
           }
           onEdit={() => goTo(3)}
@@ -73,7 +73,7 @@ export function StepReview({ d, goTo }: { d: Draft; goTo: (step: number) => void
             </li>
           ))}
         </ol>
-        <p className="mt-4 border-t border-border pt-3 text-[11px] text-text-muted">Tomorrow&apos;s prep list updates the moment you close out.</p>
+        <p className="mt-4 border-t border-border pt-3 text-xs text-text-muted">Tomorrow&apos;s prep list updates the moment you close out.</p>
       </section>
     </div>
   );

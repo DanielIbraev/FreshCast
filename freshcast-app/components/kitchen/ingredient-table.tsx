@@ -21,13 +21,13 @@ export function IngredientTable({ items, onEdit, onDelete, daysOf }: Props) {
     <div className="overflow-x-auto rounded-md border border-border">
       <table className="w-full min-w-[720px] text-sm">
         <thead>
-          <tr className="whitespace-nowrap border-b border-border bg-canvas text-left text-[11px] text-text-muted">
-            <th className="px-4 py-2.5 font-500">Ingredient</th>
-            <th className="px-4 py-2.5 text-right font-500">Cost / kg</th>
-            <th className="px-4 py-2.5 text-right font-500">Daily prep</th>
-            <th className="px-4 py-2.5 text-right font-500">Prep value</th>
-            <th className="px-4 py-2.5 font-500">Shelf life</th>
-            <th className="px-4 py-2.5 font-500">Model</th>
+          <tr className="whitespace-nowrap border-b border-border bg-canvas text-left text-xs text-text-muted">
+            <th className="px-4 py-2.5 font-600">Ingredient</th>
+            <th className="px-4 py-2.5 text-right font-600">Cost / kg</th>
+            <th className="px-4 py-2.5 text-right font-600">Daily prep</th>
+            <th className="px-4 py-2.5 text-right font-600">Prep value</th>
+            <th className="px-4 py-2.5 font-600">Shelf life</th>
+            <th className="px-4 py-2.5 font-600">Model</th>
             <th className="w-20 px-4 py-2.5" />
           </tr>
         </thead>
@@ -39,13 +39,13 @@ export function IngredientTable({ items, onEdit, onDelete, daysOf }: Props) {
                 <td className="px-4 py-3">
                   <span className="flex items-center gap-2.5">
                     <span className="h-2 w-2 rounded-full" style={{ background: CATEGORIES[i.category].color }} />
-                    <span className="whitespace-nowrap font-500 text-text-primary">{i.name}</span>
+                    <span className="whitespace-nowrap font-600 text-text-primary">{i.name}</span>
                     <span className="hidden whitespace-nowrap text-xs text-text-muted 2xl:inline">{CATEGORIES[i.category].label}</span>
                   </span>
                 </td>
                 <td className="px-4 py-3 text-right tabular-nums text-text-secondary">${i.costPerKg.toFixed(2)}</td>
                 <td className="px-4 py-3 text-right tabular-nums text-text-secondary">{i.baselinePrepKg}kg</td>
-                <td className="px-4 py-3 text-right font-500 tabular-nums text-text-primary">{formatCurrency(i.costPerKg * i.baselinePrepKg)}</td>
+                <td className="px-4 py-3 text-right font-600 tabular-nums text-text-primary">{formatCurrency(i.costPerKg * i.baselinePrepKg)}</td>
                 <td className="px-4 py-3">
                   <span className="flex items-center gap-2">
                     <span className="h-1.5 w-16 overflow-hidden rounded-full bg-canvas">
@@ -59,11 +59,11 @@ export function IngredientTable({ items, onEdit, onDelete, daysOf }: Props) {
                 </td>
                 <td className="px-4 py-3">
                   {daysOf(i.id) >= 14 ? (
-                    <span className="whitespace-nowrap text-xs text-good">Calibrated · {daysOf(i.id)}d</span>
+                    <span className="whitespace-nowrap text-xs text-good">Calibrated, {daysOf(i.id)} nights</span>
                   ) : daysOf(i.id) > 0 ? (
-                    <span className="whitespace-nowrap text-xs text-caution">Calibrating · {daysOf(i.id)}d</span>
+                    <span className="whitespace-nowrap text-xs text-caution">Calibrating, {daysOf(i.id)} nights</span>
                   ) : (
-                    <span className="whitespace-nowrap text-xs text-data">New · using baseline</span>
+                    <span className="whitespace-nowrap text-xs text-data">New, using baseline</span>
                   )}
                 </td>
                 <td className="px-4 py-3">

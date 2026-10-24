@@ -18,14 +18,14 @@ export function StepPrep({ d, errors, setRows }: { d: Draft; errors: Errors; set
           Common for {CUISINE_LABELS[d.cuisineType].toLowerCase()} kitchens, with typical wholesale prices. Adjust the amounts to what you actually prep on a normal day and untick anything you don&apos;t use.
         </p>
         <div className="text-right" aria-live="polite">
-          <p className="text-[11px] text-text-muted">You prep about</p>
+          <p className="text-xs text-text-muted">You prep about</p>
           <p className="font-display text-[28px] font-700 leading-none tabular-nums text-text-primary">{formatCurrency(total)}</p>
-          <p className="mt-1 text-[11px] text-text-muted">of food a day · {on} items</p>
+          <p className="mt-1 text-xs text-text-muted">of food a day, {on} items</p>
         </div>
       </div>
 
       <div>
-        <div className={cn(ROW_GRID, "hidden border-b border-border pb-2 text-[11px] text-text-muted sm:grid")} aria-hidden>
+        <div className={cn(ROW_GRID, "hidden border-b border-border pb-2 text-xs text-text-muted sm:grid")} aria-hidden>
           <span />
           <span>Item</span>
           <span className="text-right">Prep / day</span>
