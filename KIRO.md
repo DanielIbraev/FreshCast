@@ -93,7 +93,7 @@ The [Hallmark](https://github.com/nutlope/hallmark) design skill (MIT) was added
 - **Web search and fetch** (built into Kiro, not an MCP server) did the sourcing work: every statistic in the README, app and deck has a named source.
 
 ## Property-based testing
-`freshcast-app/tests/properties.test.ts`, fast-check, 200 generated cases per property. The full suite is 60 tests (`cd freshcast-app && ./node_modules/.bin/vitest run`), and GitHub Actions runs it on every push.
+`freshcast-app/tests/properties.test.ts`, fast-check, 200 generated cases per property. The full suite is 62 tests (`cd freshcast-app && ./node_modules/.bin/vitest run`), and GitHub Actions runs it on every push.
 
 | # | Property | Requirement |
 |---|---|---|
