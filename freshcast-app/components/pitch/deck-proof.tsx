@@ -37,7 +37,7 @@ export const S9Scale = ({ co2Year, meals }: { co2Year: number; meals: number }) 
       <p className="mt-6 text-[40px] font-600 text-text-primary">cars&apos; worth of CO₂, every year.</p>
       <p className="mt-4 text-[28px] text-text-secondary">And {((meals * n) / 1e6).toFixed(0)} million meals&apos; worth of food not bought and binned.</p>
       <div className="absolute bottom-0 right-0">
-        <Source>4,125 restaurants = 1% of 412,498 US independents (Technomic, 2025)</Source>
+        <Source>Marco&apos;s simulated yearly savings × 4,125 restaurants (1% of 412,498 US independents, Technomic 2025). A car: 4.6 t CO₂ a year (EPA).</Source>
       </div>
     </div>
   );
