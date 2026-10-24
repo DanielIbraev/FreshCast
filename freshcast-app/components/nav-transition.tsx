@@ -58,7 +58,6 @@ export function NavOverlay() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1, transition: { duration: ENTER_S, ease: "easeOut" } }}
           exit={{ opacity: 0, transition: { duration: EXIT_S, ease: "easeIn" } }}
-          style={{ pointerEvents: "none" }}
           role="status"
           aria-label="Loading"
         >
