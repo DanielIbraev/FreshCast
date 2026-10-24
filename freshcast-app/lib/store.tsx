@@ -75,7 +75,8 @@ const isToday = (iso: string) => (l: WasteLog) => localISO(new Date(l.loggedAt))
 // waste and drops are kept in the log but not learned from.
 const LEARNABLE = new Set(["overprep", "spoiled"]);
 
-export function StoreProvider({ children }: { children: React.ReactNode }) {
+// `only` pins the store to one restaurant (the pitch deck always shows Marco's).
+export function StoreProvider({ children, only }: { children: React.ReactNode; only?: string }) {
   const [hydrated, setHydrated] = useState(false);
   const [dbStatus, setDbStatus] = useState<DbStatus>("loading");
   const [profile, setProfile] = useState<Profile>(DEMO_PROFILE);
@@ -144,9 +145,14 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
 
   // ?r=<restaurant id> opens a specific kitchen (used by the pitch deck links).
   useEffect(() => {
-    const asked = new URLSearchParams(window.location.search).get("r");
-    activate((asked && getProfile(asked)) || loadProfile());
-  }, [activate]);
+    const asked = only ?? new URLSearchParams(window.location.search).get("r");
+    const p = (asked && getProfile(asked)) || loadProfile();
+    if (only) {
+      // Don't change which restaurant the app opens to next time.
+      const prev = localStorage.getItem("freshcast:active");
+      activate(p).then(() => prev && setActive(prev));
+    } else activate(p);
+  }, [activate, only]);
 
   // Visitors' changes are saved on their device; the owner's go to Supabase.
   useEffect(() => {

@@ -156,7 +156,7 @@ function Deck() {
 
 export default function PitchPage() {
   return (
-    <StoreProvider>
+    <StoreProvider only="marcos-trattoria">
       <Deck />
     </StoreProvider>
   );
