@@ -13,6 +13,14 @@ export const DEMO_RESTAURANT: Restaurant = {
 
 export const AVG_COVERS = 52;
 
+export const EVENTS: Record<EventType, NearbyEvent> = {
+  none: { type: "none", name: "", distanceMiles: 0 },
+  game: { type: "game", name: "Celtics at TD Garden", distanceMiles: 0.6 },
+  concert: { type: "concert", name: "Concert at TD Garden", distanceMiles: 0.6 },
+  festival: { type: "festival", name: "North End Feast", distanceMiles: 0.2 },
+  graduation: { type: "graduation", name: "Suffolk commencement", distanceMiles: 0.8 },
+};
+
 // Expected covers by weekday, as a reservation integration would report them.
 // Index 0 = Sunday.
 export const COVERS_BY_DAY = [48, 38, 45, 50, 56, 68, 72];
