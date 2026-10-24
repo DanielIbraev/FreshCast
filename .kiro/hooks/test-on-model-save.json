@@ -4,7 +4,7 @@
     {
       "name": "Run tests when model code changes",
       "trigger": "PostFileSave",
-      "description": "Runs the 35 unit and property-based tests whenever a file in lib/ or tests/ is saved, so a model change can't silently break a claim made in the pitch.",
+      "description": "Runs the full Vitest suite (62 unit and property-based tests) whenever a file in lib/ or tests/ is saved, so a model change can't silently break a claim made in the pitch.",
       "matcher": "freshcast-app/(lib|tests)/.*\\.ts$",
       "action": {
         "type": "command",
