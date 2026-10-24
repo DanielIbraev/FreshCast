@@ -3,9 +3,10 @@ import { computeSignals, predictIngredientWaste, priorWasteKg, BASE_WASTE_FRACTI
 import { NO_LEARNING } from "@/lib/learning";
 import { Ingredient, PredictionInput } from "@/lib/types";
 
-const salmon: Ingredient = { id: "salmon", name: "Salmon", category: "seafood", costPerKg: 28, baselinePrepKg: 6, shelfLifeDays: 2, co2PerKg: 11.9 };
+// Shelf life 3 days = the neutral shelf-life band (x1.0).
+const salmon: Ingredient = { id: "salmon", name: "Salmon", category: "seafood", costPerKg: 28, baselinePrepKg: 6, shelfLifeDays: 3, co2PerKg: 13.63 };
 
-// A Thursday in April: weekday 1.0, season 1.0, no holiday, dry, no event, average guests.
+// A Thursday in April: season 1.0, no holiday, dry, no event, usual guests.
 const neutral = (over: Partial<PredictionInput> = {}): PredictionInput => ({
   ingredient: salmon,
   expectedCovers: 52,
@@ -56,6 +57,24 @@ describe("prediction engine", () => {
     const tiny = { ...salmon, baselinePrepKg: 0.10551996228669307, costPerKg: 0.5 };
     const p = predictIngredientWaste({ ...neutral({ ingredient: tiny, expectedCovers: 109 }), learned: { ...NO_LEARNING, calibration: 0.4, days: 10 } });
     expect(p.recommendedPrepKg).toBeLessThanOrEqual(tiny.baselinePrepKg);
+  });
+
+  it("busier weekdays prep more, so the same share is wasted on more food", () => {
+    const avg = priorWasteKg(neutral());
+    const busy = neutral({ usualCovers: 104, expectedCovers: 104 }); // a weekday twice as busy as average
+    expect(priorWasteKg(busy) / avg).toBeCloseTo(2, 6);
+    expect(predictIngredientWaste({ ...busy, learned: NO_LEARNING }).usualPrepKg).toBeCloseTo(12, 6);
+  });
+
+  it("guests are compared with the usual for that weekday, not the weekly average", () => {
+    const sat = neutral({ usualCovers: 72 });
+    expect(priorWasteKg({ ...sat, expectedCovers: 72 }) / priorWasteKg({ ...sat, expectedCovers: 72 })).toBe(1);
+    expect(priorWasteKg({ ...sat, expectedCovers: 50 })).toBeGreaterThan(priorWasteKg({ ...sat, expectedCovers: 72 }));
+  });
+
+  it("never forecasts more than half the day's prep as waste", () => {
+    const p = predictIngredientWaste({ ...neutral({ expectedCovers: 0 }), learned: { ...NO_LEARNING, calibration: 2.5, weekday: 1.6, weather: 1.6, days: 20 } });
+    expect(p.predictedWasteKg).toBeLessThanOrEqual(salmon.baselinePrepKg * 0.5 + 1e-9);
   });
 
   it("learned corrections multiply on top of the priors", () => {

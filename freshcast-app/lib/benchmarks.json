@@ -1,5 +1,12 @@
 {
-  "generatedAt": "2026-10-24T18:18:21.503Z",
+  "generatedAt": "2026-10-24T18:23:52.661Z",
+  "seeds": [
+    7,
+    11,
+    23,
+    31,
+    42
+  ],
   "versions": [
     {
       "id": "v0",
@@ -118,45 +125,530 @@
       "ceiling": 0.874286503189975
     }
   ],
-  "ceiling": 0.8651758896837871,
+  "ceiling": 0.8676962641900439,
   "owner": 0.80053131595671,
   "coverage80": 0.8071428571428572,
   "effort": [
     {
       "id": "none",
       "name": "No logging",
-      "accuracy": null,
+      "accuracy": 0.7590907858481624,
       "minutes": 0
     },
     {
       "id": "top3x3",
       "name": "Top 3 items, 3 nights a week",
-      "accuracy": null,
+      "accuracy": 0.7489208253119173,
       "minutes": 0.24285714285714285
     },
     {
       "id": "top5",
       "name": "Top 5 items, nightly",
-      "accuracy": null,
+      "accuracy": 0.7690904979323003,
       "minutes": 0.8333333333333334
     },
     {
       "id": "all",
       "name": "Every item, nightly",
-      "accuracy": null,
+      "accuracy": 0.8461175225035953,
       "minutes": 1.2333333333333334
     },
     {
       "id": "all-pos",
       "name": "Every item + guests served",
-      "accuracy": null,
+      "accuracy": 0.8537976846278349,
       "minutes": 1.2333333333333334
     },
     {
       "id": "weighed-pos",
       "name": "Every item weighed + guests",
-      "accuracy": null,
+      "accuracy": 0.8590574943975005,
       "minutes": 3.5
     }
-  ]
+  ],
+  "byRestaurant": {
+    "marcos-trattoria": {
+      "versions": [
+        {
+          "id": "v0",
+          "name": "Rule of thumb",
+          "detail": "8% of each day's usual prep",
+          "accuracy": 0.6646220894419498
+        },
+        {
+          "id": "v1",
+          "name": "+ Weather, season, holidays",
+          "detail": "Open-Meteo forecast and the calendar",
+          "accuracy": 0.6899519283838991
+        },
+        {
+          "id": "v2",
+          "name": "+ Shelf life",
+          "detail": "Day-old food is binned more often",
+          "accuracy": 0.7590907858481624
+        },
+        {
+          "id": "v3",
+          "name": "+ Kitchen calibration",
+          "detail": "Learns each item from your close-outs",
+          "accuracy": 0.8543816937789412
+        },
+        {
+          "id": "v4",
+          "name": "+ Weekday, weather & recency learning",
+          "detail": "Learns your habits by weekday, how rain hits you, and last week",
+          "accuracy": 0.8593215029663636
+        }
+      ],
+      "weeks": [
+        {
+          "week": 1,
+          "naive": 0.7165063042039204,
+          "priorOnly": 0.7829498826564436,
+          "learned": 0.7969447480333886,
+          "ceiling": 0.8305314443948296
+        },
+        {
+          "week": 2,
+          "naive": 0.6802272795953722,
+          "priorOnly": 0.7569914519618408,
+          "learned": 0.8126477722031142,
+          "ceiling": 0.817201679801
+        },
+        {
+          "week": 3,
+          "naive": 0.6967818019016809,
+          "priorOnly": 0.7539106573320801,
+          "learned": 0.8341279969447631,
+          "ceiling": 0.8200040793673717
+        },
+        {
+          "week": 4,
+          "naive": 0.7093345021907391,
+          "priorOnly": 0.7659845162839396,
+          "learned": 0.8935866552630107,
+          "ceiling": 0.9035709156683494
+        },
+        {
+          "week": 5,
+          "naive": 0.6728738903583789,
+          "priorOnly": 0.7451794188541577,
+          "learned": 0.8348648408148714,
+          "ceiling": 0.8550882440469477
+        },
+        {
+          "week": 6,
+          "naive": 0.6362002275901264,
+          "priorOnly": 0.7320759506677947,
+          "learned": 0.8453067518565834,
+          "ceiling": 0.8812815285561506
+        },
+        {
+          "week": 7,
+          "naive": 0.6811046978402564,
+          "priorOnly": 0.7652863074803162,
+          "learned": 0.8904878633028329,
+          "ceiling": 0.8935936337486596
+        },
+        {
+          "week": 8,
+          "naive": 0.6690720389700323,
+          "priorOnly": 0.7646411498520226,
+          "learned": 0.863900511232993,
+          "ceiling": 0.8474641586086499
+        },
+        {
+          "week": 9,
+          "naive": 0.6611022497696145,
+          "priorOnly": 0.7609871906006229,
+          "learned": 0.862170768565812,
+          "ceiling": 0.852972656362484
+        },
+        {
+          "week": 10,
+          "naive": 0.6807340711191597,
+          "priorOnly": 0.7776132453921213,
+          "learned": 0.8805501286328425,
+          "ceiling": 0.878900890445823
+        },
+        {
+          "week": 11,
+          "naive": 0.6515369248881041,
+          "priorOnly": 0.7453859023662346,
+          "learned": 0.8182967414938249,
+          "ceiling": 0.8445962868434591
+        },
+        {
+          "week": 12,
+          "naive": 0.6541706705313672,
+          "priorOnly": 0.7747517623258154,
+          "learned": 0.8776384751929289,
+          "ceiling": 0.874286503189975
+        }
+      ],
+      "ceiling": 0.8676962641900439,
+      "owner": 0.80053131595671,
+      "coverage80": 0.8071428571428572,
+      "effort": [
+        {
+          "id": "none",
+          "name": "No logging",
+          "accuracy": 0.7590907858481624,
+          "minutes": 0
+        },
+        {
+          "id": "top3x3",
+          "name": "Top 3 items, 3 nights a week",
+          "accuracy": 0.7489208253119173,
+          "minutes": 0.24285714285714285
+        },
+        {
+          "id": "top5",
+          "name": "Top 5 items, nightly",
+          "accuracy": 0.7690904979323003,
+          "minutes": 0.8333333333333334
+        },
+        {
+          "id": "all",
+          "name": "Every item, nightly",
+          "accuracy": 0.8461175225035953,
+          "minutes": 1.2333333333333334
+        },
+        {
+          "id": "all-pos",
+          "name": "Every item + guests served",
+          "accuracy": 0.8537976846278349,
+          "minutes": 1.2333333333333334
+        },
+        {
+          "id": "weighed-pos",
+          "name": "Every item weighed + guests",
+          "accuracy": 0.8590574943975005,
+          "minutes": 3.5
+        }
+      ]
+    },
+    "golden-crumb": {
+      "versions": [
+        {
+          "id": "v0",
+          "name": "Rule of thumb",
+          "detail": "8% of each day's usual prep",
+          "accuracy": 0.577465154119415
+        },
+        {
+          "id": "v1",
+          "name": "+ Weather, season, holidays",
+          "detail": "Open-Meteo forecast and the calendar",
+          "accuracy": 0.5864985144255052
+        },
+        {
+          "id": "v2",
+          "name": "+ Shelf life",
+          "detail": "Day-old food is binned more often",
+          "accuracy": 0.6755327301642814
+        },
+        {
+          "id": "v3",
+          "name": "+ Kitchen calibration",
+          "detail": "Learns each item from your close-outs",
+          "accuracy": 0.8238419440740016
+        },
+        {
+          "id": "v4",
+          "name": "+ Weekday, weather & recency learning",
+          "detail": "Learns your habits by weekday, how rain hits you, and last week",
+          "accuracy": 0.8439170258886151
+        }
+      ],
+      "weeks": [
+        {
+          "week": 1,
+          "naive": 0.6038014978470995,
+          "priorOnly": 0.7132180925863405,
+          "learned": 0.7990187970024623,
+          "ceiling": 0.8289245496420414
+        },
+        {
+          "week": 2,
+          "naive": 0.5890972869701958,
+          "priorOnly": 0.7009658167026414,
+          "learned": 0.786984508778129,
+          "ceiling": 0.806809932109769
+        },
+        {
+          "week": 3,
+          "naive": 0.5767700529238207,
+          "priorOnly": 0.665164740658798,
+          "learned": 0.7988719412670504,
+          "ceiling": 0.7963683086905546
+        },
+        {
+          "week": 4,
+          "naive": 0.56153945623814,
+          "priorOnly": 0.6728007400373095,
+          "learned": 0.8508150965137472,
+          "ceiling": 0.8842968026436914
+        },
+        {
+          "week": 5,
+          "naive": 0.5822813877887231,
+          "priorOnly": 0.6856588850188539,
+          "learned": 0.8465454305006714,
+          "ceiling": 0.8738905791221521
+        },
+        {
+          "week": 6,
+          "naive": 0.6101743466889855,
+          "priorOnly": 0.7068677282861279,
+          "learned": 0.8217706227118857,
+          "ceiling": 0.8596994466402842
+        },
+        {
+          "week": 7,
+          "naive": 0.6093955827783221,
+          "priorOnly": 0.6983751979242228,
+          "learned": 0.8899647411460229,
+          "ceiling": 0.9022903252461695
+        },
+        {
+          "week": 8,
+          "naive": 0.539988604953207,
+          "priorOnly": 0.6290831223448599,
+          "learned": 0.822208859433504,
+          "ceiling": 0.8073078091407478
+        },
+        {
+          "week": 9,
+          "naive": 0.5557596375665725,
+          "priorOnly": 0.6441052795553172,
+          "learned": 0.8476988617384639,
+          "ceiling": 0.8234144524617573
+        },
+        {
+          "week": 10,
+          "naive": 0.6056286363258085,
+          "priorOnly": 0.6876773517422341,
+          "learned": 0.8634506498826724,
+          "ceiling": 0.8722242589477761
+        },
+        {
+          "week": 11,
+          "naive": 0.5503248127248521,
+          "priorOnly": 0.6419137225184307,
+          "learned": 0.8134482771119494,
+          "ceiling": 0.8547335330022658
+        },
+        {
+          "week": 12,
+          "naive": 0.5768620891512399,
+          "priorOnly": 0.6653988780166813,
+          "learned": 0.8590424969775812,
+          "ceiling": 0.848056418137987
+        }
+      ],
+      "ceiling": 0.8580875444136857,
+      "owner": 0.7713472099035347,
+      "coverage80": 0.7957142857142857,
+      "effort": [
+        {
+          "id": "none",
+          "name": "No logging",
+          "accuracy": 0.6755327301642814,
+          "minutes": 0
+        },
+        {
+          "id": "top3x3",
+          "name": "Top 3 items, 3 nights a week",
+          "accuracy": 0.7839276958057797,
+          "minutes": 0.24285714285714285
+        },
+        {
+          "id": "top5",
+          "name": "Top 5 items, nightly",
+          "accuracy": 0.8102548961146467,
+          "minutes": 0.8333333333333334
+        },
+        {
+          "id": "all",
+          "name": "Every item, nightly",
+          "accuracy": 0.8312008784758012,
+          "minutes": 1.2333333333333334
+        },
+        {
+          "id": "all-pos",
+          "name": "Every item + guests served",
+          "accuracy": 0.8399561547634598,
+          "minutes": 1.2333333333333334
+        },
+        {
+          "id": "weighed-pos",
+          "name": "Every item weighed + guests",
+          "accuracy": 0.8438624017113077,
+          "minutes": 3.5
+        }
+      ]
+    },
+    "kendall-bowls": {
+      "versions": [
+        {
+          "id": "v0",
+          "name": "Rule of thumb",
+          "detail": "8% of each day's usual prep",
+          "accuracy": 0.6241858184645455
+        },
+        {
+          "id": "v1",
+          "name": "+ Weather, season, holidays",
+          "detail": "Open-Meteo forecast and the calendar",
+          "accuracy": 0.6458991802515645
+        },
+        {
+          "id": "v2",
+          "name": "+ Shelf life",
+          "detail": "Day-old food is binned more often",
+          "accuracy": 0.7075867073729547
+        },
+        {
+          "id": "v3",
+          "name": "+ Kitchen calibration",
+          "detail": "Learns each item from your close-outs",
+          "accuracy": 0.835327884290424
+        },
+        {
+          "id": "v4",
+          "name": "+ Weekday, weather & recency learning",
+          "detail": "Learns your habits by weekday, how rain hits you, and last week",
+          "accuracy": 0.863881805550152
+        }
+      ],
+      "weeks": [
+        {
+          "week": 1,
+          "naive": 0.697867609545225,
+          "priorOnly": 0.7424432613037573,
+          "learned": 0.8140639841361578,
+          "ceiling": 0.846511475794145
+        },
+        {
+          "week": 2,
+          "naive": 0.6594338940580984,
+          "priorOnly": 0.7091477493429914,
+          "learned": 0.7718354656987979,
+          "ceiling": 0.8104840642892358
+        },
+        {
+          "week": 3,
+          "naive": 0.656473896983939,
+          "priorOnly": 0.7216174391270178,
+          "learned": 0.8215625525991016,
+          "ceiling": 0.8278602935950993
+        },
+        {
+          "week": 4,
+          "naive": 0.6592504934227587,
+          "priorOnly": 0.6810933900858178,
+          "learned": 0.8314397747059992,
+          "ceiling": 0.8679840881107781
+        },
+        {
+          "week": 5,
+          "naive": 0.5987063719455561,
+          "priorOnly": 0.6599517337902774,
+          "learned": 0.8391502041257148,
+          "ceiling": 0.8917583052765691
+        },
+        {
+          "week": 6,
+          "naive": 0.6382536716970373,
+          "priorOnly": 0.7282359285084739,
+          "learned": 0.8876735352029061,
+          "ceiling": 0.8901329650046685
+        },
+        {
+          "week": 7,
+          "naive": 0.5981530424422578,
+          "priorOnly": 0.6818516451639342,
+          "learned": 0.8627975995475894,
+          "ceiling": 0.8850539691563896
+        },
+        {
+          "week": 8,
+          "naive": 0.6141580904526124,
+          "priorOnly": 0.6908834149578125,
+          "learned": 0.8416325256023927,
+          "ceiling": 0.8435879405206981
+        },
+        {
+          "week": 9,
+          "naive": 0.6885333341728045,
+          "priorOnly": 0.7718499846800542,
+          "learned": 0.877542318940009,
+          "ceiling": 0.8444465448463194
+        },
+        {
+          "week": 10,
+          "naive": 0.6254746677764513,
+          "priorOnly": 0.7319376894004531,
+          "learned": 0.9085441418000856,
+          "ceiling": 0.9212107170159951
+        },
+        {
+          "week": 11,
+          "naive": 0.6281222981883551,
+          "priorOnly": 0.7274853657697917,
+          "learned": 0.8628343369650318,
+          "ceiling": 0.85245343211901
+        },
+        {
+          "week": 12,
+          "naive": 0.5582276229069925,
+          "priorOnly": 0.6787942943175376,
+          "learned": 0.8770443070881271,
+          "ceiling": 0.862746350144079
+        }
+      ],
+      "ceiling": 0.8734867548637395,
+      "owner": 0.8280183734891888,
+      "coverage80": 0.8204166666666667,
+      "effort": [
+        {
+          "id": "none",
+          "name": "No logging",
+          "accuracy": 0.7075867073729547,
+          "minutes": 0
+        },
+        {
+          "id": "top3x3",
+          "name": "Top 3 items, 3 nights a week",
+          "accuracy": 0.7224845976534034,
+          "minutes": 0.24285714285714285
+        },
+        {
+          "id": "top5",
+          "name": "Top 5 items, nightly",
+          "accuracy": 0.8395751268094817,
+          "minutes": 0.8333333333333334
+        },
+        {
+          "id": "all",
+          "name": "Every item, nightly",
+          "accuracy": 0.854354716484799,
+          "minutes": 1.2333333333333334
+        },
+        {
+          "id": "all-pos",
+          "name": "Every item + guests served",
+          "accuracy": 0.8612295989030029,
+          "minutes": 1.2333333333333334
+        },
+        {
+          "id": "weighed-pos",
+          "name": "Every item weighed + guests",
+          "accuracy": 0.8642247628954003,
+          "minutes": 3.5
+        }
+      ]
+    }
+  }
 }

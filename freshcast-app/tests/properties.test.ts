@@ -6,7 +6,8 @@ import fc from "fast-check";
 import { predictIngredientWaste, priorWasteKg } from "@/lib/prediction";
 import { learn, accuracy, NO_LEARNING, Observation } from "@/lib/learning";
 import { parseCsv, importPosCsv } from "@/lib/pos-import";
-import { range } from "@/lib/uncertainty";
+import { range, residuals } from "@/lib/uncertainty";
+import { buildDayForecast } from "@/lib/forecast";
 import { Category, CuisineType, Ingredient, PredictionInput, WeatherCondition } from "@/lib/types";
 
 const RUNS = { numRuns: 200 };
@@ -181,6 +182,41 @@ describe("P10-P11: sales export importer", () => {
         const r = importPosCsv(rows.join("\n"));
         const expectDays = 14 + (valid && !(m === 3 && d <= 14) ? 1 : 0);
         return r.days === expectDays;
+      }),
+      RUNS
+    );
+  });
+});
+
+describe("P12-P13: closed days and sold-out nights", () => {
+  it("P12: a closed day never forecasts waste, savings, or a prep cut", () => {
+    fc.assert(
+      fc.property(fc.array(arbIngredient, { minLength: 1, maxLength: 6 }), arbCondition, arbDate, fc.integer({ min: 0, max: 400 }), (ings, w, d, covers) => {
+        const day = buildDayForecast({
+          ingredients: ings.map((x, k) => ({ ...x, id: `i${k}` })),
+          observations: [],
+          expectedCovers: covers,
+          usualCovers: covers,
+          open: false,
+          weather: { date: "2026-01-01", tempF: 60, condition: w, precipProb: 0, description: w },
+          weatherSource: "live",
+          event: { type: "none", name: "", distanceMiles: 0 },
+          date: d,
+          cuisineType: "italian",
+          avgCovers: 100,
+        });
+        return day.closed === true && day.ingredients.length === 0 && day.totalWasteCost === 0 && day.totalSavings === 0;
+      }),
+      RUNS
+    );
+  });
+
+  it("P13: sold-out (censored) nights never feed the confidence ranges", () => {
+    fc.assert(
+      fc.property(arbObs, (obs) => {
+        const marked = obs.map((o, k) => ({ ...o, censored: k % 2 === 0 }));
+        const r = residuals(marked);
+        return r.pooled.length === marked.filter((o) => !o.censored && o.usualKg > 0).length;
       }),
       RUNS
     );
