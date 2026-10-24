@@ -1,26 +1,62 @@
+/* Hallmark · v2.0.0 · built: the project · redesign: polish · genre: modern-minimal · job: open a demo kitchen · nav: home wordmark and one app link · footer: compact proof and project links · hero: Stage · signature: the prep forecast comes online in three passes · motion: brisk */
+/* Hallmark · pre-emit critique: P5 H4 E4 S5 R5 V3 · weakest: V, kept the established split hero but made the real forecast activate in working layers */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
+  --color-canvas: #0f1117;
+  --color-surface: #1a1d27;
+  --color-surface-hover: #222634;
+  --color-border: #2d3748;
+  --color-border-hover: #3b4a61;
+  --color-text-primary: #e2e8f0;
+  --color-text-secondary: #94a3b8;
+  --color-text-muted: #8291a7;
+  --color-good: #10b981;
+  --color-good-dim: #0e9668;
+  --color-waste: #ef4444;
+  --color-waste-dim: #b91c1c;
+  --color-caution: #f59e0b;
+  --color-data: #60a5fa;
   --font-inter: "Inter Variable", system-ui, sans-serif;
   --font-sora: "Sora Variable", system-ui, sans-serif;
+  --duration-micro: 120ms;
+  --duration-short: 220ms;
+  --duration-long: 420ms;
+  --ease-enter: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-state: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+html,
+body {
+  overflow-x: clip;
 }
 
 * {
-  border-color: #2d3748;
+  border-color: var(--color-border);
 }
 
 body {
-  background: #0f1117;
-  color: #e2e8f0;
+  background: var(--color-canvas);
+  color: var(--color-text-primary);
   font-family: var(--font-inter);
   -webkit-font-smoothing: antialiased;
 }
 
+::selection {
+  background: var(--color-good-dim);
+  color: var(--color-text-primary);
+}
+
+input,
+textarea {
+  caret-color: var(--color-good);
+}
+
 /* Keyboard focus: a light ring, 10:1+ against every surface, shown instantly. */
 :focus-visible {
-  outline: 2px solid #e2e8f0;
+  outline: 2px solid var(--color-text-primary);
   outline-offset: 2px;
   transition: none;
 }
