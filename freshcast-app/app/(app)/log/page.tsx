@@ -35,7 +35,7 @@ export default function LogWastePage() {
   return (
     <div className="space-y-5">
       <header>
-        <p className="text-sm text-text-muted">Tap the item, tap the amount. This is the only daily input FreshCast needs.</p>
+        <p className="text-sm text-text-muted">Tap the item, tap the amount. The reason defaults to over-prepped. This is the only daily input FreshCast needs.</p>
         <h1 className="font-display text-[28px] font-700 leading-tight text-text-primary">Log waste</h1>
       </header>
 
@@ -63,23 +63,17 @@ export default function LogWastePage() {
       </div>
 
       <Card>
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="font-display text-lg font-600 text-text-primary">{picked ? `How much ${find(picked)?.name}?` : "What went in the bin?"}</h2>
-          <div className="flex gap-1 rounded-md bg-canvas p-0.5" role="group" aria-label="Reason">
-            {(Object.keys(WASTE_REASONS) as WasteReason[]).map((r) => (
-              <button
-                key={r}
-                onClick={() => setReason(r)}
-                className={cn("rounded px-2.5 py-1 text-xs transition-colors duration-150", reason === r ? "bg-surface-hover font-600 text-text-primary" : "text-text-muted hover:text-text-secondary")}
-              >
-                {WASTE_REASONS[r].label}
-              </button>
-            ))}
-          </div>
+        <div className="mb-4 flex items-baseline justify-between">
+          <h2 className="font-display text-lg font-600 text-text-primary">
+            <span className="mr-2 text-sm font-500 text-text-muted">1</span>What went in the bin?
+          </h2>
+          <span className="text-xs text-text-muted">Tiles show what&apos;s been logged today</span>
         </div>
 
         <div className="grid grid-cols-4 gap-2">
-          {ingredients.map((i) => (
+          {ingredients.map((i) => {
+            const kgToday = todays.filter((l) => l.ingredientId === i.id).reduce((s, l) => s + l.quantityKg, 0);
+            return (
             <button
               key={i.id}
               onClick={() => setPicked(picked === i.id ? null : i.id)}
@@ -92,21 +86,49 @@ export default function LogWastePage() {
                 <span className="h-2 w-2 rounded-full" style={{ background: CATEGORIES[i.category].color }} />
                 <span className="truncate text-sm font-500 text-text-primary">{i.name}</span>
               </span>
-              <span className="text-[11px] tabular-nums text-text-muted">${i.costPerKg}/kg</span>
+              <span className="flex items-center justify-between text-[11px] tabular-nums">
+                <span className="text-text-muted">${i.costPerKg}/kg</span>
+                {kgToday > 0 && <span className="font-600 text-waste">{kgToday.toFixed(2)}kg · {formatCurrency(kgToday * i.costPerKg)}</span>}
+              </span>
             </button>
-          ))}
+            );
+          })}
         </div>
 
         <AnimatePresence>
           {picked && (
             <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.2 }} className="overflow-hidden">
-              <div className="mt-4 flex items-center gap-2 border-t border-border pt-4">
+              <div className="mt-4 border-t border-border pt-4">
+                <p className="mb-2 text-sm font-600 text-text-primary">
+                  <span className="mr-2 text-sm font-500 text-text-muted">2</span>Why, and how much {find(picked)?.name}?
+                </p>
+                <div className="mb-3 flex gap-1.5" role="radiogroup" aria-label="Reason">
+                  {(Object.keys(WASTE_REASONS) as WasteReason[]).map((r) => (
+                    <button
+                      key={r}
+                      role="radio"
+                      aria-checked={reason === r}
+                      onClick={() => setReason(r)}
+                      className={cn(
+                        "flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs transition-colors duration-150",
+                        reason === r ? "border-text-secondary bg-surface-hover font-600 text-text-primary" : "border-border text-text-muted hover:text-text-secondary"
+                      )}
+                    >
+                      <span className="h-2 w-2 rounded-full" style={{ background: WASTE_REASONS[r].color }} />
+                      {WASTE_REASONS[r].label}
+                    </button>
+                  ))}
+                </div>
+              <div className="flex items-center gap-2">
                 {AMOUNTS.map((a) => (
                   <button key={a} onClick={() => log(a)} className="flex-1 rounded-md border border-border bg-canvas py-3 transition-colors duration-150 hover:border-waste">
                     <span className="block font-display text-lg font-700 tabular-nums text-text-primary">{a}kg</span>
-                    <span className="block text-[11px] tabular-nums text-text-muted">{formatCurrency((find(picked)?.costPerKg ?? 0) * a)}</span>
+                    <span className="block text-[11px] tabular-nums text-text-muted">
+                      {formatCurrency((find(picked)?.costPerKg ?? 0) * a)} · {WASTE_REASONS[reason].label.toLowerCase()}
+                    </span>
                   </button>
                 ))}
+              </div>
               </div>
             </motion.div>
           )}

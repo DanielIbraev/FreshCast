@@ -40,7 +40,7 @@ export function WeekStrip() {
               </span>
               <WeatherIcon condition={day.weather.condition} className="h-4 w-4 text-data" />
             </div>
-            <span className="mt-0.5 text-[11px] text-text-muted">{Math.round(day.weather.tempF)}°F · {day.expectedCovers} covers</span>
+            <span className="mt-0.5 text-[11px] text-text-muted">{Math.round(day.weather.tempF)}°F · {day.expectedCovers} guests</span>
             <span className="mt-2 font-display text-lg font-700 tabular-nums" style={{ color: riskColor }}>
               {formatCurrency(day.totalWasteCost)}
             </span>

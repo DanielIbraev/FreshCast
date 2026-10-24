@@ -68,7 +68,7 @@ export function computeSignals(input: PredictionInput): SignalFactor[] {
   const learnedWx = Math.abs(L.weather - 1) > 0.005;
 
   const signals: SignalFactor[] = [
-    { key: "demand", label: "Expected covers", source: "Reservations", detail: `${input.expectedCovers} vs ${input.avgCovers} avg`, value: demandFactor(input.expectedCovers, input.avgCovers) },
+    { key: "demand", label: "Expected guests", source: "Reservations", detail: `${input.expectedCovers} covers vs ${input.avgCovers} avg`, value: demandFactor(input.expectedCovers, input.avgCovers) },
     {
       key: "weather",
       label: "Weather",

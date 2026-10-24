@@ -1,6 +1,7 @@
 "use client";
 
-import { RotateCcw, SlidersHorizontal } from "lucide-react";
+import { CalendarDays, RotateCcw, SlidersHorizontal } from "lucide-react";
+import { Select } from "@/components/ui/select";
 import { useStore, EVENTS } from "@/lib/store";
 import { EventType, WeatherCondition } from "@/lib/types";
 import { COVERS_BY_DAY, parseLocalDate } from "@/lib/demo-data";
@@ -14,12 +15,11 @@ const WEATHER_OPTIONS: { value: WeatherCondition | "live"; label: string }[] = [
   { value: "cold", label: "Cold" },
 ];
 
-const EVENT_OPTIONS: { value: EventType; label: string }[] = [
-  { value: "none", label: "No event" },
-  { value: "game", label: "Celtics game" },
-  { value: "festival", label: "Street festival" },
-  { value: "graduation", label: "Graduation" },
-];
+const EVENT_OPTIONS = (["none", "game", "concert", "festival", "graduation"] as EventType[]).map((v) => ({
+  value: v,
+  label: v === "none" ? "No nearby event" : EVENTS[v].name,
+  hint: v === "none" ? undefined : `${EVENTS[v].distanceMiles} mi`,
+}));
 
 // What-if controls for the selected day. Every change reruns the model.
 export function ScenarioBar() {
@@ -36,8 +36,8 @@ export function ScenarioBar() {
         <SlidersHorizontal className="h-3.5 w-3.5" /> What if
       </span>
 
-      <label className="flex items-center gap-3 text-sm text-text-secondary">
-        Covers
+      <label className="flex items-center gap-3 text-sm text-text-secondary" title="Covers: guests expected for the service, from reservations">
+        Guests
         <input
           type="range"
           min={15}
@@ -45,7 +45,7 @@ export function ScenarioBar() {
           value={covers}
           onChange={(e) => setScenario({ coversOverride: Number(e.target.value) })}
           className="h-1 w-36 cursor-pointer accent-good"
-          aria-label="Expected covers"
+          aria-label="Expected guests (covers)"
         />
         <span className="w-8 font-600 tabular-nums text-text-primary">{covers}</span>
       </label>
@@ -65,19 +65,14 @@ export function ScenarioBar() {
         ))}
       </div>
 
-      <select
+      <Select
+        label="Nearby event"
         value={scenario.event}
-        onChange={(e) => setScenario({ event: e.target.value as EventType })}
-        className="rounded-md border border-border bg-canvas px-2.5 py-1.5 text-xs text-text-primary focus:border-good focus:outline-none"
-        aria-label="Nearby event"
-      >
-        {EVENT_OPTIONS.map((o) => (
-          <option key={o.value} value={o.value}>
-            {o.label}
-            {o.value !== "none" ? ` · ${EVENTS[o.value].distanceMiles} mi` : ""}
-          </option>
-        ))}
-      </select>
+        options={EVENT_OPTIONS}
+        onChange={(v) => setScenario({ event: v })}
+        icon={<CalendarDays className="h-3.5 w-3.5 text-text-muted" />}
+        className="w-56"
+      />
 
       {touched && (
         <button

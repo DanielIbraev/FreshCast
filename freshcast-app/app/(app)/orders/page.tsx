@@ -26,7 +26,7 @@ export default function OrdersPage() {
   const maxSaved = Math.max(...rows.map((r) => r.saved), 0.01);
 
   function copyList() {
-    const text = [`Prep list for ${day} (${selected!.expectedCovers} covers)`, ...rows.map((r) => `${r.p.ingredient.name}: ${r.rec.toFixed(1)}kg`)].join("\n");
+    const text = [`Prep list for ${day} (${selected!.expectedCovers} guests)`, ...rows.map((r) => `${r.p.ingredient.name}: ${r.rec.toFixed(1)}kg`)].join("\n");
     navigator.clipboard?.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 1800);
@@ -37,7 +37,7 @@ export default function OrdersPage() {
       <header className="flex items-end justify-between">
         <div>
           <p className="text-sm text-text-muted">
-            {day} · {selected.expectedCovers} covers · {selected.weather.description}
+            {day} · {selected.expectedCovers} guests · {selected.weather.description}
           </p>
           <h1 className="font-display text-[28px] font-700 leading-tight text-text-primary">Prep & order list</h1>
         </div>
