@@ -26,7 +26,7 @@ export function PrintSheet({ day, profile }: { day: DayPrediction; profile: Prof
   );
 
   return (
-    <section aria-hidden="true" className="hidden bg-white font-sans text-black print:!mt-0 print:block print:!animate-none">
+    <section className="hidden bg-white font-sans text-black print:!mt-0 print:block print:!animate-none">
       <header className="flex items-start justify-between gap-6 border-b-2 border-black pb-3">
         <div>
           <h1 className="font-display text-2xl font-700 leading-tight">{profile.name}</h1>
