@@ -30,7 +30,8 @@ export default function ModelPage() {
         </div>
         <p className="mt-1 text-sm text-text-secondary">
           <span className="text-text-primary">{profile.name}</span>: <span className="tabular-nums">{tr.openNights}</span> open{" "}
-          {tr.openNights === 1 ? "night" : "nights"} logged, each forecast scored against that night&apos;s close-out.
+          {tr.openNights === 1 ? "night" : "nights"} logged
+          {tr.openNights < 4 ? " so far." : ", each forecast scored against that night\u2019s close-out."}
         </p>
       </header>
 

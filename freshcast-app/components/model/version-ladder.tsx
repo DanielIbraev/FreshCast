@@ -24,7 +24,7 @@ export function VersionLadder({ versions, ceiling }: { versions: VersionResult[]
                   <span className="mr-2 font-mono text-xs text-text-muted">{v.id}</span>
                   {v.name}
                 </p>
-                <p className="truncate text-[11px] text-text-muted">{v.detail}</p>
+                <p className="truncate text-xs text-text-muted">{v.detail}</p>
               </div>
               <div className="h-7 overflow-hidden rounded bg-canvas">
                 <motion.div
