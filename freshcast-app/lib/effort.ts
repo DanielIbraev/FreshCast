@@ -87,3 +87,23 @@ export function runEffort(ingredients: Ingredient[], seeds = [7, 11, 23, 31, 42]
     return { plan, accuracy: scores.reduce((s, x) => s + x, 0) / scores.length, minutes: minutesPerDay(plan, ingredients.length) };
   });
 }
+
+// The owner's own best guess: he remembers exactly what was wasted on the same
+// weekday for the last 4 weeks and preps to that average. A generous baseline,
+// since no owner actually knows those numbers without logging.
+export function ownerBaseline(ingredients: Ingredient[], seeds = [7, 11, 23, 31, 42], weeks = 12): number {
+  const scores = seeds.map((seed) => {
+    const end = new Date();
+    const days = simulateDays(ingredients, new Date(end.getFullYear(), end.getMonth(), end.getDate() - weeks * 7), weeks * 7, seed);
+    const pairs: { predicted: number; actual: number }[] = [];
+    days.forEach((day, i) => {
+      if (i < 14) return;
+      for (const ing of ingredients) {
+        const prev = [7, 14, 21, 28].filter((k) => i - k >= 0).map((k) => days[i - k].trueUsual[ing.id]);
+        pairs.push({ predicted: prev.reduce((s, x) => s + x, 0) / prev.length, actual: day.trueUsual[ing.id] });
+      }
+    });
+    return accuracy(pairs);
+  });
+  return scores.reduce((s, x) => s + x, 0) / scores.length;
+}
