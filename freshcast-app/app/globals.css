@@ -150,3 +150,86 @@ p {
     animation-timing-function: ease-out !important;
   }
 }
+
+/* Landing choreography: the forecast loads in working passes, not a page-wide fade. */
+@keyframes landing-line-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes landing-card-in {
+  from {
+    opacity: 0;
+    transform: translate3d(-10px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes landing-mask-clear {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(101%, 0, 0);
+  }
+}
+
+@keyframes landing-plan-apply {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(var(--plan-cut));
+  }
+}
+
+.landing-headline-line {
+  animation: landing-line-in var(--duration-long) var(--ease-enter) both;
+}
+
+.landing-headline-line + .landing-headline-line {
+  animation-delay: 90ms;
+}
+
+.landing-kitchen-card {
+  animation: landing-card-in 360ms var(--ease-enter) both;
+  animation-delay: var(--card-delay);
+}
+
+.landing-preview-mask {
+  animation: landing-mask-clear 480ms var(--ease-enter) both;
+  animation-delay: var(--mask-delay);
+  transform-origin: right center;
+}
+
+.landing-plan-fill {
+  animation: landing-plan-apply var(--duration-long) var(--ease-state) 820ms both;
+  transform-origin: left center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-headline-line,
+  .landing-kitchen-card,
+  .landing-plan-fill {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+  }
+
+  .landing-plan-fill {
+    transform: scaleX(var(--plan-cut));
+  }
+
+  .landing-preview-mask {
+    display: none;
+  }
+}
