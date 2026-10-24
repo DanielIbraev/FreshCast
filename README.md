@@ -54,7 +54,7 @@ forecast waste  = min(50% of usual prep,  usual prep × 8% × product of 9 signa
 | Weather | Rain/storm ×1.15, hot (≥85°F) ×0.9, cold (≤32°F or snow) ×1.08, else ×1.0; times the learned weather correction | **Open-Meteo, live** (seasonal fallback if offline) |
 | Weekday habits | Learned correction beyond guest count, starts at 1.0 | Close-out logs |
 | Season | By month, ×0.92 (Jul/Aug) to ×1.2 (Nov/Dec) | Calendar |
-| Holiday | Thanksgiving Eve ×0.7, Christmas ×0.75, July 4th ×0.85, New Year's Day ×1.35 | Holiday calendar |
+| Holiday | Thanksgiving Eve ×0.7, Dec 24–25 ×0.75, July 4th ×0.85, New Year's Day ×1.35 | Holiday calendar |
 | Nearby events | Game/concert ×0.78, festival/graduation ×0.82 | Manual what-if only |
 | Shelf life | ≤1 day ×1.2, ≤2 ×1.1, ≤4 ×1.0, ≤7 ×0.9, longer ×0.8 | Set per ingredient |
 | Last week, same day | Recency correction, starts at 1.0 | Close-out logs |
