@@ -66,6 +66,7 @@ export const S10Audience = () => (
       <ul className="mt-6 space-y-3 text-2xl text-text-secondary">
         <li>30–80 seats, cooks fresh every day</li>
         <li>Already uses a cloud POS</li>
+        <li>Staff log in English or Español, on any phone</li>
         <li>Orders from a wholesaler every Monday</li>
       </ul>
       <p className="mt-6 flex items-center gap-2 text-2xl text-text-primary">
@@ -136,3 +137,56 @@ export const S14Ask = () => (
     </div>
   </div>
 );
+
+// Proof it's real engineering, not a mockup.
+export const S7bTrust = ({ coverage }: { coverage: number }) => {
+  const tiles: [string, string, string][] = [
+    [`${Math.round(coverage * 100)}%`, "of real nights land inside the 80% range", "Calibrated uncertainty, not a guess"],
+    ["35", "automated tests, 11 property-based", "Caught 2 real bugs before launch"],
+    ["0", "writes allowed from the public", "Postgres row-level security"],
+    ["9", "live signals per forecast", "Weather, guests, calendar, your logs"],
+  ];
+  return (
+    <div className="relative flex h-full flex-col justify-between">
+      <Line>Not a black box.</Line>
+      <div className="grid grid-cols-4 gap-8">
+        {tiles.map(([v, l, s]) => (
+          <div key={l} className="rounded-2xl border border-border bg-surface p-8">
+            <p className="font-display text-[80px] font-800 leading-none tracking-tight tabular-nums text-good">{v}</p>
+            <p className="mt-5 text-[24px] leading-snug text-text-primary">{l}</p>
+            <p className="mt-3 text-[18px] text-text-muted">{s}</p>
+          </div>
+        ))}
+      </div>
+      <Source>Public data: Open-Meteo weather · OpenStreetMap geocoding · FAO/WRAP carbon factors · USDA · EPA</Source>
+    </div>
+  );
+};
+
+// Implementation: how Kiro was used.
+export const S12bKiro = () => {
+  const tiles: [string, string, string][] = [
+    ["Spec", "requirements → design → tasks", "Forecast confidence ranges"],
+    ["PBT", "11 correctness properties", "Found 2 bugs unit tests missed"],
+    ["Hooks", "150+ auto-pushed commits", "Tests + model re-score on save"],
+    ["Steering", "7 docs incl. anti-AI-slop", "Every screen built against them"],
+    ["MCP", "PowerPoint server + web research", "Backup deck, sourced stats"],
+  ];
+  return (
+    <div className="flex h-full flex-col justify-center gap-14">
+      <div className="flex items-center gap-6">
+        <span className="rounded-xl border-2 border-text-primary px-5 py-2 font-display text-[44px] font-800 tracking-tight text-text-primary">Kiro</span>
+        <Line>One builder. Kiro as the team.</Line>
+      </div>
+      <div className="grid grid-cols-5 gap-6">
+        {tiles.map(([h, a, b]) => (
+          <div key={h} className="rounded-2xl border border-border bg-surface p-7">
+            <p className="font-display text-[40px] font-800 text-good">{h}</p>
+            <p className="mt-4 text-[22px] leading-snug text-text-primary">{a}</p>
+            <p className="mt-2 text-[18px] leading-snug text-text-muted">{b}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};

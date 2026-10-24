@@ -9,6 +9,7 @@ const securityHeaders = [
 
 const nextConfig = {
   poweredByHeader: false,
+  devIndicators: false, // keeps the "N" badge out of screen recordings
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },

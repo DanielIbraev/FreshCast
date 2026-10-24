@@ -8,7 +8,7 @@ import { dailyTotals, summarize } from "@/lib/history";
 import { parseLocalDate } from "@/lib/demo-data";
 import bench from "@/lib/benchmarks.json";
 import { S0Brand, S1Hook, S2Country, S3Guess, S4Solution, S5Loop, S6Demo } from "@/components/pitch/deck-story";
-import { S7Proof, S8Impact, S9Scale, S10Audience, S11Business, S12Competition, S13Team, S14Ask } from "@/components/pitch/deck-proof";
+import { S7Proof, S7bTrust, S8Impact, S9Scale, S10Audience, S11Business, S12Competition, S12bKiro, S13Team, S14Ask } from "@/components/pitch/deck-proof";
 
 // Slides render at 1600x900 and scale to fit, so a laptop, projector, and a
 // screen recording all look identical.
@@ -49,11 +49,13 @@ function Deck() {
     <S5Loop key={5} />,
     <S6Demo key={6} />,
     <S7Proof key={7} owner={owner} us={us} />,
+    <S7bTrust key={70} coverage={bench.coverage80} />,
     <S8Impact key={8} kgYear={kgYear} co2Year={co2Year} meals={meals} />,
     <S9Scale key={9} co2Year={co2Year} meals={meals} />,
     <S10Audience key={10} />,
     <S11Business key={11} saved={savedMonthly} />,
     <S12Competition key={12} />,
+    <S12bKiro key={120} />,
     <S13Team key={13} />,
     <S14Ask key={14} />,
   ];
