@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Check, Copy } from "lucide-react";
+import Link from "next/link";
+import { Check, Copy, Tv } from "lucide-react";
 import { Card, CardLabel } from "@/components/ui/card";
 import { useStore } from "@/lib/store";
 import { CATEGORIES } from "@/lib/categories";
@@ -9,7 +10,7 @@ import { parseLocalDate } from "@/lib/demo-data";
 import { formatCurrency } from "@/lib/utils";
 
 export default function OrdersPage() {
-  const { selected } = useStore();
+  const { selected, profile } = useStore();
   const [copied, setCopied] = useState(false);
   if (!selected) return <div className="h-96 animate-pulse rounded-card bg-surface" />;
 

@@ -35,15 +35,16 @@ export default function Home() {
             </p>
             <KitchenPicker />
           </div>
+          {/* On wide screens the screenshot runs past the column (and is clipped by the viewport at 1280). */}
           <div className="min-w-0">
             <Image
               src="/landing/dashboard.webp"
-              width={1200}
-              height={800}
+              width={1800}
+              height={1200}
               priority
-              sizes="(min-width: 1024px) 540px, 100vw"
+              sizes="(min-width: 1024px) 780px, 100vw"
               alt="The FreshCast forecast for Marco's Trattoria: a 7-day outlook with live weather, guests and dollars of likely waste per day, then today's waste at risk and what the prep plan saves."
-              className="h-auto w-full rounded-lg border border-border"
+              className="h-auto w-full max-w-none rounded-lg border border-border lg:w-[150%]"
             />
           </div>
         </section>
