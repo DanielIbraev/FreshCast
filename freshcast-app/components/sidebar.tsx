@@ -48,7 +48,7 @@ export function Sidebar() {
 
       <div className="mt-auto border-t border-border px-5 py-4">
         <p className="text-sm font-500 text-text-primary">{DEMO_RESTAURANT.name}</p>
-        <p className="mt-0.5 text-xs text-text-muted">North End, Boston · Italian · 60 seats</p>
+        <p className="mt-0.5 text-xs text-text-muted">North End, Boston · 60 seats</p>
         <button onClick={resetDemo} className="mt-3 flex items-center gap-1.5 text-xs text-text-muted transition-colors duration-150 hover:text-text-primary">
           <RotateCcw className="h-3 w-3" /> Reset demo data
         </button>
