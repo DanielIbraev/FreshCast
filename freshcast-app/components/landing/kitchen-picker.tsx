@@ -12,7 +12,7 @@ const EXTRA: Record<string, { icon: LucideIcon; fact: string }> = {
 export function KitchenPicker() {
   return (
     <nav aria-label="Open a demo kitchen" className="mt-9">
-      <ul className="grid gap-3 sm:grid-cols-3">
+      <ul className="grid gap-2.5 sm:grid-cols-3 sm:gap-3">
         {DEMO_PROFILES.map((p, index) => {
           const { icon: Icon, fact } = EXTRA[p.id] ?? { icon: UtensilsCrossed, fact: "" };
           const delay = index === 0 ? "[--card-delay:250ms]" : index === 1 ? "[--card-delay:330ms]" : "[--card-delay:410ms]";
