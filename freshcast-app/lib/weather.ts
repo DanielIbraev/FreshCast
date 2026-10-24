@@ -9,7 +9,7 @@ export const CONDITION_LABEL: Record<WeatherCondition, string> = {
   storm: "Storms",
   hot: "Hot",
   cold: "Cold",
-  normal: "Clear",
+  normal: "Dry",
 };
 
 // Maps a WMO weather code + temp + rain chance to one of the model's conditions.
