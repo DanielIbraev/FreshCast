@@ -104,6 +104,6 @@ Worked at a small cafe, watched prepped food go in the trash every night, and th
 - **Why WAPE, not MAPE?** MAPE explodes on near-zero items like basil; WAPE weights by kg.
 - **Leakage?** Walk-forward only. Property P6 checks that data from the target day or later never changes a forecast.
 - **Why is the ceiling below 100%?** The oracle knows the hidden habits but not tonight's guests (σ = 15% drift from the usual) or day-to-day noise (lognormal σ = 0.12).
-- **What if staff don't log?** Priors alone (v2) score 76% / 68% / 71%: better than the rule of thumb, worse than an owner with perfect memory. Logging is what gets it to 84–86%.
+- **What if staff don't log?** Priors alone (v2) score 75% / 68% / 71%: better than the rule of thumb, worse than an owner with perfect memory. Logging is what gets it to 84–86%.
 - **What do plate waste and drops do?** They're recorded, but only over-prep and spoilage change prep.
 - Don't claim features that aren't built: reservation or POS integrations, accounts, multi-location, pricing.
