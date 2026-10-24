@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-24T14:41:22.654Z",
+  "generatedAt": "2026-10-24T14:45:32.743Z",
   "versions": [
     {
       "id": "v0",
@@ -146,13 +146,13 @@
     },
     {
       "id": "all-pos",
-      "name": "Every item + guest count from POS",
+      "name": "Every item + guests served",
       "accuracy": 0.8668613839497133,
       "minutes": 1.2333333333333334
     },
     {
       "id": "weighed-pos",
-      "name": "Every item weighed + POS",
+      "name": "Every item weighed + guests",
       "accuracy": 0.8708590690844803,
       "minutes": 3.5
     }

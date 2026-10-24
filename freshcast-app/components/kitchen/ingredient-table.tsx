@@ -21,7 +21,7 @@ export function IngredientTable({ items, onEdit, onDelete, daysOf }: Props) {
     <div className="overflow-hidden rounded-md border border-border">
       <table className="w-full text-sm">
         <thead>
-          <tr className="border-b border-border bg-canvas text-left text-[11px] uppercase tracking-wider text-text-muted">
+          <tr className="whitespace-nowrap border-b border-border bg-canvas text-left text-[11px] uppercase tracking-wider text-text-muted">
             <th className="px-4 py-2.5 font-500">Ingredient</th>
             <th className="px-4 py-2.5 text-right font-500">Cost / kg</th>
             <th className="px-4 py-2.5 text-right font-500">Daily prep</th>
@@ -39,8 +39,8 @@ export function IngredientTable({ items, onEdit, onDelete, daysOf }: Props) {
                 <td className="px-4 py-3">
                   <span className="flex items-center gap-2.5">
                     <span className="h-2 w-2 rounded-full" style={{ background: CATEGORIES[i.category].color }} />
-                    <span className="font-500 text-text-primary">{i.name}</span>
-                    <span className="text-xs text-text-muted">{CATEGORIES[i.category].label}</span>
+                    <span className="whitespace-nowrap font-500 text-text-primary">{i.name}</span>
+                    <span className="hidden whitespace-nowrap text-xs text-text-muted 2xl:inline">{CATEGORIES[i.category].label}</span>
                   </span>
                 </td>
                 <td className="px-4 py-3 text-right tabular-nums text-text-secondary">${i.costPerKg.toFixed(2)}</td>
@@ -59,11 +59,11 @@ export function IngredientTable({ items, onEdit, onDelete, daysOf }: Props) {
                 </td>
                 <td className="px-4 py-3">
                   {daysOf(i.id) >= 14 ? (
-                    <span className="text-xs text-good">Calibrated · {daysOf(i.id)} days</span>
+                    <span className="whitespace-nowrap text-xs text-good">Calibrated · {daysOf(i.id)}d</span>
                   ) : daysOf(i.id) > 0 ? (
-                    <span className="text-xs text-caution">Calibrating · {daysOf(i.id)} days</span>
+                    <span className="whitespace-nowrap text-xs text-caution">Calibrating · {daysOf(i.id)}d</span>
                   ) : (
-                    <span className="text-xs text-data">Learning · industry baseline</span>
+                    <span className="whitespace-nowrap text-xs text-data">New · using baseline</span>
                   )}
                 </td>
                 <td className="px-4 py-3">

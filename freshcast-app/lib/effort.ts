@@ -23,8 +23,8 @@ export const PLANS: EffortPlan[] = [
   { id: "top3x3", name: "Top 3 items, 3 nights a week", nights: [1, 3, 5], topK: 3, weighed: false, posGuests: false },
   { id: "top5", name: "Top 5 items, nightly", nights: ALL, topK: 5, weighed: false, posGuests: false },
   { id: "all", name: "Every item, nightly", nights: ALL, topK: null, weighed: false, posGuests: false },
-  { id: "all-pos", name: "Every item + guest count from POS", nights: ALL, topK: null, weighed: false, posGuests: true },
-  { id: "weighed-pos", name: "Every item weighed + POS", nights: ALL, topK: null, weighed: true, posGuests: true },
+  { id: "all-pos", name: "Every item + guests served", nights: ALL, topK: null, weighed: false, posGuests: true },
+  { id: "weighed-pos", name: "Every item weighed + guests", nights: ALL, topK: null, weighed: true, posGuests: true },
 ];
 
 // Seconds per logged item: two taps on a quick amount, or scale + typing.
