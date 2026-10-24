@@ -10,7 +10,7 @@
 5. Everything else
 
 ### What to cut if time is short
-- Onboarding flow → hardcode Marco's restaurant, skip setup
+- Onboarding flow → built (`/setup`); Marco's is the default if setup breaks
 - Multiple restaurants → built (3 demo restaurants); don't add more
 - Auth/login → can be a simple hardcoded demo login
 - Mobile responsive → desktop only is fine
