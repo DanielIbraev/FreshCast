@@ -29,7 +29,7 @@
 - Seed all demo data upfront, never wait for real restaurant data
 - If something takes more than 30 minutes, simplify it
 - Working ugly beats perfect broken — polish after the core works
-- Deploy to Vercel early and often (every major feature)
+- Deploy to Vercel after every major feature, through the deploy hook (git deploys are off: auto-push on every save hit the 100 deploys/day limit)
 
 ## Code Quality During Hackathon
 - TypeScript types for all data structures (prevents demo-breaking bugs)
