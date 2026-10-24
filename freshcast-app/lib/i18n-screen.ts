@@ -52,7 +52,6 @@ const STRINGS = {
 };
 
 export type ScreenStrings = (typeof STRINGS)["en"];
-export { kg };
 export const ts = (lang: Lang): ScreenStrings => STRINGS[lang] as ScreenStrings;
 
 export const dayName = (lang: Lang, d: Date) => weekday(lang, d);
